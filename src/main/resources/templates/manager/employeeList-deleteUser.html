@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org" lang="ja">
+<head>
+    <meta charset="UTF-8">
+<!--    <meta name="viewport" content="width=device-width, initial-scale=1">-->
+<!--    この下の記述がないとnavbarがバグる-->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <title>Title</title>
+</head>
+<body>
+<div th:replace="manager/navbar :: navbar"></div>
+
+<h1 th:text="${name}"></h1>
+<h2>選択した従業員を削除しますか？</h2>
+<p>*一度行った操作は取り消せません</p>
+<!--<form th:action="@{/manager/employeeList-deleteComplete}" method="get">-->
+    <form th:action="@{/manager/employeeList-deleteComplete}" method="post">
+        <input type="hidden" name="employeeCode" th:value="${employeeCode}" />
+        <input type="hidden" name="name" th:value="${name}" />
+    <button type="submit">はい</button>
+</form>
+<a th:href="@{/manager/employeeList}">
+    <button type="button">いいえ</button>
+</a>
+</body>
+</html>

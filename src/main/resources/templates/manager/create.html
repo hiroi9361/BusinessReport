@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>ユーザー新規登録</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Bootstrap 5 CSSをCDN経由で読み込む -->
+    <script>
+        function validateForm() {
+            // 各フィールドの値を取得
+            var employeeCode = document.getElementById('employeeCode').value;
+            var name = document.getElementById('name').value;
+            var password = document.getElementById('password').value;
+
+            // 必須フィールドが空でないかチェック
+            if (employeeCode.trim() === '' || name.trim() === '' || password.trim() === '') {
+                alert('全てのフィールドを記入してください');
+                return false; // 送信をブロックする
+            }
+            return true; // 送信を許可する
+        }
+    </script>
+    <style >
+        @media (max-width: 768px) {
+            h1 {
+                font-size: 1.3em;
+            }
+        }
+    </style>
+</head>
+
+<body>
+<div th:replace="manager/navbar :: navbar"></div>
+<div class="container mt-5">
+    <h1 class="mb-4">ユーザー新規登録</h1>
+
+    <form th:action="@{/manager/createEmployee}" th:object="${userCreateInput}" th:method="post" enctype="multipart/form-data" onsubmit="return validateForm()">
+        <!-- 社員番号 -->
+        <div class="mb-3">
+            <label for="employeeCode" class="form-label">社員番号：<span class="text-danger">※</span></label>
+            <input type="text" id="employeeCode" th:field="*{employeeCode}" class="form-control" pattern="[0-9]{1,5}" title="5桁以下の数字を入力してください">
+
+            <!--            <input type="text" id="employeeCode" th:field="*{employeeCode}" class="form-control">-->
+            <div th:if="${EmployeeCodeError != null}" class="text-danger mt-1" th:text="${EmployeeCodeError}"></div>
+        </div>
+
+        <!-- 名前 -->
+        <div class="mb-3">
+            <label for="name" class="form-label">名前：<span class="text-danger">※</span></label>
+            <input type="text" id="name" th:field="*{name}" class="form-control" pattern="[A-Za-zぁ-んァ-ン一-龯]+" title="アルファベット、ひらがな、漢字のみが許可されています">
+        </div>
+
+        <!-- パスワード -->
+        <div class="mb-3">
+            <label for="password" class="form-label">パスワード：<span class="text-danger">※</span></label>
+            <input type="password" id="password" th:field="*{password}" class="form-control">
+        </div>
+
+        <!-- 役割 -->
+        <div class="mb-3">
+            <label for="role" class="form-label">役割：<span class="text-danger">※</span></label>
+            <select id="role" name="role" th:field="*{role}" class="form-select">
+                <option value="MEMBER">Member</option>
+                <option value="MANAGER">Manager</option>
+            </select>
+        </div>
+
+        <!-- アイコン画像 -->
+        <div class="mb-3">
+            <label for="icon" class="form-label">アイコン画像</label>
+<!--            送信タイプをfileに、ユーザーから受け付けるファイルを画像のみに-->
+            ファイルを選択<input type="file" id="icon" th:field="*{icon}" accept="image/*" class="form-control">
+            <div th:if="${EnCodeError != null}" class="text-danger mt-1" th:text="${EnCodeError}"></div>
+
+        </div>
+
+        <!-- 登録ボタン -->
+        <div class="mb-3">
+            <button type="submit" class="btn btn-primary">登録</button>
+        </div>
+
+    </form>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<!-- Bootstrap 5 JavaScriptをCDN経由で読み込む -->
+</body>
+
+</html>

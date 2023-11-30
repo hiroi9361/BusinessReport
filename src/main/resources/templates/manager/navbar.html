@@ -1,0 +1,33 @@
+<div th:fragment="navbar" xmlns:th="http://www.w3.org/1999/xhtml">
+    <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
+        <div class="container">
+            <a class="navbar-brand" style = "font-size:1.1em;" href="/manager/home">ホーム</a>
+            <div class="navbar-text ms-auto">
+                <span class="text-light" style = "font-size:1.1em;" th:text="${#authentication.principal.fullName + 'さん'}"></span>
+            </div>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
+                    aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" style = "font-size:1em;" th:href=@{/manager/create}><i class="fas fa-search"></i>ユーザ新規登録</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" style = "font-size:1em;" th:href="@{/manager/employeeList}">
+                            <i class="fas fa-search"></i>ユーザ管理</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" style = "font-size:1em;" th:href="@{/logout}" onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
+                            <i class="fas fa-user"></i>ログアウト
+                        </a>
+                        <form id="logout-form" th:action="@{/logout}" method="post" style="display: none;">
+                            <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}" />
+                        </form>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+</div>

@@ -46,7 +46,7 @@
     <!-- フォーム -->
     <form action="#" th:action="@{/manager/search-member}" th:object="${memberSearchInput}" method="post">
     <div class="mb-3">
-        <label for="employeeName" class="form-label">社員名</label>
+        <label for="employeeName" class="form-label">社員名 TEST</label>
         <div class="input-group">
             <input type="text" class="form-control" id="employeeName" name="searchCharacters" th:value="${memberSearchInput.searchCharacters}" placeholder="社員名を入力">
             <button class="btn btn-primary" type="submit" id="searchButton">検索</button>

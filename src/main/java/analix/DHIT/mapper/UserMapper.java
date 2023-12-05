@@ -12,7 +12,7 @@ public interface UserMapper {
     @Select("SELECT * FROM user WHERE employee_code = #{employeeCode}")
     User findByEmployeeCode(int employeeCode);
 
-    @Select("SELECT * FROM user where role = 'MEMBER'")
+    @Select("SELECT * FROM user where role = 'USER'")
     List<User> selectAllMember();
 
     @Select("SELECT * FROM user WHERE name LIKE CONCAT('%', #{searchCharacters}, '%') and role = 'MEMBER'")

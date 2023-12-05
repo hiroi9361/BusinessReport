@@ -37,9 +37,10 @@ public class SecurityConfig {
 
         ).authorizeHttpRequests(auth -> auth
                 .requestMatchers(PathRequest.toStaticResources().atCommonLocations()).permitAll()
-                .requestMatchers("/login").permitAll()
-                .requestMatchers("/manager/**").hasRole("MANAGER")
-                .requestMatchers("/member/**").hasRole("MEMBER")
+//                .requestMatchers("/login").permitAll()
+                .requestMatchers("/common/**").permitAll()
+                .requestMatchers("/manager/**").hasRole("ADMIN")
+                .requestMatchers("/member/**").hasRole("USER")
                 .anyRequest().authenticated()
 
         ).exceptionHandling(ex -> ex.accessDeniedPage("/"));

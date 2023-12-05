@@ -1,20 +1,44 @@
 package analix.DHIT.model;
 
+import jakarta.persistence.*;
+
 import java.time.LocalDate;
 import java.time.LocalTime;
 
+@Entity
+@Table(name="report", uniqueConstraints = {@UniqueConstraint(name = "report_feedback", columnNames = {"feedback_id"})})
 public class Report {
+
+    @Id
     private int id;
     private int employeeCode;
+
+    private int Rating;
     private String condition;
     private String impressions;
     private String tomorrowSchedule;
+
+    @Temporal(TemporalType.DATE)
     private LocalDate date;
+
+    @Temporal(TemporalType.TIME)
     private LocalTime endTime;
+
+    @Temporal(TemporalType.TIME)
     private LocalTime startTime;
     private boolean isLateness;
     private String latenessReason;
     private boolean isLeftEarly;
+
+    @ManyToOne
+    @JoinColumn(name = "employee_code")
+    private User user;
+
+    @OneToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "feedback_id")
+    private Feedback feedback;
+    public Report() {
+    }
 
     public int getId() {
         return id;

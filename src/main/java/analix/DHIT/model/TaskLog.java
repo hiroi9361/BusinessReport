@@ -1,10 +1,17 @@
 package analix.DHIT.model;
 
+import jakarta.persistence.*;
+
+@Entity
+@Table(name="task_log")
 public class TaskLog {
 
     private int reportId;
     private String name;
     private int progressRate;
+
+    public TaskLog() {
+    }
 
     public String getName() {
         return name;

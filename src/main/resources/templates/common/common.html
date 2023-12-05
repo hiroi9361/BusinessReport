@@ -1,11 +1,20 @@
 <!DOCTYPE html>
-<html lang="ja" xmlns:th="http://www.thymeleaf.org">
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/web/thymeleaf/layout"
+      layout:decorate="~{layout/layout}">
 <head>
-    <meta charset="UTF-8">
-    <title>Home</title>
+
+    <meta charset="UTF-8" th:remove="tag">
 </head>
+
 <body>
+
+<div layout:fragment="content">
 <h1>今後の新しいホーム画面にする予定</h1>
 <a th:href=@{/login}>ログイン</a>
+<a th:href=@{/manager/home}>Admin用ページ</a>
+<a th:href=@{/member/report-search}>User用ページ</a>
+
+</div>
 </body>
 </html>

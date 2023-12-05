@@ -34,9 +34,9 @@ public class Report {
     @JoinColumn(name = "employee_code")
     private User user;
 
-    @OneToOne(cascade = CascadeType.ALL)
-    @JoinColumn(name = "feedback_id")
+    @OneToOne(mappedBy = "report")
     private Feedback feedback;
+
     public Report() {
     }
 

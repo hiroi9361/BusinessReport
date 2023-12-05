@@ -15,7 +15,7 @@ public interface UserMapper {
     @Select("SELECT * FROM user where role = 'USER'")
     List<User> selectAllMember();
 
-    @Select("SELECT * FROM user WHERE name LIKE CONCAT('%', #{searchCharacters}, '%') and role = 'MEMBER'")
+    @Select("SELECT * FROM user WHERE name LIKE CONCAT('%', #{searchCharacters}, '%') and role = 'USER'")
     List<User> selectMemberBySearchCharacters(@Param("searchCharacters") String searchCharacters);
 
     //employeeCodeの重複をチェック

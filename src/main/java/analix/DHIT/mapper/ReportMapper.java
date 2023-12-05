@@ -54,4 +54,13 @@ public interface ReportMapper {
     List<Integer> selectIdsByEmployeeCode(int employeeCode);
 
 
+    //追記*****************************************************
+    //報告一覧表示----------------------------------
+    //引数として受け取ったemployeeCodeと一致するデータを全件取得するSELECT文
+    @Select("SELECT * FROM report WHERE employee_code=#{employeeCode}")
+    List<Report> selectAll(int employeeCode);
+    //検索条件-------------------------------------
+
+
+
 }

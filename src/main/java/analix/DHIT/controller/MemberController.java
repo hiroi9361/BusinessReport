@@ -3,6 +3,7 @@ package analix.DHIT.controller;
 
 import analix.DHIT.input.ReportCreateInput;
 import analix.DHIT.input.ReportSearchInput;
+import analix.DHIT.input.ReportSortInput;
 import analix.DHIT.input.ReportUpdateInput;
 import analix.DHIT.model.Report;
 import analix.DHIT.model.TaskLog;
@@ -22,6 +23,7 @@ import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Locale;
+import java.util.stream.Collectors;
 
 @Controller
 @RequestMapping("/member")
@@ -120,8 +122,30 @@ public class MemberController {
     public String displayReportSearch(
             Model model
     ) {
+
+
+
         model.addAttribute("reportSearchInput", new ReportSearchInput());
         model.addAttribute("error", model.getAttribute("error"));
+
+    //追記*****************************************************
+        //ログイン中のユーザーのemployeeCodeを取得する
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        int employeeCode = Integer.parseInt(authentication.getName());
+        //報告一覧表示---------------------------------
+        List<Report> reports = reportService.getfindAll(employeeCode);
+        model.addAttribute("reports", reports);
+        //検索機能---------------------------------------
+        //年月で重複しないList作成
+        List<LocalDate> dateList = reports.stream()
+                .map(Report::getDate)
+                .map(date -> date.withDayOfMonth(1))
+                .distinct()
+                .toList();
+        model.addAttribute("dateList",dateList);
+        //データ格納用
+        model.addAttribute("reportSortInput",new ReportSortInput());
+        //追記*****************************************************
 
         return "member/report-search";
     }
@@ -129,7 +153,8 @@ public class MemberController {
     @PostMapping("/search-report")
     public String searchReport(
             ReportSearchInput reportSearchInput,
-            RedirectAttributes redirectAttributes
+            RedirectAttributes redirectAttributes,
+            ReportSortInput reportSortInput
     ) {
 
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
@@ -139,6 +164,17 @@ public class MemberController {
                 employeeCode,
                 reportSearchInput.getDate()
         );
+
+//追記*****************************************************
+        //日付、、
+        //if(reportSortInput.getDate() != null
+          //      || reportSortInput.getLatenessReason() != null
+            //    /*|| reportSortInput.getfeedback() != null*/) {
+
+
+        //}
+//追記*****************************************************
+
 
         if (reportId == null) {
             redirectAttributes.addFlashAttribute("error", "ヒットしませんでした");

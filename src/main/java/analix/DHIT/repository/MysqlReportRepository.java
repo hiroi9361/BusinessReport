@@ -33,4 +33,11 @@ public class MysqlReportRepository implements ReportRepository {
     public void update(Report report) {
         this.reportMapper.updateReport(report);
     }
+
+    //追記*****************************************************
+    //報告一覧表示----------------------------------
+    @Override
+    public  List<Report> findAll(int employeeCode){
+        return this.reportMapper.selectAll(employeeCode);
+    };
 }

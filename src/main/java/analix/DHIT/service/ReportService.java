@@ -10,6 +10,9 @@ import org.springframework.stereotype.Service;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.time.temporal.ChronoUnit;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 
 @Service
@@ -117,4 +120,12 @@ public class ReportService {
         return this.reportMapper.selectIdsByEmployeeCode(employeeCode);
     }
 
+    //追記*****************************************************
+    //報告一覧表示----------------------------------
+    public  List<Report> getfindAll(int employeecode){
+        List<Report> reports = reportRepository.findAll(employeecode);
+        //日付を軸に降順に並び替える
+        Collections.sort(reports, Comparator.comparing(Report::getDate).reversed());
+        return  reports;
+    }
 }

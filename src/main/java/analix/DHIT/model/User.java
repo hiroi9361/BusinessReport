@@ -1,13 +1,32 @@
 package analix.DHIT.model;
 
+import jakarta.persistence.*;
+
+import java.io.Serializable;
 import java.util.List;
 
-public class User {
+@Entity
+@Table(name="user")
+public class User implements Serializable {
+
+    @Id
+    @Column(name="employee_code")
     private int employeeCode;
+
+    @Column(name="name", length=50)
     private String name;
     private String password;
     private String role;
     private String icon;
+
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
+    private List<Report> reports;
+
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
+    private List<Assignment> assignments;
+
+    public User() {
+    }
 
     public int getEmployeeCode()
     {

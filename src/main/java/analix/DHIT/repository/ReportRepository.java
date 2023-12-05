@@ -11,4 +11,8 @@ public interface ReportRepository {
     void deleteById(int reportId);
     void update(Report report);
 
+    //追記*****************************************************
+    //報告一覧表示----------------------------------
+    List<Report> findAll(int employeeCode);
+
 }

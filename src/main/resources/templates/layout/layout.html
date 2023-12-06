@@ -12,7 +12,7 @@
 <header>
     <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light border-bottom box-shadow mb-3 text-white fixed-top" style="background-color:#02990E">
         <div class="container-fluid">
-            <a class="navbar-brand" th:href=@{/common}><img th:src="@{/img/logo-D-HIT-yoko.png}" class="nav-logo" style="height:50px;" /></a>
+            <a class="navbar-brand" th:href=@{/}><img th:src="@{/img/logo-D-HIT-yoko.png}" class="nav-logo" style="height:50px;" /></a>
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target=".navbar-collapse" aria-controls="navbarSupportedContent"
                     aria-expanded="false" aria-label="Toggle navigation">
                 <span class="navbar-toggler-icon"></span>
@@ -20,7 +20,13 @@
             <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
                 <ul class="navbar-nav flex-grow-1">
                     <li class="nav-item">
-                        <a class="nav-link text-white" th:href=@{/login}>ログイン</a>
+                        <p class="mt-2" th:text="${#authentication.principal.fullName}"></p>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" style = "font-size:1em; color:white;" th:href="@{/logout}" onclick="event.preventDefault(); document.getElementById('logout-form').submit();">ログアウト</a>
+                        <form id="logout-form" th:action="@{/logout}" method="post" style="display: none;">
+                            <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}" />
+                        </form>
                     </li>
                 </ul>
             </div>

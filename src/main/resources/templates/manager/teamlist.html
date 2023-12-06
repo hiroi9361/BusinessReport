@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/web/thymeleaf/layout"
+      layout:decorate="~{layout/layout}">
+<head>
+
+    <meta charset="UTF-8" th:remove="tag">
+</head>
+
+<body>
+<div layout:fragment="content">
+    <a th:href=@{/manager/team-create} class="btn btn-success">チーム作成</a>
+    <h1>チーム一覧</h1>
+    <table>
+        <tr>
+        <th>番号(自動付与なので後で消しても良さそう)</th>
+        <th>チーム名</th>
+        </tr>
+        <tr th:each="teamList : ${teamList}" th:object="${teamList}">
+            <td th:text="${teamList.teamId}"></td>
+            <td th:text="${teamList.name}"></td>
+            <td>
+                <a th:href="@{'/manager/teams/' + ${teamList.teamId} + '/edit'}">
+                    <button type="button" class="btn btn-success">編集</button>
+                </a>
+            </td>
+            <td>
+                <form th:action="@{'/manager/teams/' + ${teamList.teamId} + '/delete'}" method="post" onSubmit="return check()">
+                    <input type="hidden" name="teamId" th:value="${teamList.teamId}" />
+                    <input type="submit" value="削除" class="btn btn-danger" />
+                </form>
+            </td>
+        </tr>
+    </table>
+</div>
+</body>
+</html>
+
+<script>
+    function check() {
+        if (window.confirm('このチームを削除しますか？')) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+</script>

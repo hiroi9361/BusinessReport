@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/web/thymeleaf/layout"
+      layout:decorate="~{layout/layout}">
+<head>
+    <meta charset="UTF-8" th:remove="tag">
+</head>
+<body>
+<div layout:fragment="content">
+    <h1>チーム編集</h1>
+    <div class="container-form">
+        <form th:action="@{/manager/team/update}" th:object="${TeamUpdateInput}"
+              method="post">
+            <div class="form-group">
+
+                <label>チーム名</label>
+                <input name="name" class="form-control" th:value="${team.name}" required/>
+            </div>
+            <div>
+                <input type="hidden" name="teamId" th:value="${team.teamId}"/>
+            </div>
+            <div class="form-group">
+                <button type="submit" class="btn btn-primary">編集</button>
+            </div>
+        </form>
+    </div>
+    <a th:href=@{/manager/teamlist}>チーム一覧に戻る</a>
+</div>
+</body>
+</html>

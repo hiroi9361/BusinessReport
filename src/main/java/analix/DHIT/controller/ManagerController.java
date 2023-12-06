@@ -1,14 +1,13 @@
 package analix.DHIT.controller;
 
-import analix.DHIT.input.MemberSearchInput;
-import analix.DHIT.input.ReportSearchInput;
-import analix.DHIT.input.UserCreateInput;
-import analix.DHIT.input.UserEditInput;
+import analix.DHIT.input.*;
 import analix.DHIT.model.Report;
 import analix.DHIT.model.TaskLog;
+import analix.DHIT.model.Team;
 import analix.DHIT.model.User;
 import analix.DHIT.service.ReportService;
 import analix.DHIT.service.TaskLogService;
+import analix.DHIT.service.TeamService;
 import analix.DHIT.service.UserService;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -18,7 +17,6 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
-import java.io.IOException;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
@@ -32,15 +30,17 @@ public class ManagerController {
     private final UserService userService;
     private final ReportService reportService;
     private final TaskLogService taskLogService;
+    private final TeamService teamService;
 
     public ManagerController(
             UserService userservice,
             ReportService reportService,
-            TaskLogService taskLogService
-    ) {
+            TaskLogService taskLogService,
+            TeamService teamService) {
         this.userService = userservice;
         this.reportService = reportService;
         this.taskLogService = taskLogService;
+        this.teamService = teamService;
     }
 
     @GetMapping("/home")
@@ -240,5 +240,66 @@ public class ManagerController {
         return "redirect:/manager/employeeList";
     }
 
+
+    @GetMapping("/teamlist")
+    public String displayTeamList(Model model){
+        List<Team> teamList = teamService.getAllTeam();
+        model.addAttribute("teamList", teamList);
+
+        return "manager/teamlist";
+    }
+
+    @GetMapping("/team-create")
+    public String displayTeamCreate(Model model){
+        model.addAttribute("teamCreateInput", new TeamCreateInput());
+        return "manager/team-create";
+    }
+
+    @Transactional
+    @PostMapping("/team-create")
+    public String createTeam(TeamCreateInput teamCreateInput, RedirectAttributes redirectAttributes){
+
+        int newTeamId = teamService.create(
+                teamCreateInput.getName()
+        );
+
+        return "redirect:/manager/teamlist";
+
+    }
+
+    @GetMapping("/teams/{teamId}/edit")
+    public String displayTeamEdit(Model model, @PathVariable int teamId){
+
+        Team team = this.teamService.getTeamById(teamId);
+
+        model.addAttribute("team", team);
+        model.addAttribute("teamUpdateInput", new TeamUpdateInput());
+
+        return "manager/team-edit";
+    }
+
+    @Transactional
+    @PostMapping("/team/update")
+    public String updateTeam(TeamUpdateInput teamUpdateInput, RedirectAttributes redirectAttributes){
+
+        Team team = this.teamService.getTeamById(teamUpdateInput.getTeamId());
+        this.teamService.update(teamUpdateInput);
+
+        redirectAttributes.addAttribute("teamId", teamUpdateInput.getTeamId());
+        return "redirect:/manager/teamlist";
+    }
+
+
+    @PostMapping("/teams/{teamId}/delete")
+    @Transactional
+    public String deleteTeam(
+            @PathVariable int teamId
+    ) {
+        Team team = teamService.getTeamById(teamId);
+
+        this.teamService.deleteById(teamId);
+
+        return "redirect:/manager/teamlist";
+    }
 
 }

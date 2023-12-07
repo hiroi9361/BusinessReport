@@ -1,9 +1,6 @@
 package analix.DHIT.mapper;
 
-import analix.DHIT.model.Report;
-import analix.DHIT.model.Team;
-import analix.DHIT.model.User;
-import analix.DHIT.model.Assignment;
+import analix.DHIT.model.*;
 import org.apache.ibatis.annotations.*;
 
 import java.util.List;
@@ -26,4 +23,23 @@ public interface TeamMapper {
 
     @Delete("DELETE FROM team WHERE team_id = #{teamId}")
     void deleteById(int teamId);
+
+//    ここからAssignment
+    @Select("SELECT * FROM assignment WHERE employee_code = #{employeeCode}")
+    List<Assignment> selectByEmployeeCode(int employeeCode);
+
+    @Select("SELECT * FROM assignment WHERE team_id = #{teamId}")
+    List<Assignment> selectByTeamId(int teamId);
+
+    @Insert("INSERT INTO assignment(is_manager, team_id, employee_code) " +
+            "VALUES(#{isManager}, #{teamId}, #{employeeCode})")
+    @Options(useGeneratedKeys = true, keyColumn = "assignment_id", keyProperty = "assignmentId")
+    void insertAssignment(Assignment assignment);
+
+    @Update("UPDATE assignment SET is_manager=#{isManager},team_id=#{teamId} WHERE employee_code=#{employeeCode}")
+    void updateAssignment(Assignment assignment);
+
+    @Delete("DELETE FROM assignment WHERE assignment_id = #{assignmentId}")
+    void deleteAssignmentById(int assignmentId);
+
 }

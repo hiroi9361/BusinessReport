@@ -1,10 +1,7 @@
 package analix.DHIT.controller;
 
 import analix.DHIT.input.*;
-import analix.DHIT.model.Report;
-import analix.DHIT.model.TaskLog;
-import analix.DHIT.model.Team;
-import analix.DHIT.model.User;
+import analix.DHIT.model.*;
 import analix.DHIT.service.ReportService;
 import analix.DHIT.service.TaskLogService;
 import analix.DHIT.service.TeamService;
@@ -157,6 +154,19 @@ public class ManagerController {
         }
         //inputデータをDBへ
         userService.createEmployeeInformation(userCreateInput);
+
+//        if (AssignmentCreateInput.getAssignments() != null) {
+//            List<Assignment> assignments = assignmentCreateInput.getAssignments();
+//            assignments.forEach(x -> x.setReportId(newReportId));
+//            for (TaskLog taskLog : taskLogs) {
+//                if (taskLog != null && taskLog.getName() != null) {
+//                    taskLogService.create(taskLog);
+//                }
+//            }
+//        }
+
+
+
         //作業完了画面に飛ばす
         return "manager/workCompletion";
     }

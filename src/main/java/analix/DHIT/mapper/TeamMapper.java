@@ -3,6 +3,7 @@ package analix.DHIT.mapper;
 import analix.DHIT.model.*;
 import org.apache.ibatis.annotations.*;
 
+import java.time.LocalDate;
 import java.util.List;
 
 @Mapper
@@ -41,5 +42,8 @@ public interface TeamMapper {
 
     @Delete("DELETE FROM assignment WHERE assignment_id = #{assignmentId}")
     void deleteAssignmentById(int assignmentId);
+
+    @Select("SELECT COUNT(*) FROM assignment WHERE employee_code = #{employeeCode} AND team_id = #{teamId}")
+    int countAssignmentByEmployeeCodeAndTeamId(int employeeCode, int teamId);
 
 }

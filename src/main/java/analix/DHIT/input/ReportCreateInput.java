@@ -9,12 +9,14 @@ import java.util.List;
 
 public class ReportCreateInput {
 
+    private int reportId;
     private LocalDate date;
     private LocalTime startTime;
     private LocalTime endTime;
     private boolean isLateness;
     private String latenessReason;
     private boolean isLeftEarly;
+    private int conditionRate;
     private String condition;
     private String tomorrowSchedule;
     private String impressions;
@@ -100,5 +102,22 @@ public class ReportCreateInput {
     public void setLatenessReason(String latenessReason) {
         this.latenessReason = latenessReason;
     }
+
+    public int getConditionRate() {
+        return conditionRate;
+    }
+
+    public void setConditionRate(int conditionRate) {
+        this.conditionRate=conditionRate;
+    }
+
+    public int getReportId() {
+        return reportId;
+    }
+
+    public void setReportId(int reportId) {
+        this.reportId = reportId;
+    }
 }
+
 

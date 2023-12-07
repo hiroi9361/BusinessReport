@@ -10,10 +10,17 @@ import java.time.LocalTime;
 public class Report {
 
     @Id
+    //test追記
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
+
+    //test追記
+    @Column(name = "employee_code")
     private int employeeCode;
 
-    private int Rating;
+    //test追記
+    @Column(name = "condition_rate")
+    private int conditionRate;
     private String condition;
     private String impressions;
     private String tomorrowSchedule;
@@ -44,8 +51,11 @@ public class Report {
         return id;
     }
 
-    public void setId(int id) {
-        this.id = id;
+    public void setReportId(int reportId) {
+        this.id = reportId;
+    }
+    public void setReport_id(int report_id) {
+        this.id = report_id;
     }
 
     public int getEmployeeCode() {
@@ -127,5 +137,13 @@ public class Report {
 
     public void setIsLeftEarly(Boolean leftEarly) {
         isLeftEarly = leftEarly;
+    }
+
+    public int getConditionRate() {
+        return conditionRate;
+    }
+
+    public void setConditionRate(int conditionRate) {
+        this.conditionRate=conditionRate;
     }
 }

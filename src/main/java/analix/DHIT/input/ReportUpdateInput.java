@@ -15,6 +15,7 @@ public class ReportUpdateInput {
     private boolean isLateness;
     private String latenessReason;
     private boolean isLeftEarly;
+    private int conditionRate;
     private String condition;
     private String tomorrowSchedule;
     private String impressions;
@@ -109,4 +110,11 @@ public class ReportUpdateInput {
         this.latenessReason = latenessReason;
     }
 
+    public int getConditionRate(){
+        return conditionRate;
+    }
+
+    public void setConditionRate(int conditionRate){
+        this.conditionRate=conditionRate;
+    }
 }

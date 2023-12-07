@@ -52,6 +52,25 @@
                 <div th:if="${EnCodeError != null}" class="text-danger mt-1" th:text="${EnCodeError}"></div>
             </div>
 
+            <div class="mb-3" id="team-field">
+                <div class="d-flex gap-2">
+                    <p class="d-inline d-inline-block p-0 m-0">所属チーム追加</p>
+                    <button type="button" class="btn btn-success" id="add-team">追加</button>
+                </div>
+            </div>
+            <div th:each="taskLog, taskLogStatus : ${reportCreateInput.taskLogs}" class="row">
+                <div class="flex-row d-flex gap-3 col-md-8">
+                    <input type="text" class="form-control" placeholder="タスク名" aria-label=""
+                           th:name="${'taskLogs[' + taskLogStatus.index + '].name'}"
+                           th:value="${taskLog.name}" required>
+                    <input type="number" class="form-control" placeholder="進捗率" aria-label=""
+                           th:name="${'taskLogs[' + taskLogStatus.index + '].progressRate'}"
+                           th:value="${taskLog.progressRate}" min="0" max="100" required>
+                    <button type="button" class="btn btn-danger" onclick="removeTask(this)">削除</button>
+                </div>
+            </div>
+
+
             <!-- 登録ボタン -->
             <div class="mb-3">
                 <button type="submit" class="btn btn-success">登録</button>
@@ -66,10 +85,8 @@
 
 </div>
 </body>
-</html>
 
-
-<script>
+<script th:inline="javascript">
     function validateForm() {
         // 各フィールドの値を取得
         var employeeCode = document.getElementById('employeeCode').value;
@@ -83,6 +100,44 @@
         }
         return true; // 送信を許可する
     }
+
+<!--    チームボタン追加操作-->
+    const elem = document.getElementById("add-team");
+    const teamField = document.getElementById("team-field");
+    let teamIndex = /*[[${reportCreateInput.taskLogs.size()}]]*/;
+
+    elem.onclick = function() {
+        const node = document.createElement("div");
+        node.setAttribute("class", "row");
+        node.innerHTML += `<div class="flex-row d-flex gap-3 col-md-8">
+                                <input type="text" class="form-control" placeholder="チーム名" aria-label=""
+                                       name="${'taskLogs[' + taskIndex + '].name'}" required>
+                                <input type="number" class="form-control" placeholder="役割" aria-label=""
+                                       name="${'taskLogs[' + taskIndex + '].progressRate'}" min="0" max="100" required>
+                                <button type="button" class="btn btn-danger" onclick="removeTask(this)">削除</button>
+                            </div>`;
+
+        teamField.appendChild(node);
+        teamIndex++;
+    };
+
+    function removeTask(button) {
+        button.parentNode.parentNode.remove();
+    }
+    /*]]>*/
+    function checkInput() {
+        var check_Lateness = document.getElementById("check_Lateness");
+        var text_latenessReason = document.getElementById("text_latenessReason");
+        if (check_Lateness.checked) {
+            if (text_latenessReason.value.trim() === "") {
+                text_latenessReason.setCustomValidity("遅刻理由を記入してください");
+            }
+            else {
+                text_latenessReason.setCustomValidity("");
+            }
+        }
+    }
+
 </script>
 <style >
     @media (max-width: 768px) {
@@ -91,6 +146,13 @@
         }
     }
 </style>
+
+
+
+</html>
+
+
+
 
 
 <!--<!DOCTYPE html>-->

@@ -1,6 +1,10 @@
 package analix.DHIT.input;
-
+import analix.DHIT.model.Assignment;
 import analix.DHIT.model.Team;
+
+import java.util.ArrayList;
+import java.util.List;
+
 public class TeamCreateInput {
 
     public String getName() {
@@ -12,5 +16,6 @@ public class TeamCreateInput {
     }
 
     private String name;
+
 
 }

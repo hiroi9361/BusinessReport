@@ -81,33 +81,35 @@
 <body>
 <!-- スタイルを含まないでnavbarを挿入 -->
 <div th:replace="manager/navbar :: navbar"></div>
-<div class="seiretsu">
-<div class="container">
+    <div class="seiretsu">
+
+    <!-- 2023/12/07 富山START -->
+        <!--    <div class="container">-->
+        <div class="container mt-5">
+    <!-- 2023/12/07 富山START -->
+
     <h1>ユーザー編集一覧</h1>
     <h2 th:text="${errorEmployeeMsg}"></h2>
     <h2 th:text="${deleteCompleteMSG}"></h2>
     <h2 th:text="${editCompleteMSG}"></h2>
 
-    <!--  2023/12/07 富山  -->
-
+<!-- 2023/12/07 富山START -->
+<!--  検索窓  -->
     <form id="searchForm">
-
         <label for="searchType"></label>
         <select id="searchType" name="searchType">
             <option value="employeeNumber">社員番号</option>
             <option value="name">名前</option>
             <option value="role">役割</option>
         </select>
-
         <label for="searchInput"></label>
-        <input type="text" id="searchInput" name="searchInput" placeholder="検索キーワードを入力してください" width="100px">
-
-        <button type="submit" onclick="search()">検索</button>
+        <input type="text" id="searchInput" name="searchInput" placeholder="検索キーワード" style="width: 500px ;margin-right: 10px;">
+        <input type="submit" class="btn btn-secondary"　name="search" value="検索">
     </form>
+</div>
+<!-- 2023/12/07 富山END -->
 
 
-
-    <!--  2023/12/07 富山  -->
 
     <table class="table table-bordered table-striped">
         <thead>

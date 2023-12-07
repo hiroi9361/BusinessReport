@@ -13,9 +13,9 @@ public class AssignmentCreateInput {
 
     private boolean isManager;
 
-    private List<Assignment> assignments = new ArrayList<>();
+    private static List<Assignment> assignments = new ArrayList<>();
 
-    public List<Assignment> getAssignments() {
+    public static List<Assignment> getAssignments() {
         return assignments;
     }
 

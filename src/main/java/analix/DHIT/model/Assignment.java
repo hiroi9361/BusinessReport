@@ -30,6 +30,31 @@ public class Assignment implements Serializable {
 
     private boolean isManager;
 
+//    entity使えない場合の利用 ここから
+
+    private int employeeCode;
+
+    private int teamId;
+
+    public int getEmployeeCode() {
+        return employeeCode;
+    }
+
+    //    entity使えない場合の利用 ここまで
+
+
+    public void setEmployeeCode(int employeeCode) {
+        this.employeeCode = employeeCode;
+    }
+
+    public int getTeamId() {
+        return teamId;
+    }
+
+    public void setTeamId(int teamId) {
+        this.teamId = teamId;
+    }
+
     public int getAssignmentId() {
         return assignmentId;
     }

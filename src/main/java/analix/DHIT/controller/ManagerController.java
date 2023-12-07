@@ -2,10 +2,7 @@ package analix.DHIT.controller;
 
 import analix.DHIT.input.*;
 import analix.DHIT.model.*;
-import analix.DHIT.service.ReportService;
-import analix.DHIT.service.TaskLogService;
-import analix.DHIT.service.TeamService;
-import analix.DHIT.service.UserService;
+import analix.DHIT.service.*;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
@@ -28,16 +25,19 @@ public class ManagerController {
     private final ReportService reportService;
     private final TaskLogService taskLogService;
     private final TeamService teamService;
+    private final AssignmentService assignmentService;
 
     public ManagerController(
             UserService userservice,
             ReportService reportService,
             TaskLogService taskLogService,
-            TeamService teamService) {
+            TeamService teamService,
+            AssignmentService assignmentService) {
         this.userService = userservice;
         this.reportService = reportService;
         this.taskLogService = taskLogService;
         this.teamService = teamService;
+        this.assignmentService = assignmentService;
     }
 
     @GetMapping("/home")
@@ -129,14 +129,23 @@ public class ManagerController {
 
     @GetMapping("/create")
     public String display(Model model) {
+
+        List<Team> teamList = teamService.getAllTeam();
+        model.addAttribute("teamList", teamList);
         model.addAttribute("userCreateInput", new UserCreateInput());
+        model.addAttribute("assignmentCreateInput", new AssignmentCreateInput());
         return "manager/create";
     }
 
     //↓新規社員情報入力処理
     @PostMapping("/createEmployee")
     public String NewUserRegistrationInformation(@ModelAttribute("UserCreateInput") UserCreateInput userCreateInput,
-                                                 RedirectAttributes redirectAttributes){
+                                                 @ModelAttribute("AssignmentCreateInput") AssignmentCreateInput assignmentCreateInput,RedirectAttributes redirectAttributes){
+
+        if (userCreateInput == null || assignmentCreateInput == null){
+            redirectAttributes.addFlashAttribute("EmployeeCodeError", "必要項目を入力してください");
+            return "redirect:/manager/create";
+        }
 
         Integer employeeCode = userService.checkDuplicates(userCreateInput.getEmployeeCode());
         if (employeeCode != null) {
@@ -155,21 +164,22 @@ public class ManagerController {
         //inputデータをDBへ
         userService.createEmployeeInformation(userCreateInput);
 
-//        if (AssignmentCreateInput.getAssignments() != null) {
-//            List<Assignment> assignments = assignmentCreateInput.getAssignments();
-//            assignments.forEach(x -> x.setReportId(newReportId));
-//            for (TaskLog taskLog : taskLogs) {
-//                if (taskLog != null && taskLog.getName() != null) {
-//                    taskLogService.create(taskLog);
-//                }
-//            }
-//        }
+        if (AssignmentCreateInput.getAssignments() != null) {
+            List<Assignment> assignments = AssignmentCreateInput.getAssignments();
+            assignments.forEach(x -> x.setEmployeeCode(userCreateInput.getEmployeeCode()));
+            for (Assignment assignment : assignments) {
+                if (assignment != null && !assignmentService.existsAssignment(assignment.getEmployeeCode(), assignment.getTeamId())) {
+                    assignmentService.create(assignment);
+                }else{
+                    redirectAttributes.addFlashAttribute("EncodeError","チーム登録が既に存在しています");
+                    return "redirect:/manager/create";
+                }
+            }
+        }
 
-
-
-        //作業完了画面に飛ばす
-        return "manager/workCompletion";
+        return "redirect:/manager/employeeList";
     }
+
     @GetMapping("/employeeList")
     public String displayEmployeeList(Model model) {
         List<User> userList = userService.getAllEmployeeInfo();

@@ -61,12 +61,14 @@ public class ReportService {
             LocalTime startTime,
             boolean isLateness,
             String latenessReason,
-            boolean isLeftEarly
+            boolean isLeftEarly,
+            int conditionRate
     ) {
 
         Report newReport = new Report();
         newReport.setEmployeeCode(employeeCode);
         newReport.setCondition(condition);
+        newReport.setConditionRate(conditionRate);
         newReport.setImpressions(impressions);
         newReport.setTomorrowSchedule(tomorrowSchedule);
         newReport.setDate(date);
@@ -111,6 +113,7 @@ public class ReportService {
         report.setCondition(reportUpdateInput.getCondition());
         report.setTomorrowSchedule(reportUpdateInput.getTomorrowSchedule());
         report.setImpressions(reportUpdateInput.getImpressions());
+        report.setConditionRate(reportUpdateInput.getConditionRate());
 
         this.reportRepository.update(report);
 

@@ -26,8 +26,8 @@ public interface ReportMapper {
     String selectLatestIdByEmployeeCode(int employeeCode);
 
     //↓@Optionsは自動生成された"id"を返す処理をする
-    @Insert("INSERT INTO report(employee_code, `condition`, impressions, tomorrow_schedule, date, start_time, end_time, is_lateness, lateness_reason, is_left_early) " +
-            "VALUES(#{employeeCode}, #{condition}, #{impressions}, #{tomorrowSchedule}, #{date}, #{startTime}, #{endTime}, #{isLateness}, #{latenessReason}, #{isLeftEarly})")
+    @Insert("INSERT INTO report(employee_code, `condition`, condition_rate, impressions, tomorrow_schedule, date, start_time, end_time, is_lateness, lateness_reason, is_left_early) " +
+            "VALUES(#{employeeCode}, #{condition}, #{conditionRate}, #{impressions}, #{tomorrowSchedule}, #{date}, #{startTime}, #{endTime}, #{isLateness}, #{latenessReason}, #{isLeftEarly})")
     @Options(useGeneratedKeys = true, keyProperty = "report_id")
     void insertReport(Report report);
 
@@ -40,6 +40,7 @@ public interface ReportMapper {
 
     @Update("UPDATE report SET " +
             "`condition` = #{condition}, " +
+            "condition_rate = #{conditionRate}" +
             "impressions = #{impressions}, " +
             "tomorrow_schedule = #{tomorrowSchedule}, " +
             "start_time = #{startTime}, " +

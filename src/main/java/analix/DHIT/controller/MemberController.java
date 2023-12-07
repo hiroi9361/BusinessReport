@@ -95,7 +95,8 @@ public class MemberController {
                 reportCreateInput.getStartTime(),
                 reportCreateInput.getIsLateness(),
                 reportCreateInput.getLatenessReason(),
-                reportCreateInput.getIsLeftEarly()
+                reportCreateInput.getIsLeftEarly(),
+                reportCreateInput.getConditionRate()
         );
 
         // タスクが存在するならタスクログに追加

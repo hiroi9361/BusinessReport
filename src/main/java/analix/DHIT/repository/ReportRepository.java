@@ -1,5 +1,6 @@
 package analix.DHIT.repository;
 
+import analix.DHIT.input.ReportSortInput;
 import analix.DHIT.model.Report;
 
 import java.util.List;
@@ -15,4 +16,6 @@ public interface ReportRepository {
     //報告一覧表示----------------------------------
     List<Report> findAll(int employeeCode);
 
+    //ソート検索結果
+    List<Report> sortReport(ReportSortInput reportSortInput);
 }

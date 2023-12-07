@@ -154,7 +154,8 @@ public class MemberController {
     public String searchReport(
             ReportSearchInput reportSearchInput,
             RedirectAttributes redirectAttributes,
-            ReportSortInput reportSortInput
+            ReportSortInput reportSortInput,
+            Model model
     ) {
 
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
@@ -167,12 +168,27 @@ public class MemberController {
 
 //追記*****************************************************
         //日付、、
-        //if(reportSortInput.getDate() != null
-          //      || reportSortInput.getLatenessReason() != null
-            //    /*|| reportSortInput.getfeedback() != null*/) {
+        if(reportSortInput.getSort() == true) {
+            reportSortInput.setEmployeeCode(employeeCode);
+
+            //ソート用
+            List<Report> reports = reportService.getSorrtReport(reportSortInput);
 
 
-        //}
+            model.addAttribute("reportSearchInput", new ReportSearchInput());
+            model.addAttribute("error", model.getAttribute("error"));
+            model.addAttribute("reports", reports);
+            //年月で重複しないList作成
+            List<LocalDate> dateList = reports.stream()
+                    .map(Report::getDate)
+                    .map(date -> date.withDayOfMonth(1))
+                    .distinct()
+                    .toList();
+            model.addAttribute("dateList",dateList);
+            //データ格納用
+            model.addAttribute("reportSortInput",new ReportSortInput());
+            return "member/report-search";
+        }
 //追記*****************************************************
 
 

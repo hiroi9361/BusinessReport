@@ -1,6 +1,7 @@
 package analix.DHIT.service;
 
 import analix.DHIT.exception.ReportNotFoundException;
+import analix.DHIT.input.ReportSortInput;
 import analix.DHIT.input.ReportUpdateInput;
 import analix.DHIT.mapper.ReportMapper;
 import analix.DHIT.model.Report;
@@ -125,6 +126,12 @@ public class ReportService {
     public  List<Report> getfindAll(int employeecode){
         List<Report> reports = reportRepository.findAll(employeecode);
         //日付を軸に降順に並び替える
+        Collections.sort(reports, Comparator.comparing(Report::getDate).reversed());
+        return  reports;
+    }
+    //ソート用
+    public  List<Report> getSorrtReport(ReportSortInput reportSortInput) {
+        List<Report> reports = reportRepository.sortReport(reportSortInput);
         Collections.sort(reports, Comparator.comparing(Report::getDate).reversed());
         return  reports;
     }

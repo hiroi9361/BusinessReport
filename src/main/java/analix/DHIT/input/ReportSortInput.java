@@ -7,10 +7,9 @@ import java.time.LocalDate;
 //ソート用Input
 public class ReportSortInput {
     private int employeeCode;
-    private boolean feedback;
+    private Boolean feedback;
     private LocalDate date;
-    private boolean isLateness;
-    private  boolean isLeftEarly;
+    private  boolean sort;
 
     public int getEmployeeCode() {
         return employeeCode;
@@ -28,19 +27,19 @@ public class ReportSortInput {
         this.date = date;
     }
 
-    public boolean getisLateness() {
-        return isLateness;
+    public Boolean getFeedback() {
+        return feedback;
     }
 
-    public void setisLateness(boolean isLateness) {
-        this.isLateness = isLateness;
+    public void setFeedback(Boolean feedback) {
+        this.feedback = feedback;
     }
 
-    public boolean getisLeftEarly() {
-        return isLeftEarly;
+    public  boolean getSort() {
+        return sort;
     }
 
-    public void setisLeftEarly(boolean isLeftEarly) {
-        this.isLeftEarly = isLeftEarly;
+    public  void  setSort(boolean sort) {
+        this.sort=sort;
     }
 }

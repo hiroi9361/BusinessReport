@@ -61,22 +61,23 @@
 
             <div class="d-flex">
                 <div class="mb-3">
-                    <input value="フィードバック">
+                    <select  name="feedback">
+                        <option th:value="${null}">選択してください。</option>
+                        <option th:value="${true}">既読</option>
+                        <option th:value="${false}">未読</option>
+                    </select>
                 </div>
                 <div class="mb-3">
                     <select  name="date">
+                        <option th:value="${null}">選択してください。</option>
                         <option th:each="date : ${dateList}"
                                 th:value="${date}"
                                 th:text="${#temporals.format(date,'yyyy-MM')}">
                         </option>
                     </select>
-
                 </div>
-                <div class="mb-3">
-                    <input value="勤怠">
-                </div>
-                <div>
-                    <button type="submit">検索</button>
+                <div >
+                    <button type="submit" name="sort" th:value="${true}">検索</button>
                 </div>
             </div>
 

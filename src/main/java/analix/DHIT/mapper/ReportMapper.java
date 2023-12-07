@@ -1,5 +1,6 @@
 package analix.DHIT.mapper;
 
+import analix.DHIT.input.ReportSortInput;
 import analix.DHIT.model.Report;
 import analix.DHIT.model.User;
 import org.apache.ibatis.annotations.*;
@@ -60,7 +61,17 @@ public interface ReportMapper {
     @Select("SELECT * FROM report WHERE employee_code=#{employeeCode}")
     List<Report> selectAll(int employeeCode);
     //検索条件-------------------------------------
-
+    @Select("SELECT * FROM report.report as r " +
+            "LEFT OUTER JOIN report.feedback as f ON r.report_id=f.report_id " +
+            "WHERE " +
+            "(#{reportSortInput.date} IS NULL OR DATE_FORMAT(r.date,'%Y-%m')=DATE_FORMAT(#{reportSortInput.date},'%Y-%m')) " +
+            "AND " +
+            "(r.employee_code=#{reportSortInput.employeeCode}) " +
+            "AND " +
+            "((#{reportSortInput.feedback} IS NULL) " +
+            "OR (#{reportSortInput.feedback} IS TRUE AND f.feedback_id IS NOT NULL) " +
+            "OR (#{reportSortInput.feedback} IS FALSE AND f.feedback_id IS NULL))")
+    List<Report> sortReport(@Param("reportSortInput")ReportSortInput reportSortInput);
 
 
 }

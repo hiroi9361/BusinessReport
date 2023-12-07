@@ -1,5 +1,6 @@
 package analix.DHIT.repository;
 
+import analix.DHIT.input.ReportSortInput;
 import analix.DHIT.mapper.ReportMapper;
 import analix.DHIT.model.Report;
 import org.springframework.stereotype.Repository;
@@ -40,4 +41,9 @@ public class MysqlReportRepository implements ReportRepository {
     public  List<Report> findAll(int employeeCode){
         return this.reportMapper.selectAll(employeeCode);
     };
+
+    @Override
+    public List<Report> sortReport(ReportSortInput reportSortInput) {
+        return this.reportMapper.sortReport(reportSortInput);
+    }
 }

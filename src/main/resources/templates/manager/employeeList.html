@@ -88,6 +88,26 @@
     <h2 th:text="${deleteCompleteMSG}"></h2>
     <h2 th:text="${editCompleteMSG}"></h2>
 
+    <!--  2023/12/07 富山  -->
+
+    <form id="searchForm">
+
+        <label for="searchType"></label>
+        <select id="searchType" name="searchType">
+            <option value="employeeNumber">社員番号</option>
+            <option value="name">名前</option>
+            <option value="role">役割</option>
+        </select>
+
+        <label for="searchInput"></label>
+        <input type="text" id="searchInput" name="searchInput" placeholder="検索キーワードを入力してください" width="100px">
+
+        <button type="submit" onclick="search()">検索</button>
+    </form>
+
+
+
+    <!--  2023/12/07 富山  -->
 
     <table class="table table-bordered table-striped">
         <thead>

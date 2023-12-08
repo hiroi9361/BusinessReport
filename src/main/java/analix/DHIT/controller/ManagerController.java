@@ -78,16 +78,20 @@ public class ManagerController {
             @RequestParam(name = "employeeCode", required = true) int employeeCode,
             Model model
     ) {
+        //社員コードを元に対応するユーザー情報を取得
         User member = userService.getUserByEmployeeCode(employeeCode);
 
+        //モデルに必要な情報を追加
         model.addAttribute("member", member);
         model.addAttribute("reportSearchInput", new ReportSearchInput());
         model.addAttribute("error", model.getAttribute("error"));
 
+        //ビューに返す
         return "manager/report-search";
     }
 
     @PostMapping("/search-report")
+    //社員コードと日付を元に報告IDを検索
     public String searchReport(
             ReportSearchInput reportSearchInput,
             RedirectAttributes redirectAttributes
@@ -97,11 +101,13 @@ public class ManagerController {
                 reportSearchInput.getDate()
         );
 
+        //検索結果がない場合
         if (reportId == null) {
             redirectAttributes.addFlashAttribute("error", "ヒットしませんでした");
             return "redirect:/manager/report-search?employeeCode=" + reportSearchInput.getEmployeeCode();
         }
 
+        //検索結果がある場合、Detailにリダイレクト
         redirectAttributes.addAttribute("reportId", reportId);
         return "redirect:/manager/reports/{reportId}";
     }

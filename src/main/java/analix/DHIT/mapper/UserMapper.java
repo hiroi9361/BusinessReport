@@ -5,6 +5,7 @@ import analix.DHIT.input.UserEditInput;
 import analix.DHIT.model.User;
 import org.apache.ibatis.annotations.*;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Mapper
@@ -40,5 +41,14 @@ public interface UserMapper {
 //    //user情報を取ってくる
 //    @Select("SELECT * FROM user WHERE employeeCode=#{employeeCode}")
 //    User getuser(int employeeCode);
+
+
+// /////////// 2023/12/08 START 富山 //////////
+
+    //roleでの従業員の絞り込み
+    @Select("select * from user where employeeRole = #{employeeRole}")
+    List<User> selectEmployeeRole(@Param("role") String role);
+
+// /////////// 2023/12/08 END 富山 //////////
 
 }

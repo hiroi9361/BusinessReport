@@ -83,19 +83,19 @@
 <div th:replace="manager/navbar :: navbar"></div>
     <div class="seiretsu">
 
-    <!-- 2023/12/07 富山START -->
+    <!-- 2023/12/07 富山 START -->
         <!--    <div class="container">-->
         <div class="container mt-5">
-    <!-- 2023/12/07 富山START -->
+    <!-- 2023/12/07 富山 END -->
 
     <h1>ユーザー編集一覧</h1>
     <h2 th:text="${errorEmployeeMsg}"></h2>
     <h2 th:text="${deleteCompleteMSG}"></h2>
     <h2 th:text="${editCompleteMSG}"></h2>
 
-<!-- 2023/12/07 富山START -->
+<!-- 2023/12/07 富山 START -->
 <!--  検索窓  -->
-    <form id="searchForm">
+      <form id="searchForm">
         <label for="searchType"></label>
         <select id="searchType" name="searchType">
             <option value="employeeNumber">社員番号</option>
@@ -104,10 +104,25 @@
         </select>
         <label for="searchInput"></label>
         <input type="text" id="searchInput" name="searchInput" placeholder="検索キーワード" style="width: 500px ;margin-right: 10px;">
+          <script>
+
+
+          </script>
         <input type="submit" class="btn btn-secondary"　name="search" value="検索">
     </form>
 </div>
-<!-- 2023/12/07 富山END -->
+
+
+<!--        <form action="#" th:action="@{/manager/search-member}" th:object="${memberSearchInput}" method="post">-->
+<!--            <div class="mb-3">-->
+<!--                <label for="employeeName" class="form-label">社員名 TEST</label>-->
+<!--                <div class="input-group">-->
+<!--                    <input type="text" class="form-control" id="employeeName" name="searchCharacters" th:value="${memberSearchInput.searchCharacters}" placeholder="社員名を入力">-->
+<!--                    <button class="btn btn-primary" type="submit" id="searchButton">検索</button>-->
+<!--                </div>-->
+<!--            </div>-->
+<!--        </form>-->
+<!-- 2023/12/07 富山 END -->
 
 
 

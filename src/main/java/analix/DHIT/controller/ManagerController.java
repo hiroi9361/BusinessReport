@@ -13,6 +13,7 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 
@@ -345,13 +346,57 @@ public class ManagerController {
 
         Team team = this.teamService.getTeamById(teamId);
 
+        List<Assignment> assignments = assignmentService.getAssignmentByTeam(teamId);
 
-//        model.addAttribute("team", team);
-//        model.addAttribute("managers", managers);
-//        model.addAttribute("members", members);
+        List<User> managers = new ArrayList<User>();
+        List<User> members = new ArrayList<User>();
+        for(Assignment ast : assignments){
+            if(ast.getIsManager()){
+                managers.add(userService.getUserByEmployeeCode(ast.getEmployeeCode()));
+            }else{
+                members.add(userService.getUserByEmployeeCode(ast.getEmployeeCode()));
+            }
+        }
 
+        model.addAttribute("team", team);
+        model.addAttribute("managers", managers);
+        model.addAttribute("members", members);
 
-        return "manager/team-edit";
+        return "manager/team-detail";
+    }
+
+    @GetMapping("/{teamId}/assignment")
+    public String createAssignment(Model model, @PathVariable int teamId){
+
+        Team team = this.teamService.getTeamById(teamId);
+        List<User> users = userService.getAllEmployeeInfo();
+
+        model.addAttribute("team", team);
+        model.addAttribute("users", users);
+        model.addAttribute("assignmentCreateInput", new AssignmentCreateInput());
+
+        return "manager/assignment-create";
+    }
+
+    @Transactional
+    @PostMapping("/assignment/create")
+    public String creatingAssignment(AssignmentCreateInput assignmentCreateInput, RedirectAttributes redirectAttributes){
+
+        if (assignmentCreateInput.getTeamId() != 0 && !assignmentService.existsAssignment(assignmentCreateInput.getEmployeeCode(), assignmentCreateInput.getTeamId())) {
+
+            int newAssignmentId = assignmentService.create(
+                    assignmentCreateInput.getEmployeeCode(),
+                    assignmentCreateInput.getIsManager(),
+                    assignmentCreateInput.getTeamId()
+            );
+        }else{
+            redirectAttributes.addFlashAttribute("errorAstMsg", "該当のユーザーはすでに追加されています");
+        }
+
+        int teamId = assignmentCreateInput.getTeamId();
+        redirectAttributes.addAttribute("teamId", teamId);
+
+        return "redirect:/manager/teams/{teamId}/detail";
     }
 
 

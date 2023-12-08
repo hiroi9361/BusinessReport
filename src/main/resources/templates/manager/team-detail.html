@@ -7,9 +7,23 @@
 </head>
 <body>
 <div layout:fragment="content">
+    <h2 th:text="${errorAstMsg}" class="text-danger"></h2>
     <h1>チーム詳細画面</h1>
+    <h1 th:object="${team}" th:text="*{name}"></h1>
+    <h2>Managers</h2>
+    <ul th:each="mgr : ${managers} ">
+        <li th:text="${mgr.name}"></li>
+    </ul>
 
+    <h2>Members</h2>
+    <ul th:each="mem : ${members} ">
+        <li th:text="${mem.name}"></li>
+    </ul>
 
+    <form th:action="@{'/manager/' + ${team.teamId} + '/assignment'}" method="get">
+        <input type="hidden" name="teamId" th:value="${team.teamId}" />
+        <input type="submit" value="メンバー追加" class="btn btn-primary" />
+    </form>
 
     <a th:href=@{/manager/home}>ユーザー一覧ページ</a>
     <p></p>

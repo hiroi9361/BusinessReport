@@ -1,7 +1,7 @@
 package analix.DHIT.repository;
 
 import analix.DHIT.model.Assignment;
-import analix.DHIT.model.Report;
+import analix.DHIT.model.User;
 
 import java.util.List;
 
@@ -18,11 +18,6 @@ public interface AssignmentRepository {
     void deleteById(int assignmentId);
 
     void deleteByUser(int employeeCode);
-
-    void managersByTeam(int teamId);
-
-    void membersByTeam(int teamId);
-
 
 
 }

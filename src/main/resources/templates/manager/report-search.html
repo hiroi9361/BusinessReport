@@ -63,6 +63,50 @@
         </div>
 
         <div class="mb-5"></div>
+        <form th:action="@{/member/search-report}" th:object="${ReportSortInput}" method="post">
+            <div>
+                <h2 class="text-center mb-4">報告書一覧</h2>
+
+                <div class="d-flex">
+                    <div class="mb-3">
+                        <select  name="feedback">
+                            <option th:value="${null}">選択してください。</option>
+                            <option th:value="${true}">既読</option>
+                            <option th:value="${false}">未読</option>
+                        </select>
+                    </div>
+                    <div class="mb-3">
+                        <select  name="date">
+                            <option th:value="${null}">選択してください。</option>
+                            <option th:each="date : ${dateList}"
+                                    th:value="${date}"
+                                    th:text="${#temporals.format(date,'yyyy-MM')}">
+                            </option>
+                        </select>
+                    </div>
+                    <div >
+                        <button type="submit" name="sort" th:value="${true}">検索</button>
+                    </div>
+                </div>
+
+                <table class="table">
+                    <thead>
+                    <tr>
+                        <th>日付</th>
+                        <th>体調</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr th:each="report : ${reports}">
+                        <td th:text="${report.date}"></td>
+                        <td th:text="${report.condition}"></td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+        </form>
+
+        <div class="mb-5"></div>
 
         <div th:if="${error != null}" class="text-center mb-4">
             <h3 style="color: red;" th:text="${error}"></h3>

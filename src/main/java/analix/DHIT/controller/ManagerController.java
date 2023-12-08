@@ -139,13 +139,7 @@ public class ManagerController {
 
     //↓新規社員情報入力処理
     @PostMapping("/createEmployee")
-    public String NewUserRegistrationInformation(@ModelAttribute("UserCreateInput") UserCreateInput userCreateInput,
-                                                 @ModelAttribute("AssignmentCreateInput") AssignmentCreateInput assignmentCreateInput,RedirectAttributes redirectAttributes){
-
-        if (userCreateInput == null || assignmentCreateInput == null){
-            redirectAttributes.addFlashAttribute("EmployeeCodeError", "必要項目を入力してください");
-            return "redirect:/manager/create";
-        }
+    public String NewUserRegistrationInformation(@ModelAttribute("userCreateInput") UserCreateInput userCreateInput, @ModelAttribute("assignmentCreateInput") AssignmentCreateInput assignmentCreateInput,RedirectAttributes redirectAttributes){
 
         Integer employeeCode = userService.checkDuplicates(userCreateInput.getEmployeeCode());
         if (employeeCode != null) {
@@ -164,17 +158,33 @@ public class ManagerController {
         //inputデータをDBへ
         userService.createEmployeeInformation(userCreateInput);
 
-        if (AssignmentCreateInput.getAssignments() != null) {
-            List<Assignment> assignments = AssignmentCreateInput.getAssignments();
-            assignments.forEach(x -> x.setEmployeeCode(userCreateInput.getEmployeeCode()));
-            for (Assignment assignment : assignments) {
-                if (assignment != null && !assignmentService.existsAssignment(assignment.getEmployeeCode(), assignment.getTeamId())) {
-                    assignmentService.create(assignment);
-                }else{
-                    redirectAttributes.addFlashAttribute("EncodeError","チーム登録が既に存在しています");
-                    return "redirect:/manager/create";
-                }
-            }
+//        if (AssignmentCreateInput.getAssignments() != null) {
+//            List<Assignment> assignments = AssignmentCreateInput.getAssignments();
+//            assignments.forEach(x -> x.setEmployeeCode(userCreateInput.getEmployeeCode()));
+//            for (Assignment assignment : assignments) {
+//                if (assignment != null && !assignmentService.existsAssignment(assignment.getEmployeeCode(), assignment.getTeamId())) {
+//                    assignmentService.create(assignment);
+//                }else{
+//                    redirectAttributes.addFlashAttribute("EncodeError","チーム登録が既に存在しています");
+//                    return "redirect:/manager/create";
+//                }
+//            }
+//        }
+
+        if (assignmentCreateInput.getTeamId() != 0){
+
+            int newAssignmentId = assignmentService.create(
+                    assignmentCreateInput.getEmployeeCode(),
+                    assignmentCreateInput.getIsManager(),
+                    assignmentCreateInput.getTeamId()
+            );
+//
+//
+//            Assignment newAssignment = new Assignment();
+//            newAssignment.setTeamId(assignmentCreateInput.getTeamId());
+//            newAssignment.setIsManager(assignmentCreateInput.getIsManager());
+//            newAssignment.setEmployeeCode(userCreateInput.getEmployeeCode());
+//            assignmentService.create(newAssignment);
         }
 
         return "redirect:/manager/employeeList";
@@ -187,6 +197,7 @@ public class ManagerController {
         return "manager/employeeList";
     }
     //社員削除画面表示
+    @Transactional
     @PostMapping("employeeList-deleteUser")
     public String displayDeleteUser(@RequestParam("employeeCode") int employeeCode,
                                     @RequestParam("name") String name,
@@ -202,9 +213,22 @@ public class ManagerController {
             redirectAttributes.addFlashAttribute("errorEmployeeMsg", "ログイン中のユーザーの編集・削除は出来ません");
             return "redirect:/manager/employeeList";
         }
-        model.addAttribute("name", name);
-        model.addAttribute("employeeCode", employeeCode);
-        return "manager/employeeList-deleteUser";
+
+        List<Integer> reportIdAllIdGet = reportService.getIdsByEmployeeCode(employeeCode);
+
+        for (Integer id : reportIdAllIdGet) {
+            taskLogService.deleteByReportId(id);
+            reportService.deleteById(id);
+        }
+        assignmentService.deleteByUser(employeeCode);
+
+        userService.deleteById(employeeCode);
+        redirectAttributes.addFlashAttribute("deleteCompleteMSG", name + "を削除しました");
+        return "redirect:/manager/employeeList";
+
+//        model.addAttribute("name", name);
+//        model.addAttribute("employeeCode", employeeCode);
+//        return "manager/employeeList-deleteUser";
     }
 
 
@@ -222,6 +246,7 @@ public class ManagerController {
             taskLogService.deleteByReportId(id);
             reportService.deleteById(id);
         }
+        assignmentService.deleteByUser(employeeCode);
         //userテーブルの値を全部削除
         userService.deleteById(employeeCode);
         redirectAttributes.addFlashAttribute("deleteCompleteMSG", name + "を削除しました");
@@ -307,6 +332,20 @@ public class ManagerController {
 
         redirectAttributes.addAttribute("teamId", teamUpdateInput.getTeamId());
         return "redirect:/manager/teamlist";
+    }
+
+    @GetMapping("/teams/{teamId}/detail")
+    public String displayTeamDetail(Model model, @PathVariable int teamId){
+
+        Team team = this.teamService.getTeamById(teamId);
+
+
+//        model.addAttribute("team", team);
+//        model.addAttribute("managers", managers);
+//        model.addAttribute("members", members);
+
+
+        return "manager/team-edit";
     }
 
 

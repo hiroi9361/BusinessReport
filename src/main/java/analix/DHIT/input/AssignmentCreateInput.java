@@ -1,49 +1,41 @@
 package analix.DHIT.input;
 
 import analix.DHIT.model.Assignment;
+import lombok.Getter;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class AssignmentCreateInput {
 
+    @Getter
     private int employeeCode;
 
+    @Getter
     private int teamId;
 
     private boolean isManager;
 
+    @Getter
     private static List<Assignment> assignments = new ArrayList<>();
 
-    public static List<Assignment> getAssignments() {
-        return assignments;
-    }
-
     public void setAssignments(List<Assignment> assignments) {
-        this.assignments = assignments;
-    }
-
-    public int getEmployeeCode() {
-        return employeeCode;
+        AssignmentCreateInput.assignments = assignments;
     }
 
     public void setEmployeeCode(int employeeCode) {
         this.employeeCode = employeeCode;
     }
 
-    public int getTeamId() {
-        return teamId;
-    }
-
     public void setTeamId(int teamId) {
         this.teamId = teamId;
     }
 
-    public boolean isManager() {
+    public boolean getIsManager() {
         return isManager;
     }
 
-    public void setManager(boolean manager) {
+    public void setIsManager(boolean manager) {
         isManager = manager;
     }
 }

@@ -43,7 +43,17 @@ public interface TeamMapper {
     @Delete("DELETE FROM assignment WHERE assignment_id = #{assignmentId}")
     void deleteAssignmentById(int assignmentId);
 
+    @Delete("DELETE FROM assignment WHERE employee_code = #{employeeCode}")
+    void deleteAssignmentByUser(int employeeCode);
+
     @Select("SELECT COUNT(*) FROM assignment WHERE employee_code = #{employeeCode} AND team_id = #{teamId}")
     int countAssignmentByEmployeeCodeAndTeamId(int employeeCode, int teamId);
+
+    @Select("SELECT user.name FROM assignment JOIN user ON assignment.employee_code = user.employee_code WHERE is_manager = 1 AND team_id = #{teamId}")
+    void allManagersByAssignment(int teamId);
+
+    @Select("SELECT user.name FROM assignment JOIN user ON assignment.employee_code = user.employee_code WHERE is_manager = 0 AND team_id = #{teamId}")
+    void allMembersByAssignment(int teamId);
+
 
 }

@@ -118,9 +118,9 @@
                 <!--追記----------------------------------------------->
                 <div class="form-group">
                     <p>本日の体調</p>
-                    <input type="radio" th:value="1" th:name="conditionRate" required><i class="bi bi-emoji-smile-fill text-success" style="font-size: 7rem;"></i>
-                    <input type="radio" th:value="2" th:name="conditionRate" required><i class="bi bi-emoji-neutral-fill text-warning" style="font-size: 7rem;"></i>
-                    <input type="radio" th:value="3" th:name="conditionRate" required><i class="bi bi-emoji-dizzy-fill text-danger" style="font-size: 7rem;"></i>
+                    <input type="radio" th:value="1" th:name="conditionRate" required><i class="bi bi-emoji-smile-fill text-success" style="font-size: 2rem;"></i><!--良好-->
+                    <input type="radio" th:value="2" th:name="conditionRate" required><i class="bi bi-emoji-neutral-fill text-warning" style="font-size: 4rem;"></i><!--普通-->
+                    <input type="radio" th:value="3" th:name="conditionRate" required><i class="bi bi-emoji-dizzy-fill text-danger" style="font-size: 7rem;"></i><!--悪い-->
                 </div>
                 <div class="col-12 d-flex flex-row align-items-center gap-3">
                     <label class="text-nowrap">体調コメント（最大50文字）</label>
@@ -194,24 +194,27 @@
         button.parentNode.parentNode.remove();
     }
     /*]]>*/
+    <!--編集----------------------------------------------->
     function checkInput() {
-        var check_Lateness = document.getElementById("check_Lateness");
-        var text_latenessReason = document.getElementById("text_latenessReason");
-        if (check_Lateness.checked) {
+        var check_LeftEarly = document.getElementById("check_LeftEarly");//早退のチェックボックスの要素を取得
+        var check_Lateness = document.getElementById("check_Lateness");//遅刻のチェックボックスの要素を取得
+        var text_latenessReason = document.getElementById("text_latenessReason");//テキストボックスの要素を取得
+        //早退か遅刻がチェックされているか判定
+        if(check_Lateness.checked || check_LeftEarly .checked) {
             if (text_latenessReason.value.trim() === "") {
-                text_latenessReason.setCustomValidity("遅刻理由を記入してください");
-            }
-            else {
+                text_latenessReason.setCustomValidity("チェックした理由を記入してください");
+            }else {
                 text_latenessReason.setCustomValidity("");
             }
-        }
+	    }
     }
 
     // 遅刻のcheckbokにvalidationをチェックします。
     document.addEventListener('DOMContentLoaded', function() {
-        var isLateness = document.getElementById('check_Lateness');
-        var text_latenessReason = document.getElementById('text_latenessReason');
-
+        var isLeftEarly = document.getElementById("check_LeftEarly");//早退のチェックボックスの要素を取得
+        var isLateness = document.getElementById('check_Lateness');//遅刻のチェックボックスの要素を取得
+        var text_latenessReason = document.getElementById('text_latenessReason');//テキストボックスの要素を取得
+        //遅刻のチェックボックスの状態を監視
         isLateness.addEventListener('change', function() {
             if (this.checked) {
                 validateInput();
@@ -219,14 +222,24 @@
                 text_latenessReason.setCustomValidity("");
             }
         });
+        //早退のチェックボックスの状態を監視
+        isLeftEarly.addEventListener('change', function() {
+            if (this.checked) {
+                validateInput();
+            } else {
+                text_latenessReason.setCustomValidity("");
+            }
+        });
+        //テキストボックスの状態を監視
         text_latenessReason.addEventListener('input', function() {
-            if (isLateness.checked) {
+            if (isLateness.checked || isLeftEarly.checked) {
                 validateInput();
             }
         });
+        //テキストボックスの中身を判定
         function validateInput() {
             if (text_latenessReason.value.trim() === '') {
-                text_latenessReason.setCustomValidity("遅刻理由を記入してください");
+                text_latenessReason.setCustomValidity("チェックした理由を記入してください");
             } else {
                 text_latenessReason.setCustomValidity("");
             }

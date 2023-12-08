@@ -13,6 +13,7 @@ public class Report {
     //test追記
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
+    private int report_id;
 
     //test追記
     @Column(name = "employee_code")
@@ -53,6 +54,9 @@ public class Report {
 
     public void setReportId(int reportId) {
         this.id = reportId;
+    }
+    public int getReport_id() {
+        return report_id;
     }
     public void setReport_id(int report_id) {
         this.id = report_id;

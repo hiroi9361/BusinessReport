@@ -27,6 +27,14 @@ public class AssignmentCreateInput {
         this.employeeCode = employeeCode;
     }
 
+    public int getEmployeeCode(){
+        return employeeCode;
+    }
+
+    public int getTeamId() {
+        return teamId;
+    }
+
     public void setTeamId(int teamId) {
         this.teamId = teamId;
     }

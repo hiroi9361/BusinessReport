@@ -5,12 +5,8 @@ import analix.DHIT.input.ReportCreateInput;
 import analix.DHIT.input.ReportSearchInput;
 import analix.DHIT.input.ReportSortInput;
 import analix.DHIT.input.ReportUpdateInput;
-import analix.DHIT.model.Report;
-import analix.DHIT.model.TaskLog;
-import analix.DHIT.model.User;
-import analix.DHIT.service.ReportService;
-import analix.DHIT.service.TaskLogService;
-import analix.DHIT.service.UserService;
+import analix.DHIT.model.*;
+import analix.DHIT.service.*;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
@@ -32,11 +28,15 @@ public class MemberController {
     private final UserService userService;
     private final TaskLogService taskLogService;
     private final ReportService reportService;
+    private final FeedbackService feedbackService;
+    private final AssignmentService assignmentService;
 
-    public MemberController(UserService userService, TaskLogService taskLogService, ReportService reportService) {
+    public MemberController(UserService userService, TaskLogService taskLogService, ReportService reportService, FeedbackService feedbackService, AssignmentService assignmentService) {
         this.userService = userService;
         this.taskLogService = taskLogService;
         this.reportService = reportService;
+        this.feedbackService=feedbackService;
+        this.assignmentService=assignmentService;
     }
 
     @GetMapping("/report/create")
@@ -213,18 +213,25 @@ public class MemberController {
             return "redirect:/member/report/create";
         }
 
+        Feedback feedback = feedbackService.getFeedbackById(reportId);
+        //Assignment assignment = assignmentService.getAssignmentByEmployeeCode(employeeCode);
+
         List<TaskLog> taskLogs = taskLogService.getTaskLogsByReportId(reportId);
         User member = userService.getUserByEmployeeCode(report.getEmployeeCode());
 
         model.addAttribute("report", report);
         model.addAttribute("taskLogs", taskLogs);
         model.addAttribute("member", member);
+        model.addAttribute("feedback", feedback);
 
         model.addAttribute("beforeReportId", reportService.getBeforeIdById(reportId));
         model.addAttribute("afterReportId", reportService.getAfterIdById(reportId));
 
         String date = report.getDate().format(DateTimeFormatter.ofPattern("yyyy年M月d日(E)", Locale.JAPANESE));
         model.addAttribute("date", date);
+
+        //フィードバック用追記
+
 
         return "member/report-detail";
     }

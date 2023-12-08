@@ -41,6 +41,23 @@ public class AssignmentService {
         return assignments;
     }
 
+//    public List<Integer> ManagersByTeam(int teamId){
+//        List<Integer> managers = this.assignmentRepository.managersByTeam(teamId);
+//        if (managers == null){
+//            return new ArrayList<>();
+//        }
+//        return managers;
+//    }
+//
+//    public List<Integer> MembersByTeam(int teamId){
+//        List<Integer> members = this.assignmentRepository.membersByTeam(teamId);
+//        if (members == null){
+//            return new ArrayList<>();
+//        }
+//        return members;
+//    }
+
+
     public void deleteById(int assignmentId) {
         this.assignmentRepository.deleteById(assignmentId);
     }

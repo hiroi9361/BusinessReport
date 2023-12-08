@@ -49,11 +49,11 @@ public interface TeamMapper {
     @Select("SELECT COUNT(*) FROM assignment WHERE employee_code = #{employeeCode} AND team_id = #{teamId}")
     int countAssignmentByEmployeeCodeAndTeamId(int employeeCode, int teamId);
 
-    @Select("SELECT user.name FROM assignment JOIN user ON assignment.employee_code = user.employee_code WHERE is_manager = 1 AND team_id = #{teamId}")
-    void allManagersByAssignment(int teamId);
-
-    @Select("SELECT user.name FROM assignment JOIN user ON assignment.employee_code = user.employee_code WHERE is_manager = 0 AND team_id = #{teamId}")
-    void allMembersByAssignment(int teamId);
+//    @Select("SELECT user.employee_code FROM user JOIN assignment ON assignment.employee_code = user.employee_code WHERE assignment.is_manager = 1 AND assignment.team_id = 1;")
+//    void allManagersByAssignment(int teamId);
+//
+//    @Select("SELECT user.employee_code FROM user JOIN assignment ON assignment.employee_code = user.employee_code WHERE assignment.is_manager = 0 AND assignment.team_id = 1;")
+//    void allMembersByAssignment(int teamId);
 
 
 }

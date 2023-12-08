@@ -44,7 +44,11 @@ INSERT INTO assignment (assignment_id, employee_code, team_id, is_manager) VALUE
     (3, 3, 1, 0),
     (4, 4, 1, 0),
     (5, 5, 1, 1),
-    (6, 6, 1, 0);
+    (6, 6, 1, 0),
+    (7, 1, 2, 1),
+    (8, 2, 2, 0),
+    (9, 3, 3, 0),
+    (10, 4, 3, 1);
 
 ---- tran_task
 --INSERT INTO task_log (task_id, report_id, name, progress_rate) VALUES

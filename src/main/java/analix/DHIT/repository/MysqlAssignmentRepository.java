@@ -2,6 +2,7 @@ package analix.DHIT.repository;
 
 import analix.DHIT.mapper.TeamMapper;
 import analix.DHIT.model.Assignment;
+import analix.DHIT.model.User;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
@@ -35,13 +36,5 @@ public class MysqlAssignmentRepository implements AssignmentRepository{
 
     @Override
     public void deleteByUser(int employeeCode){ this.teamMapper.deleteAssignmentByUser(employeeCode);}
-
-    @Override
-    public void managersByTeam(int teamId){this.teamMapper.allManagersByAssignment(teamId);}
-
-    @Override
-    public void membersByTeam(int teamId){this.teamMapper.allMembersByAssignment(teamId);}
-
-
 
 }

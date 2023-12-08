@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/web/thymeleaf/layout"
+      layout:decorate="~{layout/layout}">
+<head>
+    <meta charset="UTF-8" th:remove="tag">
+</head>
+<body>
+<div layout:fragment="content">
+    <h1>チームメンバー追加</h1>
+    <h1 th:text="${team.name}"></h1>
+    <div class="container-form">
+        <form th:action="@{/manager/assignment/create}" th:object="${assignmentCreateInput}" method="post">
+            <input type="hidden" name="teamId" th:value="${team.teamId}"/>
+            <div class="form-group">
+                <label>ユーザー</label>
+                <select th:field="${assignmentCreateInput.employeeCode}">
+                    <option th:each="user : ${users}" th:text="${user.name}" name="employeeCode" th:value="${user.employeeCode}"></option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label>役割</label>
+                <select name="isManager">
+                    <option value="false">Member</option>
+                    <option value="true">Manager</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <button type="submit" class="btn btn-primary">追加</button>
+            </div>
+        </form>
+    </div>
+
+
+    <p></p>
+    <a th:href=@{/manager/home}>ユーザー一覧ページ</a>
+    <p></p>
+    <a th:href=@{/manager/teamlist}>チーム一覧ページ</a>
+
+</div>
+</body>
+</html>

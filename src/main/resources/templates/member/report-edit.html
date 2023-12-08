@@ -114,11 +114,11 @@
                 <div class="form-group">
                     <p>本日の体調</p>
                     <input type="radio" th:value="1" th:name="conditionRate" required
-                           th:checked="${report.conditionRate == 1}"><i class="bi bi-emoji-smile-fill text-success" style="font-size: 2rem;"></i>
+                           th:checked="${report.conditionRate == 1}"><i class="bi bi-emoji-smile-fill text-success" style="font-size: 4rem;"></i>
                     <input type="radio" th:value="2" th:name="conditionRate" required
                            th:checked="${report.conditionRate == 2}"><i class="bi bi-emoji-neutral-fill text-warning" style="font-size: 4rem;"></i>
                     <input type="radio" th:value="3" th:name="conditionRate" required
-                           th:checked="${report.conditionRate == 3}"><i class="bi bi-emoji-dizzy-fill text-danger" style="font-size: 7rem;"></i>
+                           th:checked="${report.conditionRate == 3}"><i class="bi bi-emoji-dizzy-fill text-danger" style="font-size: 4rem;"></i>
                 </div>
 
                 <div class="col-12 d-flex flex-row align-items-center gap-3">
@@ -126,6 +126,7 @@
                     <label for="text_condition"></label><textarea name="condition" class="form-control"
                                                                     id="text_condition"
                                                                     rows="3" required>[[${report.condition}]]</textarea>
+                    <span id="charCount" style="margin-left: 5px;"></span>
                 </div>
                 <!--追記----------------------------------------------->
                 <div class="col-12 d-flex flex-row align-items-center gap-3">

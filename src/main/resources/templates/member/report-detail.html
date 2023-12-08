@@ -206,14 +206,14 @@
                 <div class="col-12 mb-4">
                     <h2>体調</h2>
                 </div>
-                <i th:switch="${report.condition}">
-                    <i th:case="'良好'">
+                <i th:switch="${report.conditionRate}">
+                    <i th:case="1">
                         <i class="bi bi-emoji-smile-fill text-success" style="font-size: 7rem;"></i>
                     </i>
-                    <i th:case="'普通'">
+                    <i th:case="2">
                         <i class="bi bi-emoji-neutral-fill text-warning" style="font-size: 7rem;"></i>
                     </i>
-                    <i th:case="'不調'">
+                    <i th:case="3">
                         <i class="bi bi-emoji-dizzy-fill text-danger" style="font-size: 7rem;"></i>
                     </i>
                 </i>
@@ -238,6 +238,42 @@
                 </div>
                 <p><span th:text="${report.tomorrowSchedule}"></span></p>
             </div>
+
+<!--            追記-->
+
+            <!--分岐-------------------------------------->
+
+            <!--Memberの場合------------------------>
+                <!--Managerのフィードバックを表示-->
+            <div class="row sub-section">
+                <div class="col-12 mb-4">
+                    <h2>フィードバック</h2>
+                </div>
+                <div th:if="${feedback != null}">
+                    <i th:switch="${feedback.rating}">
+                        <i th:case="2">
+                            <i class="bi bi-emoji-smile-fill text-success" style="font-size: 4rem;"></i>
+                        </i>
+                        <i th:case="1">
+                            <i class="bi bi-emoji-neutral-fill text-warning" style="font-size: 4rem;"></i>
+                        </i>
+                        <i th:case="0">
+                            <i class="bi bi-emoji-dizzy-fill text-danger" style="font-size: 4rem;"></i>
+                        </i>
+                    </i>
+                    <p><span th:text="${feedback.name}"></span>さんによるコメント</p>
+                    <p><span th:text="${feedback.comment}"></span></p>
+                </div>
+                <div th:if="${feedback == null}">
+                    <p>フィードバックがありません。</p>
+                </div>
+            </div>
+
+            <!--Managerの場合------------------------>
+                <!--Memberのフィードバックを入力-->
+
+<!--            追記-->
+
         </div>
     </div>
 </div>

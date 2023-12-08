@@ -10,7 +10,7 @@ import java.util.List;
 
 @Mapper
 public interface ReportMapper {
-    @Select("SELECT report_id FROM report WHERE employee_code = #{employeeCode} and date= #{date}")
+    @Select("SELECT report_id FROM report WHERE employee_code = #{employeeCode} and date = #{date}")
     String selectIdByEmployeeCodeAndDate(int employeeCode, LocalDate date);
 
     @Select("SELECT * FROM report WHERE report_id = #{reportId}")
@@ -40,7 +40,7 @@ public interface ReportMapper {
 
     @Update("UPDATE report SET " +
             "`condition` = #{condition}, " +
-            "condition_rate = #{conditionRate}" +
+            "condition_rate = #{conditionRate}, " +
             "impressions = #{impressions}, " +
             "tomorrow_schedule = #{tomorrowSchedule}, " +
             "start_time = #{startTime}, " +
@@ -48,7 +48,7 @@ public interface ReportMapper {
             "is_lateness = #{isLateness}, " +
             "lateness_reason = #{latenessReason}, " +
             "is_left_early = #{isLeftEarly} " +
-            "WHERE report_ = #{report_id}")
+            "WHERE report_id = #{report_id}")
     void updateReport(Report report);
 
     //reportテーブルのemployeeCodeに紐づいているIdを全取得

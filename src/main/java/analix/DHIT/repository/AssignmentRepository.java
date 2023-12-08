@@ -17,6 +17,12 @@ public interface AssignmentRepository {
 
     void deleteById(int assignmentId);
 
+    void deleteByUser(int employeeCode);
+
+    void managersByTeam(int teamId);
+
+    void membersByTeam(int teamId);
+
 
 
 }

@@ -13,12 +13,15 @@
     <h1>チーム一覧</h1>
     <table>
         <tr>
-        <th>番号(自動付与なので後で消しても良さそう)</th>
         <th>チーム名</th>
         </tr>
         <tr th:each="teamList : ${teamList}" th:object="${teamList}">
-            <td th:text="${teamList.teamId}"></td>
             <td th:text="${teamList.name}"></td>
+            <td>
+                <a th:href="@{'/manager/teams/' + ${teamList.teamId} + '/detail'}">
+                    <button type="button" class="btn btn-warning">詳細</button>
+                </a>
+            </td>
             <td>
                 <a th:href="@{'/manager/teams/' + ${teamList.teamId} + '/edit'}">
                     <button type="button" class="btn btn-success">編集</button>

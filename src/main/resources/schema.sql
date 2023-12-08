@@ -54,7 +54,7 @@ CREATE TABLE IF NOT EXISTS `feedback` (
 
 CREATE TABLE IF NOT EXISTS `assignment` (
     `assignment_id` int NOT NULL AUTO_INCREMENT PRIMARY KEY,
-    `is_manager` tinyint DEFAULT 0,
+    `is_manager` tinyint NOT NULL,
     `team_id` int NOT NULL,
     `employee_code` int NOT NULL
 );

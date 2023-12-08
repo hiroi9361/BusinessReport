@@ -2,9 +2,14 @@ package analix.DHIT.service;
 
 import analix.DHIT.mapper.TeamMapper;
 import analix.DHIT.model.Assignment;
+import analix.DHIT.model.Report;
+import analix.DHIT.model.Team;
+import analix.DHIT.model.User;
 import analix.DHIT.repository.AssignmentRepository;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
+import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -40,9 +45,27 @@ public class AssignmentService {
         this.assignmentRepository.deleteById(assignmentId);
     }
 
-    public void create(Assignment assignment){
-        this.assignmentRepository.save(assignment);
+    public void deleteByUser(int emoloyeeCode){
+        this.assignmentRepository.deleteByUser(emoloyeeCode);
     }
+
+    public int create(
+            int employeeCode,
+            boolean isManager,
+            int teamId
+    ) {
+
+        Assignment newAssignment = new Assignment();
+        newAssignment.setEmployeeCode(employeeCode);
+        newAssignment.setTeamId(teamId);
+        newAssignment.setIsManager(isManager);
+
+        this.assignmentRepository.save(newAssignment);
+
+        return newAssignment.getAssignmentId();
+
+    }
+
 
     public boolean existsAssignment(int employeeCode, int teamId) {
         int count = teamMapper.countAssignmentByEmployeeCodeAndTeamId(employeeCode, teamId);

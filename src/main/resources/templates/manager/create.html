@@ -16,11 +16,12 @@
     <div class="container mt-5">
         <h1 class="mb-4">ユーザー新規登録</h1>
 
-        <form th:action="@{/manager/createEmployee}" th:object="${userCreateInput}" th:method="post" enctype="multipart/form-data" onsubmit="return validateForm()">
+<!--        <form th:action="@{/manager/createEmployee}" th:object="${userCreateInput}" th:method="post" enctype="multipart/form-data" onsubmit="return validateForm()">-->
+            <form th:action="@{/manager/createEmployee}" th:method="post" enctype="multipart/form-data" onsubmit="return validateForm()">
             <!-- 社員番号 -->
             <div class="mb-3">
                 <label for="employeeCode" class="form-label">社員番号：<span class="text-danger">※</span></label>
-                <input type="text" id="employeeCode" th:field="*{employeeCode}" class="form-control" pattern="[0-9]{1,5}" title="5桁以下の数字を入力してください">
+                <input type="text" id="employeeCode" th:field="*{userCreateInput.employeeCode}" class="form-control" pattern="[0-9]{1,5}" title="5桁以下の数字を入力してください">
 
                 <!--            <input type="text" id="employeeCode" th:field="*{employeeCode}" class="form-control">-->
                 <div th:if="${EmployeeCodeError != null}" class="text-danger mt-1" th:text="${EmployeeCodeError}"></div>
@@ -29,19 +30,22 @@
             <!-- 名前 -->
             <div class="mb-3">
                 <label for="name" class="form-label">名前：<span class="text-danger">※</span></label>
-                <input type="text" id="name" th:field="*{name}" class="form-control" pattern="[A-Za-zぁ-んァ-ン一-龯]+" title="アルファベット、ひらがな、漢字のみが許可されています">
+<!--                <input type="text" id="name" th:field="*{name}" class="form-control" pattern="[A-Za-zぁ-んァ-ン一-龯]+" title="アルファベット、ひらがな、漢字のみが許可されています">-->
+                <input type="text" id="name" th:field="${userCreateInput.name}" class="form-control" pattern="[A-Za-zぁ-んァ-ン一-龯]+" title="アルファベット、ひらがな、漢字のみが許可されています">
             </div>
 
             <!-- パスワード -->
             <div class="mb-3">
                 <label for="password" class="form-label">パスワード：<span class="text-danger">※</span></label>
-                <input type="password" id="password" th:field="*{password}" class="form-control">
+<!--                <input type="password" id="password" th:field="*{password}" class="form-control">-->
+                <input type="password" id="password" th:field="${userCreateInput.password}" class="form-control">
             </div>
 
             <!-- 役割 -->
             <div class="mb-3">
                 <label for="role" class="form-label">D-HIT上のユーザーの種類：<span class="text-danger">※</span></label>
-                <select id="role" name="role" th:field="*{role}" class="form-select">
+<!--                <select id="role" name="role" th:field="*{role}" class="form-select">-->
+                    <select id="role" name="role" th:field="${userCreateInput.role}" class="form-select">
                     <!--                <option value="MEMBER">Member</option>-->
                     <!--                <option value="MANAGER">Manager</option>-->
                     <option value="USER">User</option>
@@ -53,26 +57,27 @@
             <div class="mb-3">
                 <label for="icon" class="form-label">アイコン画像</label>
                 <!--            送信タイプをfileに、ユーザーから受け付けるファイルを画像のみに-->
-                ファイルを選択<input type="file" id="icon" th:field="*{icon}" accept="image/*" class="form-control">
+<!--                ファイルを選択<input type="file" id="icon" th:field="*{icon}" accept="image/*" class="form-control">-->
+                ファイルを選択<input type="file" id="icon" th:field="${userCreateInput.icon}" accept="image/*" class="form-control">
                 <div th:if="${EnCodeError != null}" class="text-danger mt-1" th:text="${EnCodeError}"></div>
             </div>
 
-            <div class="mb-3" id="team-field">
-                <div class="d-flex gap-2">
+            <div class="mb-3" id="team-field" >
+<!--                <div class="d-flex gap-2">-->
                     <p class="d-inline d-inline-block p-0 m-0">所属チーム追加</p>
-                    <button type="button" class="btn btn-success" id="add-team">追加</button>
-                </div>
-<!--                <div th:each="assignment, assignmentStatus : ${assignmentCreateInput.assignments}" class="row">-->
-<!--                    <div class="flex-row d-flex gap-3 col-md-8">-->
-<!--                        <select aria-label="">-->
-<!--                            <option th:each="team : ${teamList}" th:text="${team.name}" th:field="${assignment[assignmentStatus.index].teamId}" th:value="${team.teamId}"></option>-->
-<!--                        </select>-->
-
-<!--                    <input type ="radio" class="form-control" aria-label="" th:field="${assignment[assignmentStatus.index].isManager" th:value="0" checked="checked">Member-->
-<!--                    <input type ="radio" class="form-control" aria-label="" th:field="${assignment[assignmentStatus.index].isManager" th:value="1">Manager-->
-<!--                    <button type="button" class="btn btn-danger" onclick="removeAssignment(this)">削除</button>-->
-<!--                    </div>-->
+<!--                    <button type="button" class="btn btn-success" id="add-team">追加</button>-->
 <!--                </div>-->
+                <div class="d-flex">
+                    <select th:field="${assignmentCreateInput.teamId}" class="form-select">
+                        <option value="0">選択してください</option>
+                        <option th:each="team : ${teamList}" th:text="${team.name}" name="teamId" th:value="${team.teamId}"></option>
+                    </select>
+                    <select th:field="${assignmentCreateInput.isManager}" class="form-select">
+                        <option value="false">選択してください</option>
+                        <option value="false" name="isManager">Member</option>
+                        <option value="true" name="isManager">Manager</option>
+                    </select>
+                </div>
                 <div></div>
             </div>
 
@@ -108,22 +113,24 @@
     const teamField = document.getElementById("team-field");
     let teamIndex = /*[[${assignmentCreateInput.assignments.size()}]]*/;
 
-    console.log(elem);
-    console.log(teamField);
-
     elem.onclick = function() {
         const node = document.createElement("div");
         node.setAttribute("class", "row");
-        node.innerHTML += `<div>
-        <p>test</p>
-        </div>
-        `;
+        node.innerHTML += `<div class="d-flex">
+                    <select th:field="${assignmentCreateInput.teamId}">
+                        <option th:each="team : ${teamList}" th:text="${team.name}" name="teamId" th:value="${team.teamId}"></option>
+                    </select>
+                    <select th:field="${assignmentCreateInput.isManager}">
+                        <option value="false" name="isManager">Member</option>
+                        <option value="true" name="isManager">Manager</option>
+                    </select>
+                </div>`;
 
         teamField.appendChild(node);
         teamIndex++;
     };
 
-    function removeAssignment(button) {
+    function removeTask(button) {
         button.parentNode.parentNode.remove();
     }
 

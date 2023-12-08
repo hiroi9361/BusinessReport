@@ -187,14 +187,20 @@
 
                 <p>出勤時間: <span th:text="${report.startTime}"></span></p>
                 <p>退勤時間: <span th:text="${report.endTime}"></span></p>
-                <div th:if="${report.isLateness}" class="col-md-12 red-text">
+                <!--編集：遅刻と早退の片方か両方のチェックによって理由が表示される-->
+                <div th:if="${report.isLateness and report.isLeftEarly}" class="col-md-12 red-text">
+                    <p>遅刻と早退</p>
+                    <p>理由: <span th:text="${report.latenessReason}"></span></p>
+                </div>
+                <div th:if="${report.isLateness and not report.isLeftEarly}" class="col-md-12 red-text">
                     <p>遅刻</p>
                     <p>理由: <span th:text="${report.latenessReason}"></span></p>
                 </div>
-
-                <div th:if="${report.isLeftEarly}" class="col-md-12 red-text">
+                <div th:if="${report.isLeftEarly and not report.isLateness}" class="col-md-12 red-text">
                     <p>早退</p>
+                    <p>理由: <span th:text="${report.latenessReason}"></span></p>
                 </div>
+                <!--編集：遅刻と早退の片方か両方のチェックによって理由が表示される-->
             </div>
             <div class="row sub-section">
                 <div class="col-12 mb-4">
@@ -212,6 +218,14 @@
                     </i>
                 </i>
             </div>
+            <!--            追記-->
+            <div class="row sub-section">
+                <div class="col-12 mb-4">
+                    <h2>体調コメント</h2>
+                </div>
+                <p><span th:text="${report.condition}"></span></p>
+            </div>
+            <!--            追記-->
             <div class="row sub-section">
                 <div class="col-12 mb-4">
                     <h2>感想</h2>

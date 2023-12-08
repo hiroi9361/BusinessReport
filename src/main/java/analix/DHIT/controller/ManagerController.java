@@ -87,7 +87,21 @@ public class ManagerController {
         model.addAttribute("reportSearchInput", new ReportSearchInput());
         model.addAttribute("error", model.getAttribute("error"));
 
-        //ビューに返す
+        //報告一覧表示---------------------------------
+        List<Report> reports = reportService.getfindAll(employeeCode);
+        model.addAttribute("reports", reports);
+        //検索機能---------------------------------------
+        //年月で重複しないList作成
+        List<LocalDate> dateList = reports.stream()
+                .map(Report::getDate)
+                .map(date -> date.withDayOfMonth(1))
+                .distinct()
+                .toList();
+        model.addAttribute("dateList",dateList);
+        //データ格納用
+        model.addAttribute("reportSortInput",new ReportSortInput());
+
+
         return "manager/report-search";
     }
 
@@ -95,8 +109,13 @@ public class ManagerController {
     //社員コードと日付を元に報告IDを検索
     public String searchReport(
             ReportSearchInput reportSearchInput,
-            RedirectAttributes redirectAttributes
+            RedirectAttributes redirectAttributes,
+            ReportSortInput reportSortInput,
+            Model model
     ) {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        int employeeCode = Integer.parseInt(authentication.getName());
+
         String reportId = reportService.searchId(
                 reportSearchInput.getEmployeeCode(),
                 reportSearchInput.getDate()
@@ -110,7 +129,40 @@ public class ManagerController {
 
         //検索結果がある場合、Detailにリダイレクト
         redirectAttributes.addAttribute("reportId", reportId);
+
+        //追記*****************************************************
+        if(reportSortInput.getSort() == true) {
+            reportSortInput.setEmployeeCode(employeeCode);
+
+            //ソート用
+            List<Report> reports = reportService.getSorrtReport(reportSortInput);
+
+            model.addAttribute("reportSearchInput", new ReportSearchInput());
+            model.addAttribute("error", model.getAttribute("error"));
+            model.addAttribute("reports", reports);
+            //年月で重複しないList作成
+            List<LocalDate> dateList = reports.stream()
+                    .map(Report::getDate)
+                    .map(date -> date.withDayOfMonth(1))
+                    .distinct()
+                    .toList();
+            model.addAttribute("dateList",dateList);
+            //データ格納用
+            model.addAttribute("reportSortInput",new ReportSortInput());
+            return "member/report-search";
+        }
+//追記*****************************************************
+
+        //検索結果がない場合
+        if (reportId == null) {
+            redirectAttributes.addFlashAttribute("error", "ヒットしませんでした");
+            return "redirect:/manager/report-search?employeeCode=" + reportSearchInput.getEmployeeCode();
+        }
+
+        //検索結果がある場合、Detailにリダイレクト
+        redirectAttributes.addAttribute("reportId", reportId);
         return "redirect:/manager/reports/{reportId}";
+
     }
 
     @GetMapping("/reports/{reportId}")

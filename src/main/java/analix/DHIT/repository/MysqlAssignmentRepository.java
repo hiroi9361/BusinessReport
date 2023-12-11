@@ -37,4 +37,7 @@ public class MysqlAssignmentRepository implements AssignmentRepository{
     @Override
     public void deleteByUser(int employeeCode){ this.teamMapper.deleteAssignmentByUser(employeeCode);}
 
+    @Override
+    public List<Assignment> getAllAssignment(){return this.teamMapper.allAssignments();}
+
 }

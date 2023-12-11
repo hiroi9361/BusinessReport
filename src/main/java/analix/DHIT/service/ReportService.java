@@ -124,6 +124,10 @@ public class ReportService {
         return this.reportMapper.selectIdsByEmployeeCode(employeeCode);
     }
 
+    public List<Report> getLastTwoByUser(int employeeCode){
+        return this.reportMapper.selectLastTwoReportByEmployeeCode(employeeCode);
+    }
+
     //追記*****************************************************
     //報告一覧表示----------------------------------
     public  List<Report> getfindAll(int employeecode){

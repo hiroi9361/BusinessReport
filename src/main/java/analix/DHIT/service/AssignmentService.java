@@ -106,6 +106,8 @@ public class AssignmentService {
     }
 
 
-
+    public boolean getIsManager(int employeeCode, int teamId){
+        return this.assignmentRepository.getIsManager(employeeCode, teamId);
+    }
 
 }

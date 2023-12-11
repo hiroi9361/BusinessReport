@@ -70,7 +70,13 @@ public class ManagerController {
                 }
             }
         }
+        //test***********
+        AssignmentCreateInput assignmentCreateInput = new AssignmentCreateInput();
 
+        assignmentCreateInput.setTeamId(teamId);
+        assignmentCreateInput.setIsManager(assignmentService.getIsManager(employeeCode, teamId));
+        model.addAttribute("assignment",assignmentCreateInput);
+        //test***********
         model.addAttribute("managers", mgrs);
 
         String title = "メンバー一覧";
@@ -105,6 +111,7 @@ public class ManagerController {
     @GetMapping("/report-search")
     public String displayReportSearch(
             @RequestParam(name = "employeeCode", required = true) int employeeCode,
+            @RequestParam(name = "isManager", required = false, defaultValue = "false") boolean isManager,//test--------------------
             Model model
     ) {
         String title = "報告一覧";
@@ -133,6 +140,27 @@ public class ManagerController {
         model.addAttribute("reportSortInput",new ReportSortInput());
 
 
+
+
+
+
+
+
+
+
+        //test---------------------
+        model.addAttribute("isManager", isManager);
+
+        //test---------------------
+
+
+
+
+
+
+
+
+
         return "manager/report-search";
     }
 
@@ -142,6 +170,7 @@ public class ManagerController {
             ReportSearchInput reportSearchInput,
             RedirectAttributes redirectAttributes,
             ReportSortInput reportSortInput,
+            AssignmentCreateInput assignmentCreateInput,//test
             Model model
     ) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();

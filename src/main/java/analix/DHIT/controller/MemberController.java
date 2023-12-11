@@ -56,6 +56,9 @@ public class MemberController {
         //java.timeパッケージから現在の時刻を取得
         reportCreateInput.setDate(LocalDate.now());
 
+        String title = "報告作成";
+        model.addAttribute("title", title);
+
         if (latestReportId == null) {
             model.addAttribute("reportCreateInput", reportCreateInput);
             return "member/report-create";
@@ -129,6 +132,8 @@ public class MemberController {
     ) {
 
 
+        String title = "報告一覧";
+        model.addAttribute("title", title);
 
         model.addAttribute("reportSearchInput", new ReportSearchInput());
         model.addAttribute("error", model.getAttribute("error"));
@@ -276,6 +281,9 @@ public class MemberController {
 
         Report report = this.reportService.getReportById(reportId);
 
+        String title = "報告編集";
+        model.addAttribute("title", title);
+
         if (report.getEmployeeCode() != employeeCode) {
             return "redirect:/member/report/create";
         }
@@ -337,6 +345,9 @@ public class MemberController {
 
         List<User> allusers = userService.getAllEmployeeInfo();
         List<User> managers = new ArrayList<>();
+
+        String title = "メイン";
+        mav.addObject("title", title);
 
 //        自分がメンバーとして所属しているチーム情報を自分のassignment情報から割り出す
         if(!myast.isEmpty()){

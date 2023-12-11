@@ -95,8 +95,14 @@
 
 
 </div>
-</body>
-<script th:inline="javascript">
+<style layout:fragment="style">
+    @media (max-width: 768px) {
+        h1 {
+            font-size: 1.3em;
+        }
+    }
+</style>
+<script layout:fragment="script" th:inline="javascript">
     function validateForm() {
         var employeeCode = document.getElementById('employeeCode').value;
         var name = document.getElementById('name').value;
@@ -135,13 +141,53 @@
     }
 
 </script>
-<style >
-    @media (max-width: 768px) {
-        h1 {
-            font-size: 1.3em;
-        }
-    }
-</style>
+</body>
+<!--<script th:inline="javascript">-->
+<!--    function validateForm() {-->
+<!--        var employeeCode = document.getElementById('employeeCode').value;-->
+<!--        var name = document.getElementById('name').value;-->
+<!--        var password = document.getElementById('password').value;-->
+
+<!--        if (employeeCode.trim() === '' || name.trim() === '' || password.trim() === '') {-->
+<!--            alert('全てのフィールドを記入してください');-->
+<!--            return false;-->
+<!--        }-->
+<!--        return true;-->
+<!--    };-->
+
+<!--    const elem = document.getElementById("add-team");-->
+<!--    const teamField = document.getElementById("team-field");-->
+<!--    let teamIndex = /*[[${assignmentCreateInput.assignments.size()}]]*/;-->
+
+<!--    elem.onclick = function() {-->
+<!--        const node = document.createElement("div");-->
+<!--        node.setAttribute("class", "row");-->
+<!--        node.innerHTML += `<div class="d-flex">-->
+<!--                    <select th:field="${assignmentCreateInput.teamId}">-->
+<!--                        <option th:each="team : ${teamList}" th:text="${team.name}" name="teamId" th:value="${team.teamId}"></option>-->
+<!--                    </select>-->
+<!--                    <select th:field="${assignmentCreateInput.isManager}">-->
+<!--                        <option value="false" name="isManager">Member</option>-->
+<!--                        <option value="true" name="isManager">Manager</option>-->
+<!--                    </select>-->
+<!--                </div>`;-->
+
+<!--        teamField.appendChild(node);-->
+<!--        teamIndex++;-->
+<!--    };-->
+
+<!--    function removeTask(button) {-->
+<!--        button.parentNode.parentNode.remove();-->
+<!--    }-->
+
+<!--</script>-->
+<!--<style >-->
+<!--    @media (max-width: 768px) {-->
+<!--        h1 {-->
+<!--            font-size: 1.3em;-->
+<!--        }-->
+<!--    }-->
+<!--</style>-->
 </html>
 
 

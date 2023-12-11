@@ -51,7 +51,7 @@ public interface ReportMapper {
             "is_lateness = #{isLateness}, " +
             "lateness_reason = #{latenessReason}, " +
             "is_left_early = #{isLeftEarly} " +
-            "WHERE report_id = #{report_id}")
+            "WHERE report_id = #{id}")
     void updateReport(Report report);
 
     //reportテーブルのemployeeCodeに紐づいているIdを全取得

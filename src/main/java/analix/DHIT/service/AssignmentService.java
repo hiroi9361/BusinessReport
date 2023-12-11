@@ -31,6 +31,14 @@ public class AssignmentService {
         return assignments;
     }
 
+    public List<Assignment> getAsManager(int employeeCode){
+        List<Assignment> assignments = this.teamMapper.selectAsManagerByEmployeeCode(employeeCode);
+        if (assignments == null){
+            return new ArrayList<>();
+        }
+        return assignments;
+    }
+
     public List<Assignment> getAssignmentByEmployeeCode(int employeeCode)
     {
         List<Assignment> assignments = this.assignmentRepository.selectByUser(employeeCode);

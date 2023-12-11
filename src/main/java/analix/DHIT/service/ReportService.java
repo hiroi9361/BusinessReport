@@ -128,6 +128,14 @@ public class ReportService {
         return this.reportMapper.selectLastTwoReportByEmployeeCode(employeeCode);
     }
 
+    public Report getLastOneByUser(int employeeCode){
+        return this.reportMapper.selectLastOneReportByEmployeeCode(employeeCode);
+    }
+
+    public Report getOneByUserByDate(int employeeCode, LocalDate date){
+        return this.reportMapper.selectByEmployeeCodeAndDate(employeeCode, date);
+    }
+
     //追記*****************************************************
     //報告一覧表示----------------------------------
     public  List<Report> getfindAll(int employeecode){

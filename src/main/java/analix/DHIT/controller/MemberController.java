@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
@@ -326,26 +327,33 @@ public class MemberController {
         int employeeCode = Integer.parseInt(authentication.getName());
 
         List<Assignment> myast= assignmentService.getAssignmentByEmployeeCode(employeeCode);
+        if (myast == null){myast = new ArrayList<>();}
+
         List<Assignment> allast = assignmentService.getAllAssignment();
 
         List<Team> allteam = teamService.getAllTeam();
-        List<Team> myteam = new ArrayList<Team>();
+        List<Team> myteammem = new ArrayList<>();
+        List<Team> myteammgr = new ArrayList<>();
 
         List<User> allusers = userService.getAllEmployeeInfo();
-        List<User> managers = new ArrayList<User>();
+        List<User> managers = new ArrayList<>();
 
-//        自分が所属しているチーム情報を自分のassignment情報から割り出す
-        for (Team team: allteam) {
-           for(Assignment ast : myast) {
-               if (team.getTeamId() == ast.getTeamId()) {
-                   myteam.add(team);
-               }
-           }
+//        自分がメンバーとして所属しているチーム情報を自分のassignment情報から割り出す
+        if(!myast.isEmpty()){
+            for (Team team: allteam) {
+                for(Assignment ast : myast) {
+                    if (team.getTeamId() == ast.getTeamId() && !ast.getIsManager()) {
+                        myteammem.add(team);
+                    }else if (team.getTeamId() == ast.getTeamId() && ast.getIsManager()){
+                        myteammgr.add(team);
+                    }
+                }
+            }
         }
 
 //        自分が所属しているチームのマネージャー情報を割り出す、自分がマネージャーだったらリストには追加しない
         for (Assignment ast : allast){
-            for (Team team : myteam){
+            for (Team team : myteammem){
              if(ast.getTeamId() == team.getTeamId()){
               for(User user : allusers){
                   if(ast.getEmployeeCode() == user.getEmployeeCode() && user.getEmployeeCode() != employeeCode){
@@ -363,28 +371,81 @@ public class MemberController {
         Report lastReport = new Report();
         LocalDate todaysDate = LocalDate.now();
 
-        for(Report rp : two){
-            if (rp.getDate() != todaysDate){
-                lastReport = rp;
-                break;
+        if (two != null){
+            for(Report rp : two){
+                if (rp.getDate() != todaysDate){
+                    lastReport = rp;
+                    break;
+                }
             }
         }
 
-        List<TaskLog> taskLogs = taskLogService.getIncompleteTaskLogsByReportId(lastReport.getId());
-//        List<TaskLog> taskLogss = taskLogService.getTaskLogsByReportId(lastReport.getId());
+        List<TaskLog> taskLogs;
+        if (two != null){
+            taskLogs = taskLogService.getIncompleteTaskLogsByReportId(lastReport.getId());
+        } else {
+            taskLogs = new ArrayList<>();
+        }
+        mav.addObject("taskList", taskLogs);
 
         mav.addObject("lastReport", lastReport);
-        mav.addObject("taskList", taskLogs);
         mav.addObject("managerList", managers);
         mav.addObject("assignmentList", myast);
-        mav.addObject("teamList", myteam);
-        mav.setViewName("member/user-main");
+        mav.addObject("memteamList", myteammem);
+        mav.addObject("mgrteamList", myteammgr);
 
-//        ・自分のチームと報告先の人の名前
-//        ・明日の予定を出す
-//        ・未達成Todo一覧を表示
-//        ・（マネージャーの場合か、報告公開がチーム全体の場合）今日報告を出してくれたメンバー名と報告詳細へのリンク
-//        ・（マネージャーの場合）前営業日に報告提出していないメンバーリスト表示
+//        自分がマネージャーとして所属しているチームのメンバー抽出
+        List<Assignment> asMgr =assignmentService.getAsManager(employeeCode);
+        List<User> members = new ArrayList<>();
+        if (!asMgr.isEmpty()) {
+            for(Team tm : myteammgr){
+                        for(Assignment as : allast){
+                            for(User us : allusers){
+                                if(tm.getTeamId() == as.getTeamId() && !as.getIsManager() && as.getEmployeeCode() == us.getEmployeeCode()){
+                                    members.add(us);
+                                }
+                            }
+                        }
+                    }
+                }
+
+//        昨日の曜日を定義。昨日が日曜日か土曜日の場合は金曜日の日付を設定
+        LocalDate yesterdayDate = todaysDate.minusDays(1);
+        DayOfWeek dw = yesterdayDate.getDayOfWeek();
+        if (dw.getValue() == 7){
+            yesterdayDate.minusDays(3);
+        } else if (dw.getValue() == 6) {
+            yesterdayDate.minusDays(2);
+        }
+
+//        今日報告提出したメンバー抽出
+        List<User> todaymem = new ArrayList<>();
+
+        if(!members.isEmpty()){
+            for(User user : members) {
+                Report report = reportService.getLastOneByUser(user.getEmployeeCode());
+                if (report != null && report.getDate() == todaysDate){
+                    todaymem.add(user);
+                }
+            }
+        }
+
+//        前営業日に未提出のメンバー抽出
+        List<User> notsubmem = new ArrayList<>();
+        if(!members.isEmpty()){
+            for(User user : members) {
+                Report report = reportService.getOneByUserByDate(user.getEmployeeCode(), yesterdayDate);
+                if (report == null){
+                    notsubmem.add(user);
+
+                }
+            }
+        }
+
+        mav.addObject("todaymembers",todaymem);
+        mav.addObject("notsubmit", notsubmem);
+
+        mav.setViewName("member/user-main");
 
         return mav;
     }

@@ -3,6 +3,7 @@ package analix.DHIT.controller;
 import analix.DHIT.input.*;
 import analix.DHIT.model.*;
 import analix.DHIT.service.*;
+import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
@@ -41,17 +42,41 @@ public class ManagerController {
         this.assignmentService = assignmentService;
     }
 
-    @GetMapping("/home")
-    public String displayHome(
-            Model model,
+    @GetMapping("/home/{teamId}")
+    public String displayHome(Model model,@PathVariable int teamId,
             @RequestParam(name = "searchCharacters", required = false) String searchCharacters
     ) {
         String today = LocalDate.now().format(DateTimeFormatter.ofPattern("yyyy年M月d日(E)", Locale.JAPANESE));
         model.addAttribute("today", today);
 
+        Team team = teamService.getTeamById(teamId);
+
+        model.addAttribute("team", team);
+
+//        チームメンバーと自分以外のマネージャー特定
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        int employeeCode = Integer.parseInt(authentication.getName());
+
+        List<Assignment> allast = assignmentService.getAssignmentByTeam(teamId);
+        List<User> alluser = userService.getAllEmployeeInfo();
+        List<User> members = new ArrayList<>();
+        List<User> mgrs = new ArrayList<>();
+        for(Assignment ast : allast){
+            for(User usr : alluser){
+                if(ast.getEmployeeCode() == usr.getEmployeeCode() && !ast.getIsManager()){
+                    members.add(usr);
+                }else if (ast.getEmployeeCode() == usr.getEmployeeCode() && ast.getIsManager() && ast.getEmployeeCode() != employeeCode){
+                    mgrs.add(usr);
+                }
+            }
+        }
+
+        model.addAttribute("managers", mgrs);
+
         //アイコン探し
         if (searchCharacters == null) {
-            model.addAttribute("members", userService.getAllMember());
+            model.addAttribute("members", members);
+//            model.addAttribute("members", userService.getAllMember());
             model.addAttribute("memberSearchInput", new MemberSearchInput());
             return "manager/home";
         }

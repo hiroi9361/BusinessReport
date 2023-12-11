@@ -23,6 +23,14 @@ public class AssignmentService {
         this.assignmentRepository = assignmentRepository;
     }
 
+    public List<Assignment> getAllAssignment(){
+        List<Assignment> assignments = this.assignmentRepository.getAllAssignment();
+        if (assignments == null){
+            return new ArrayList<>();
+        }
+        return assignments;
+    }
+
     public List<Assignment> getAssignmentByEmployeeCode(int employeeCode)
     {
         List<Assignment> assignments = this.assignmentRepository.selectByUser(employeeCode);

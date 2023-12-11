@@ -26,6 +26,10 @@ public interface TeamMapper {
     void deleteById(int teamId);
 
 //    ここからAssignment
+
+    @Select("SELECT * FROM assignment")
+    List<Assignment> allAssignments();
+
     @Select("SELECT * FROM assignment WHERE employee_code = #{employeeCode}")
     List<Assignment> selectByEmployeeCode(int employeeCode);
 

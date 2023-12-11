@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/web/thymeleaf/layout"
+      layout:decorate="~{layout/layout}">
+<head>
+
+  <meta charset="UTF-8" th:remove="tag">
+</head>
+
+<body>
+
+<div layout:fragment="content">
+  <h1>ユーザーメインページ</h1>
+<ul>
+  <li>自分のチームと報告先の人の名前</li>
+  <li>明日の予定を出す</li>
+  <li>未達成Todo一覧を表示</li>
+  <li>（マネージャーの場合か、報告公開がチーム全体の場合）今日報告を出してくれたメンバー名と報告詳細へのリンク</li>
+  <li>（マネージャーの場合）前営業日に報告提出していないメンバーリスト表示</li>
+</ul>
+  <h1>所属チーム</h1>
+  <ul th:each="team : ${teamList}">
+    <li th:text="${team.name}"></li>
+  </ul>
+  <h1>報告先マネージャー</h1>
+  <ul th:each="mgr : ${managerList}">
+    <li th:text="${mgr.name}"></li>
+  </ul>
+  <h1>今日やること</h1>
+  <p th:text="${lastReport.tomorrowSchedule}"></p>
+
+  <h1>未達成タスク</h1>
+  <ul th:each="task : ${taskList}">
+    <li th:text="${task.name}"></li>
+    <li th:text="${task.progressRate}"></li>
+    <li>-----------</li>
+  </ul>
+
+</div>
+</body>
+</html>
+
+
+

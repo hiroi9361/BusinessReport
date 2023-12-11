@@ -25,6 +25,9 @@ public interface ReportMapper {
     @Select("SELECT report_id FROM report WHERE employee_code = #{employeeCode} ORDER BY date DESC LIMIT 1")
     String selectLatestIdByEmployeeCode(int employeeCode);
 
+    @Select("SELECT * FROM report WHERE employee_code = #{employeeCode} ORDER BY date DESC LIMIT 2")
+    List<Report> selectLastTwoReportByEmployeeCode(int employeeCode);
+
     //↓@Optionsは自動生成された"id"を返す処理をする
     @Insert("INSERT INTO report(employee_code, `condition`, condition_rate, impressions, tomorrow_schedule, date, start_time, end_time, is_lateness, lateness_reason, is_left_early) " +
             "VALUES(#{employeeCode}, #{condition}, #{conditionRate}, #{impressions}, #{tomorrowSchedule}, #{date}, #{startTime}, #{endTime}, #{isLateness}, #{latenessReason}, #{isLeftEarly})")

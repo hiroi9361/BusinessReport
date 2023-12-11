@@ -13,13 +13,14 @@ import org.springframework.stereotype.Controller;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
-import java.util.stream.Collectors;
 
 @Controller
 @RequestMapping("/member")
@@ -30,13 +31,15 @@ public class MemberController {
     private final ReportService reportService;
     private final FeedbackService feedbackService;
     private final AssignmentService assignmentService;
+    private final TeamService teamService;
 
-    public MemberController(UserService userService, TaskLogService taskLogService, ReportService reportService, FeedbackService feedbackService, AssignmentService assignmentService) {
+    public MemberController(UserService userService, TaskLogService taskLogService, ReportService reportService, FeedbackService feedbackService, AssignmentService assignmentService, TeamService teamService) {
         this.userService = userService;
         this.taskLogService = taskLogService;
         this.reportService = reportService;
         this.feedbackService=feedbackService;
         this.assignmentService=assignmentService;
+        this.teamService = teamService;
     }
 
     @GetMapping("/report/create")
@@ -315,6 +318,75 @@ public class MemberController {
         redirectAttributes.addAttribute("reportId", reportUpdateInput.getReportId());
         return "redirect:/member/reports/{reportId}";
 
+    }
+
+    @GetMapping("/user-main")
+    public ModelAndView userMain (ModelAndView mav){
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        int employeeCode = Integer.parseInt(authentication.getName());
+
+        List<Assignment> myast= assignmentService.getAssignmentByEmployeeCode(employeeCode);
+        List<Assignment> allast = assignmentService.getAllAssignment();
+
+        List<Team> allteam = teamService.getAllTeam();
+        List<Team> myteam = new ArrayList<Team>();
+
+        List<User> allusers = userService.getAllEmployeeInfo();
+        List<User> managers = new ArrayList<User>();
+
+//        自分が所属しているチーム情報を自分のassignment情報から割り出す
+        for (Team team: allteam) {
+           for(Assignment ast : myast) {
+               if (team.getTeamId() == ast.getTeamId()) {
+                   myteam.add(team);
+               }
+           }
+        }
+
+//        自分が所属しているチームのマネージャー情報を割り出す、自分がマネージャーだったらリストには追加しない
+        for (Assignment ast : allast){
+            for (Team team : myteam){
+             if(ast.getTeamId() == team.getTeamId()){
+              for(User user : allusers){
+                  if(ast.getEmployeeCode() == user.getEmployeeCode() && user.getEmployeeCode() != employeeCode){
+                      if(ast.getIsManager()) {
+                          managers.add(user);
+                      }
+                  }
+              }
+             }
+            }
+        }
+
+//        直近のレポート特定と未達成タスクリストの取得
+        List <Report> two = reportService.getLastTwoByUser(employeeCode);
+        Report lastReport = new Report();
+        LocalDate todaysDate = LocalDate.now();
+
+        for(Report rp : two){
+            if (rp.getDate() != todaysDate){
+                lastReport = rp;
+                break;
+            }
+        }
+
+        List<TaskLog> taskLogs = taskLogService.getIncompleteTaskLogsByReportId(lastReport.getId());
+//        List<TaskLog> taskLogss = taskLogService.getTaskLogsByReportId(lastReport.getId());
+
+        mav.addObject("lastReport", lastReport);
+        mav.addObject("taskList", taskLogs);
+        mav.addObject("managerList", managers);
+        mav.addObject("assignmentList", myast);
+        mav.addObject("teamList", myteam);
+        mav.setViewName("member/user-main");
+
+//        ・自分のチームと報告先の人の名前
+//        ・明日の予定を出す
+//        ・未達成Todo一覧を表示
+//        ・（マネージャーの場合か、報告公開がチーム全体の場合）今日報告を出してくれたメンバー名と報告詳細へのリンク
+//        ・（マネージャーの場合）前営業日に報告提出していないメンバーリスト表示
+
+        return mav;
     }
 
 

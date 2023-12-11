@@ -73,6 +73,9 @@ public class ManagerController {
 
         model.addAttribute("managers", mgrs);
 
+        String title = "メンバー一覧";
+        model.addAttribute("title", title);
+
         //アイコン探し
         if (searchCharacters == null) {
             model.addAttribute("members", members);
@@ -104,6 +107,9 @@ public class ManagerController {
             @RequestParam(name = "employeeCode", required = true) int employeeCode,
             Model model
     ) {
+        String title = "報告一覧";
+        model.addAttribute("title", title);
+
         //社員コードを元に対応するユーザー情報を取得
         User member = userService.getUserByEmployeeCode(employeeCode);
 
@@ -193,6 +199,9 @@ public class ManagerController {
     @GetMapping("/reports/{reportId}")
     public String displayReportDetail(@PathVariable("reportId") int reportId, Model model) {
 
+        String title = "報告詳細";
+        model.addAttribute("title", title);
+
         Report report = reportService.getReportById(reportId);
         List<TaskLog> taskLogs = taskLogService.getTaskLogsByReportId(reportId);
         User member = userService.getUserByEmployeeCode(report.getEmployeeCode());
@@ -214,6 +223,8 @@ public class ManagerController {
     @GetMapping("/create")
     public String display(Model model) {
 
+        String title = "ユーザー作成";
+        model.addAttribute("title", title);
         List<Team> teamList = teamService.getAllTeam();
         model.addAttribute("teamList", teamList);
         model.addAttribute("userCreateInput", new UserCreateInput());
@@ -277,6 +288,9 @@ public class ManagerController {
     @GetMapping("/employeeList")
     public String displayEmployeeList(Model model) {
         List<User> userList = userService.getAllEmployeeInfo();
+        String title = "ユーザー一覧";
+        model.addAttribute("title", title);
+
         model.addAttribute("userList", userList);
         return "manager/employeeList";
     }
@@ -344,6 +358,10 @@ public class ManagerController {
                                   RedirectAttributes redirectAttributes) {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         String loggedEmployeeCode = auth.getName();
+
+        String title = "ユーザー編集";
+        model.addAttribute("title", title);
+
         if (loggedEmployeeCode.equals(String.valueOf(employeeCode))) {
             redirectAttributes.addFlashAttribute("errorEmployeeMsg", "ログイン中のユーザーの編集・削除は出来ません");
             return "redirect:/manager/employeeList";
@@ -374,12 +392,16 @@ public class ManagerController {
     public String displayTeamList(Model model){
         List<Team> teamList = teamService.getAllTeam();
         model.addAttribute("teamList", teamList);
+        String title = "チーム一覧";
+        model.addAttribute("title", title);
 
         return "manager/teamlist";
     }
 
     @GetMapping("/team-create")
     public String displayTeamCreate(Model model){
+        String title = "チーム作成";
+        model.addAttribute("title", title);
         model.addAttribute("teamCreateInput", new TeamCreateInput());
         return "manager/team-create";
     }
@@ -401,6 +423,9 @@ public class ManagerController {
 
         Team team = this.teamService.getTeamById(teamId);
 
+        String title = "チーム編集";
+        model.addAttribute("title", title);
+
         model.addAttribute("team", team);
         model.addAttribute("teamUpdateInput", new TeamUpdateInput());
 
@@ -420,6 +445,9 @@ public class ManagerController {
 
     @GetMapping("/teams/{teamId}/detail")
     public String displayTeamDetail(Model model, @PathVariable int teamId){
+
+        String title = "チーム詳細";
+        model.addAttribute("title", title);
 
         Team team = this.teamService.getTeamById(teamId);
 
@@ -444,6 +472,9 @@ public class ManagerController {
 
     @GetMapping("/{teamId}/assignment")
     public String createAssignment(Model model, @PathVariable int teamId){
+
+        String title = "配属作成";
+        model.addAttribute("title", title);
 
         Team team = this.teamService.getTeamById(teamId);
         List<User> users = userService.getAllEmployeeInfo();

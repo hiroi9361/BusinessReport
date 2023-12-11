@@ -11,30 +11,52 @@
 
 <div layout:fragment="content">
   <h1>ユーザーメインページ</h1>
-<ul>
-  <li>自分のチームと報告先の人の名前</li>
-  <li>明日の予定を出す</li>
-  <li>未達成Todo一覧を表示</li>
-  <li>（マネージャーの場合か、報告公開がチーム全体の場合）今日報告を出してくれたメンバー名と報告詳細へのリンク</li>
-  <li>（マネージャーの場合）前営業日に報告提出していないメンバーリスト表示</li>
-</ul>
   <h1>所属チーム</h1>
-  <ul th:each="team : ${teamList}">
-    <li th:text="${team.name}"></li>
-  </ul>
+  <block th:if="${memteamList}">
+    <ul th:each="team : ${memteamList}">
+      <li th:text="${team.name}"></li>
+    </ul>
+  </block>
+
   <h1>報告先マネージャー</h1>
-  <ul th:each="mgr : ${managerList}">
-    <li th:text="${mgr.name}"></li>
-  </ul>
+  <block th:if="${managerList}">
+    <ul th:each="mgr : ${managerList}">
+      <li th:text="${mgr.name}"></li>
+    </ul>
+  </block>
   <h1>今日やること</h1>
-  <p th:text="${lastReport.tomorrowSchedule}"></p>
+  <block th:if="${lastReport}">
+    <p th:text="${lastReport.tomorrowSchedule}"></p>
+  </block>
 
   <h1>未達成タスク</h1>
+  <block th:if="${taskList}">
   <ul th:each="task : ${taskList}">
     <li th:text="${task.name}"></li>
     <li th:text="${task.progressRate}"></li>
     <li>-----------</li>
   </ul>
+  </block>
+
+  <block th:if="${mgrteamList}">
+  <h1>管理中のチーム</h1>
+    <ul th:each="team : ${mgrteamList}">
+      <li th:text="${team.name}"></li>
+      <a th:href="@{'/manager/home/' + ${team.teamId}}">詳細</a>
+    </ul>
+  </block>
+  <block th:if="${todaymembers}">
+    <h1>本日の報告提出済みメンバー</h1>
+    <ul th:each="mem : ${todaymembers}">
+      <li th:text="${mem.name}"></li>
+    </ul>
+  </block>
+  <block th:if="${notsubmit}">
+    <h1>昨日の報告未提出メンバー</h1>
+    <ul th:each="usr : ${notsubmit}">
+      <li th:text="${usr.name}"></li>
+    </ul>
+  </block>
 
 </div>
 </body>

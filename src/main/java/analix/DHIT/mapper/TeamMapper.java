@@ -33,6 +33,9 @@ public interface TeamMapper {
     @Select("SELECT * FROM assignment WHERE employee_code = #{employeeCode}")
     List<Assignment> selectByEmployeeCode(int employeeCode);
 
+    @Select("SELECT * FROM assignment WHERE employee_code = #{employeeCode} AND is_manager = true")
+    List<Assignment> selectAsManagerByEmployeeCode(int employeeCode);
+
     @Select("SELECT * FROM assignment WHERE team_id = #{teamId}")
     List<Assignment> selectByTeamId(int teamId);
 

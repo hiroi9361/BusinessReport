@@ -40,4 +40,8 @@ public class MysqlAssignmentRepository implements AssignmentRepository{
     @Override
     public List<Assignment> getAllAssignment(){return this.teamMapper.allAssignments();}
 
+    @Override
+    public boolean getIsManager(int employeeCode, int teamId) {
+        return this.teamMapper.getIsManager(employeeCode, teamId);
+    }
 }

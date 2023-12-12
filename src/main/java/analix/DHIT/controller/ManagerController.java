@@ -112,6 +112,7 @@ public class ManagerController {
     public String displayReportSearch(
             @RequestParam(name = "employeeCode", required = true) int employeeCode,
             @RequestParam(name = "isManager", required = false, defaultValue = "false") boolean isManager,//test--------------------
+            AssignmentCreateInput assignmentCreateInput,
             Model model
     ) {
         String title = "報告一覧";
@@ -145,13 +146,12 @@ public class ManagerController {
 
 
 
+        //test---------------------------------
+        model.addAttribute("assignment", assignmentCreateInput);
+        //test---------------------------------
 
 
 
-        //test---------------------
-        model.addAttribute("isManager", isManager);
-
-        //test---------------------
 
 
 
@@ -226,8 +226,11 @@ public class ManagerController {
     }
 
     @GetMapping("/reports/{reportId}")
-    public String displayReportDetail(@PathVariable("reportId") int reportId, Model model) {
+    public String displayReportDetail(@PathVariable("reportId") int reportId, /*@PathVariable("isManager") Boolean isManager,*/ Model model) {
 
+        //test-------------------------
+        //model.addAttribute("test",isManager);
+        //test-------------------------
         String title = "報告詳細";
         model.addAttribute("title", title);
 

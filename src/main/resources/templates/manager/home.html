@@ -22,7 +22,7 @@
                 <!-- ループでアイコンと名前を表示 -->
                 <div th:each="member : ${members}">
                     <div class="col">
-                      <a th:href="@{'/manager/report-search?employeeCode=' + ${member.employeeCode} + '&isManager=' + ${assignment.isManager}}">
+                      <a th:href="@{'/manager/report-search?employeeCode=' + ${member.employeeCode}}"><!-- + '&isManager=' + ${assignment.isManager}-->
                         
                             <div class="icon-container">
                                 <img th:src="'data:image/png;base64,' + ${member.icon}"

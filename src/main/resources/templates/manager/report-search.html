@@ -92,12 +92,14 @@
                 <table class="table">
                     <thead>
                     <tr>
+                        <th>フィードバック</th>
                         <th>日付</th>
                         <th>体調</th>
                     </tr>
                     </thead>
                     <tbody>
                     <tr th:each="report : ${reports}">
+                        <td th:text>既読か未読</td
                         <td th:text="${report.date}"></td>
                         <td th:text="${report.condition}"></td>
                     </tr>

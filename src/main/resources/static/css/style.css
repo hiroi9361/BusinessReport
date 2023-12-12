@@ -1,0 +1,42 @@
+.logo-home{
+
+   margin-right: auto;
+  margin-left: auto;
+  margin-top: 130px;
+  text-align: center;
+  animation: transscaleX 1.7s ease 0s 1 normal;
+}
+
+.logo-main{
+border:10px solid #02990E;
+}
+
+/* transscaleX */
+@keyframes transscaleX {
+  0% {
+    transform:scaleX(0);
+  }
+  100% {
+    transform:scaleX(1);
+  }
+}
+
+
+.home-name {
+  margin-top:50px;
+  animation-name: fadein;
+  animation-duration: 1.5s;
+  animation-timing-function: ease-out;
+  animation-fill-mode: forwards;
+}
+
+@keyframes fadein {
+  0% {
+     opacity: 0;
+     transform: translateY(20px);
+  }
+  100% {
+     opacity: 1;
+     transform: translateY(0);
+  }
+}

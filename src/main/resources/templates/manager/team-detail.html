@@ -9,25 +9,44 @@
 <div layout:fragment="content">
     <h2 th:text="${errorAstMsg}" class="text-danger"></h2>
     <h1>チーム詳細画面</h1>
+    <h1 class="text-danger">ユーザーごとの削除ボタン作成中なので作動しません！</h1>
     <h1 th:object="${team}" th:text="*{name}"></h1>
     <h2>Managers</h2>
     <ul th:each="mgr : ${managers} ">
         <li th:text="${mgr.name}"></li>
+        <form th:action="@{'/assignment/' + ${team.teamId} + ${mgr.employeeCode} +'/delete'}" method="post" onSubmit="return check()">
+            <input type="hidden" name="teamId" th:value="${team.teamId}" />
+            <input type="hidden" name="employeeCode" th:value="${mgr.employeeCode}" />
+            <input type="submit" value="削除" class="btn btn-danger" />
+        </form>
     </ul>
 
     <h2>Members</h2>
     <ul th:each="mem : ${members} ">
         <li th:text="${mem.name}"></li>
+        <form th:action="@{'/assignment/' + ${team.teamId} + '/' + ${mem.employeeCode} +'/delete'}" method="post" onSubmit="return check()">
+            <input type="hidden" name="teamId" th:value="${team.teamId}" />
+            <input type="hidden" name="employeeCode" th:value="${mem.employeeCode}" />
+            <input type="submit" value="削除" class="btn btn-danger" />
+        </form>
     </ul>
 
     <form th:action="@{'/manager/' + ${team.teamId} + '/assignment'}" method="get">
         <input type="hidden" name="teamId" th:value="${team.teamId}" />
-        <input type="submit" value="メンバー追加" class="btn btn-primary" />
+        <input type="submit" value="メンバー追加" class="btn btn-success" />
     </form>
 
-    <a th:href=@{/manager/home}>ユーザー一覧ページ</a>
     <p></p>
-    <a th:href=@{/manager/teamlist}>チーム一覧ページに戻る</a>
+    <a th:href=@{/manager/teamlist}>チーム一覧に戻る</a>
 </div>
+<script layout:fragment="script">
+    function check() {
+   if (window.confirm('このメンバーをチームから削除しますか？')) {
+   return true;
+   } else {
+   return false;
+   }
+   }
+</script>
 </body>
 </html>

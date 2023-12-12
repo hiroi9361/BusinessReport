@@ -536,6 +536,23 @@ public class ManagerController {
         return "redirect:/manager/teams/{teamId}/detail";
     }
 
+    @Transactional
+    @PostMapping("/assignment/{teamId}/{employeeCode}/delete")
+    public String deleteAst(@PathVariable int teamId, @PathVariable int employeeCode){
+        List<Assignment> assignments = assignmentService.getAssignmentByTeam(teamId);
+        Assignment ast = new Assignment();
+
+        for (Assignment as : assignments){
+            if (as.getEmployeeCode() == employeeCode){
+                ast = as;
+            }
+        }
+
+        assignmentService.deleteById(ast.getAssignmentId());
+
+        return "redirect:/manager/teams/{teamId}/detail";
+    }
+
 
     @PostMapping("/teams/{teamId}/delete")
     @Transactional

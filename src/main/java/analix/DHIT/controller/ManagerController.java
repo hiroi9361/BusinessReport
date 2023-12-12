@@ -92,6 +92,9 @@ public class ManagerController {
 
         model.addAttribute("members", model.getAttribute("members"));
         model.addAttribute("memberSearchInput", new MemberSearchInput().withSearchCharacters(searchCharacters));
+        //test***********
+         model.addAttribute("assignment",assignmentCreateInput);
+        //test***********
         return "manager/home";
     }
 
@@ -111,8 +114,7 @@ public class ManagerController {
     @GetMapping("/report-search")
     public String displayReportSearch(
             @RequestParam(name = "employeeCode", required = true) int employeeCode,
-            @RequestParam(name = "isManager", required = false, defaultValue = "false") boolean isManager,//test--------------------
-            AssignmentCreateInput assignmentCreateInput,
+            @ModelAttribute("assignment") AssignmentCreateInput assignmentCreateInput,
             Model model
     ) {
         String title = "報告一覧";
@@ -250,6 +252,11 @@ public class ManagerController {
         String date = report.getDate().format(DateTimeFormatter.ofPattern("yyyy年M月d日(E)", Locale.JAPANESE));
         model.addAttribute("date", date);
 
+        //test------------------------------------
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        int employeeCode = Integer.parseInt(authentication.getName());
+        boolean isMgr = assignmentService.getCountIsManager(employeeCode,reportId);
+        //test------------------------------------
         return "manager/report-detail";
     }
 

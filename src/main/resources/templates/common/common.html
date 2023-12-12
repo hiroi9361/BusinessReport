@@ -6,21 +6,33 @@
     <meta charset="UTF-8" th:remove="tag">
 </head>
 <body>
-
 <div layout:fragment="content">
-<h1>今後の新しいホーム画面にする予定</h1>
-<a th:href=@{/login}>ログイン</a>
-    <p></p>
-<!--<a th:href=@{/manager/home}>Admin用ユーザー一覧ページ</a>-->
-    <p></p>
-    <a th:href=@{/manager/teamlist}>Admin用チーム一覧ページ</a>
-    <p></p>
-<a th:href=@{/member/report-search}>User用ページ</a>
-    <p></p>
-<a th:href=@{/member/user-main}>User用メインページ</a>
+
+    <div class="logo-home">
+        <img th:src="@{/img/yoko-b.jpg}" class="logo-main">
+    </div>
+
+    <div class="home-name">
+    <div th:if="${#authorization.expression('hasRole(''ADMIN'')')}">
+        <h1 class="text-center" th:text="${#authentication.principal.fullName}"></h1>
+        <h3 class="text-center">Admin</h3>
+    </div>
+    <div th:unless="${#authorization.expression('hasRole(''ADMIN'')')}">
+        <h1 class="text-center" th:text="${#authentication.principal.fullName}"></h1>
+        <h3 class="text-center">User</h3>
+    </div>
+    </div>
 
 </div>
-<style layout:fragment="style"></style>
+<style layout:fragment="style">
+    html, body{
+        background-color: #2B2B2B;
+    }
+
+    h1, h3 {
+        color:white;
+    }
+</style>
 <script layout:fragment="script"></script>
 </body>
 </html>

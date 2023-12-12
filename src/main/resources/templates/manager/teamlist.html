@@ -3,37 +3,45 @@
       xmlns:layout="http://www.ultraq.net.nz/web/thymeleaf/layout"
       layout:decorate="~{layout/layout}">
 <head>
-
     <meta charset="UTF-8" th:remove="tag">
 </head>
 
 <body>
 <div layout:fragment="content">
-    <h1>チーム一覧</h1>
-    <a th:href=@{/manager/team-create} class="btn btn-success">チーム作成</a>
-    <table>
+    <h1 class="text-center mt-3">チーム一覧</h1>
+    <div class="button-box">
+        <a th:href=@{/manager/team-create} class="btn btn-success">チーム作成</a>
+    </div>
+    <table class="StripeTable">
+        <thead>
         <tr>
-        <th>チーム名</th>
+            <th>チーム名</th>
+            <th>詳細</th>
+            <th>編集</th>
+            <th>削除</th>
         </tr>
+        </thead>
+        <tbody>
         <tr th:each="teamList : ${teamList}" th:object="${teamList}">
             <td th:text="${teamList.name}"></td>
             <td>
                 <a th:href="@{'/manager/teams/' + ${teamList.teamId} + '/detail'}">
-                    <button type="button" class="btn btn-warning">詳細</button>
+                    <button type="button" class="btn btn-outline-secondary">詳細</button>
                 </a>
             </td>
             <td>
                 <a th:href="@{'/manager/teams/' + ${teamList.teamId} + '/edit'}">
-                    <button type="button" class="btn btn-success">編集</button>
+                    <button type="button" class="btn btn-outline-success">編集</button>
                 </a>
             </td>
             <td>
                 <form th:action="@{'/manager/teams/' + ${teamList.teamId} + '/delete'}" method="post" onSubmit="return check()">
                     <input type="hidden" name="teamId" th:value="${teamList.teamId}" />
-                    <input type="submit" value="削除" class="btn btn-danger" />
+                    <input type="submit" value="削除" class="btn btn-outline-danger" />
                 </form>
             </td>
         </tr>
+        </tbody>
     </table>
 </div>
 </body>

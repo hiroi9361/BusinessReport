@@ -4,17 +4,17 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" th:href="@{/img/logo-D.png}" sizes="any">
     <title>Login</title>
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
 </head>
-<body class="bg-light">
-
+<body>
 <div class="container mt-5">
     <div class="row justify-content-center">
         <div class="col-md-6">
             <div class="card">
                 <div class="card-header">
-                    <h3 class="text-center">ログイン</h3>
+                    <h3 class="text-center">D-HIT ログイン</h3>
                 </div>
                 <div class="card-body">
      <!-- エラーメッセージがある場合に表示 -->
@@ -31,13 +31,17 @@
                             <label for="password">パスワード</label>
                             <input type="password" class="form-control" id="password" name="password" required>
                         </div>
-                        <button type="submit" class="btn btn-primary btn-block">ログイン</button>
+                        <button type="submit" class="btn btn-success btn-block">ログイン</button>
                     </form>
                 </div>
             </div>
         </div>
     </div>
 </div>
-
 </body>
+<style>
+    html, body{
+        background-color: #2B2B2B;
+    }
+</style>
 </html>

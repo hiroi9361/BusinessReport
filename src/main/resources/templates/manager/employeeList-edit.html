@@ -8,12 +8,12 @@
 
 <body>
 <div layout:fragment="content">
+    <div class="container mt-3">
     <h1 class="mb-4">ユーザー編集画面</h1>
     <h2 th:text="${EncodeError}" style="color: red;"></h2>
     <h5>*更新したくない値がある場合何も入力しないでください*</h5>
     <div class="mb-3">
         <p>社員番号: <span th:text="${employeeCode}"></span></p>
-
     </div>
 
     <form th:action="@{/manager/editEmployeeComplete}" th:object="${userEditInput}" th:method="post" enctype="multipart/form-data" onsubmit="return validateForm()">
@@ -52,18 +52,12 @@
 
         <!-- 登録ボタン -->
         <div class="mb-3">
-            <button type="submit" class="btn btn-primary">登録</button>
+            <button type="submit" class="btn btn-success">登録</button>
         </div>
-
-        <a th:href=@{/manager/home}>メンバー一覧ページに戻る</a>
         <p></p>
-        <a th:href=@{/manager/teamlist}>チーム一覧ページ</a>
-        <p></p>
-        <a th:href=@{/manager/employeeList}>ユーザー一覧（アイコン付き）ページに戻る</a>
-
+        <a th:href=@{/manager/employeeList}>ユーザー一覧に戻る</a>
     </form>
 </div>
-
 </div>
 </body>
 </html>

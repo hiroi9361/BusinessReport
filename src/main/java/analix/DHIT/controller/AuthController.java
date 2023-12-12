@@ -37,7 +37,8 @@ public class AuthController {
         }
         String title = "ホーム";
         model.addAttribute("title", title);
-        return "common/common";
+
+        return "common/login";
 
     }
     @GetMapping("/login")

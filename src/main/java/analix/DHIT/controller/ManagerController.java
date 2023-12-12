@@ -231,6 +231,7 @@ public class ManagerController {
         //test-------------------------
         //model.addAttribute("test",isManager);
         //test-------------------------
+
         String title = "報告詳細";
         model.addAttribute("title", title);
 
@@ -502,7 +503,7 @@ public class ManagerController {
         return "manager/team-detail";
     }
 
-    @GetMapping("/{teamId}/assignment")
+    @GetMapping("/assignment/{teamId}")
     public String createAssignment(Model model, @PathVariable int teamId){
 
         String title = "配属作成";

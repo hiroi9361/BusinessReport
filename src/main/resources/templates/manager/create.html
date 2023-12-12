@@ -13,7 +13,7 @@
 <body>
 
 <div layout:fragment="content">
-    <div class="container mt-5">
+    <div class="container mt-3">
         <h1 class="mb-4">ユーザー新規登録</h1>
 <!--        <form th:action="@{/manager/createEmployee}" th:object="${userCreateInput}" th:method="post" enctype="multipart/form-data" onsubmit="return validateForm()">-->
             <form th:action="@{/manager/createEmployee}" th:method="post" enctype="multipart/form-data" onsubmit="return validateForm()">
@@ -87,12 +87,8 @@
             </div>
 
         </form>
+        <a th:href=@{/manager/employeeList}>ユーザー一覧に戻る</a>
     </div>
-    <a th:href=@{/manager/employeeList}>ユーザー一覧に戻る</a>
-    <p></p>
-    <a th:href=@{/manager/home}>メンバー一覧（アイコン付き）に戻る（このリンクはいつか削除する予定）</a>
-
-
 </div>
 <style layout:fragment="style">
     @media (max-width: 768px) {

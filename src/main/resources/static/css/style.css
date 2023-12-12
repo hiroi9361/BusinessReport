@@ -1,10 +1,9 @@
 .logo-home{
-
    margin-right: auto;
   margin-left: auto;
   margin-top: 130px;
   text-align: center;
-  animation: transscaleX 1.7s ease 0s 1 normal;
+  animation: transscaleX 0.7s ease 0s 1 normal;
 }
 
 .logo-main{
@@ -25,7 +24,7 @@ border:10px solid #02990E;
 .home-name {
   margin-top:50px;
   animation-name: fadein;
-  animation-duration: 1.5s;
+  animation-duration: 1s;
   animation-timing-function: ease-out;
   animation-fill-mode: forwards;
 }
@@ -39,4 +38,57 @@ border:10px solid #02990E;
      opacity: 1;
      transform: translateY(0);
   }
+}
+
+.StripeTable {
+text-align:center;
+width:90%;
+margin-right:auto;
+margin-left:auto;
+  border-collapse:collapse;
+  border: 1px solid #C0C0C0;
+}
+
+.StripeTable tr:nth-child(odd) {
+  background-color:#e4f4e5;
+}
+
+.StripeTable tr:nth-child(even) {
+  background-color:#f5f5f5;
+}
+
+.StripeTable tr td {
+  border: 1px solid #C0C0C0;
+}
+
+.container-usercreate{
+margin-right:auto;
+margin-left:auto;
+padding:12px;
+}
+
+.button-box{
+text-align:center;
+margin-top:12px;
+margin-bottom:12px;
+margin-right:auto;
+margin-left:auto;
+}
+
+.lg-title{
+color:#02990E;
+text-align:center;
+}
+
+.lg-logo{
+margin-top:60px;
+margin-right: auto;
+margin-left: auto;
+text-align: center;
+}
+
+.login-logo{
+height:100px;
+width:auto;
+border:6px solid #02990E;
 }

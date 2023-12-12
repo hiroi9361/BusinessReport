@@ -110,4 +110,10 @@ public class AssignmentService {
         return this.assignmentRepository.getIsManager(employeeCode, teamId);
     }
 
+    public boolean getCountIsManager(int employeeCode, int reportId) {
+        int count = this.assignmentRepository.countIsManager(employeeCode, reportId);
+
+        return count > 0;
+    }
+
 }

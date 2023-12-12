@@ -60,6 +60,21 @@ public interface TeamMapper {
     @Select("SELECT is_manager FROM assignment WHERE employee_code = #{employeeCode} AND team_id = #{teamId}")
     boolean getIsManager(int employeeCode, int teamId);
     //test****************************
+    @Select("SELECT COUNT(*) AS count " +
+            "FROM report.assignment AS r " +
+            "WHERE r.team_id IN ( " +
+            "    SELECT team_id " +
+            "    FROM assignment " +
+            "    WHERE employee_code = #{employeeCode} " +
+            ") " +
+            "AND r.employee_code = ( " +
+            "    SELECT employee_code " +
+            "    FROM report.report " +
+            "    WHERE report_id = #{reportId} " +
+            ") " +
+            "AND r.is_manager = false;")
+    int countIsManager(int employeeCode, int reportId);
+    //test****************************
 //    @Select("SELECT user.employee_code FROM user JOIN assignment ON assignment.employee_code = user.employee_code WHERE assignment.is_manager = 1 AND assignment.team_id = 1;")
 //    void allManagersByAssignment(int teamId);
 //

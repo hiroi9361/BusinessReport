@@ -23,4 +23,6 @@ public interface AssignmentRepository {
     void deleteByUser(int employeeCode);
 
     boolean getIsManager(int employeeCode, int teamId);
+
+    int countIsManager(int employeeCode, int reportId);
 }

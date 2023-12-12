@@ -8,13 +8,12 @@
 <body>
 
 <div layout:fragment="content">
-    <div class="seiretsu">
+    <div class="container-usercreate">
 
         <!-- 2023/12/07 富山 START -->
         <!--    <div class="container">-->
-        <div class="container mt-5">
+        <div class="container mt-3">
             <!-- 2023/12/07 富山 END -->
-
             <h1>ユーザー一覧</h1>
             <a class="btn btn-success" th:href=@{/manager/create}>ユーザー作成</a>
 
@@ -53,9 +52,7 @@
         <!--        </form>-->
         <!-- 2023/12/07 富山 END -->
 
-
-
-        <table class="table table-bordered table-striped">
+        <table class="StripeTable">
             <thead>
             <tr>
                 <th>社員番号</th>
@@ -78,13 +75,13 @@
                 </td>
                 <td data-label="編集">
                     <form th:action="@{/manager/employeeList-edit}" method="get">
-                        <input type="submit" class="btn btn-outline-primary" name="edit" value="編集">
+                        <input type="submit" class="btn btn-outline-success" name="edit" value="編集">
                         <input type="hidden" name="employeeCode" th:value="${userList.employeeCode}" />
                     </form>
                 </td>
                 <td data-label="削除">
-                    <form th:action="@{/manager/employeeList-deleteUser}" method="post">
-                        <button type="submit" class="btn btn-outline-danger" name="delete" value="削除" onSubmit="return check()">削除</button>
+                    <form th:action="@{/manager/employeeList-deleteUser}" method="post" onSubmit="return check()">
+                        <button type="submit" class="btn btn-outline-danger" name="delete" value="削除" >削除</button>
                         <input type="hidden" name="employeeCode" th:value="${userList.employeeCode}" />
                         <input type="hidden" name="name" th:value="${userList.name}" />
                     </form>

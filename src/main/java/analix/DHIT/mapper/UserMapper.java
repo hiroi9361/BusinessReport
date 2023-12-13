@@ -42,14 +42,28 @@ public interface UserMapper {
 //    @Select("SELECT * FROM user WHERE employeeCode=#{employeeCode}")
 //    User getuser(int employeeCode);
 
-    //name取得
-    @Select("SELECT name FROM user WHERE employee_code = #{employeeCode}")
-    String getUserName(int employeeCode);
+
 // /////////// 2023/12/08 START 富山 //////////
 
     //roleでの従業員の絞り込み
-    @Select("select * from user where employeeRole = #{role}")
-    List<User> selectEmployeeRole(@Param("role") String role);
+//    @Select("select * from user where employeeRole = #{role}")
+//    List<User> selectEmployeeRole(@Param("role") String role);
+
+    @Select({
+            "select * from user where 1=1",
+            "<choose>",
+            "<when test='searchInput == \"employeeCode\"'>",
+            "and employee_code = #{employeeCode}",
+            "</when>",
+            "<when test='searchInput == \"name\"'>",
+            "and name = #{name}",
+            "</when>",
+            "<when test='searchInput == \"role\"'>",
+            "and role = #{role}",
+            "</when>",
+            "</choose>"
+    })
+    List<User> searchEmployeeInfo();
 
 // /////////// 2023/12/08 END 富山 //////////
 

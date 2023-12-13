@@ -1,6 +1,7 @@
 package analix.DHIT.service;
 
 import analix.DHIT.exception.ReportNotFoundException;
+import analix.DHIT.input.FeedbackUpdateInput;
 import analix.DHIT.input.ReportSortInput;
 import analix.DHIT.input.ReportUpdateInput;
 import analix.DHIT.mapper.FeedbackMapper;
@@ -38,17 +39,12 @@ public class FeedbackService {
         return feedback;
     }
 
-    public int create(
-           String name,
-           int rating,
-           String comment,
-           Report report
-    ) {
+    public int create(FeedbackUpdateInput feedbackUpdateInput) {
         Feedback newFeedback = new Feedback();
-        newFeedback.setName(name);
-        newFeedback.setRating(rating);
-        newFeedback.setComment(comment);
-        newFeedback.setReport(report);
+        newFeedback.setName(feedbackUpdateInput.getName());
+        newFeedback.setRating(feedbackUpdateInput.getRating());
+        newFeedback.setComment(feedbackUpdateInput.getComment());
+        newFeedback.setReportId(feedbackUpdateInput.getReportId());
 
         this.feedbackRepository.save(newFeedback);
 
@@ -61,5 +57,10 @@ public class FeedbackService {
 
     public void update(){
 
+    }
+
+    public boolean count(int reportId){
+        int count = feedbackRepository.count(reportId);
+        return count > 0;
     }
 }

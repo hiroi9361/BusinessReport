@@ -32,4 +32,7 @@ public interface FeedbackMapper {
     //フィードバックの情報を削除
     @Delete("DELETE FROM feedback WHERE report_id = #{reportId}")
     void deleteById(int reportId);
+
+    @Select("SELECT COUNT(*) FROM feedback WHERE report_id = #{reportId}")
+    int countFeedback(int reportId);
 }

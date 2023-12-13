@@ -3,7 +3,6 @@ package analix.DHIT.controller;
 import analix.DHIT.input.*;
 import analix.DHIT.model.*;
 import analix.DHIT.service.*;
-import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
@@ -28,18 +27,23 @@ public class ManagerController {
     private final TaskLogService taskLogService;
     private final TeamService teamService;
     private final AssignmentService assignmentService;
+    private final FeedbackService feedbackService;
+
+    private final FeedbackService feedbackService;
 
     public ManagerController(
             UserService userservice,
             ReportService reportService,
             TaskLogService taskLogService,
             TeamService teamService,
-            AssignmentService assignmentService) {
+            AssignmentService assignmentService,
+            FeedbackService feedbackService) {
         this.userService = userservice;
         this.reportService = reportService;
         this.taskLogService = taskLogService;
         this.teamService = teamService;
         this.assignmentService = assignmentService;
+        this.feedbackService = feedbackService;
     }
 
     @GetMapping("/home/{teamId}")
@@ -228,11 +232,31 @@ public class ManagerController {
     }
 
     @GetMapping("/reports/{reportId}")
-    public String displayReportDetail(@PathVariable("reportId") int reportId, /*@PathVariable("isManager") Boolean isManager,*/ Model model) {
+    public String displayReportDetail(@PathVariable("reportId") int reportId, FeedbackUpdateInput feedbackUpdateInput, Model model,Boolean del) {
 
         //test-------------------------
         //model.addAttribute("test",isManager);
         //test-------------------------
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        int employeeCode = Integer.parseInt(authentication.getName());
+
+
+        if(del != null && del){
+            feedbackService.deleteById(reportId);
+        }
+
+        if(feedbackUpdateInput.getComment() != null && !feedbackService.count(reportId)) {
+            feedbackUpdateInput.setNameByEmployeeCode(employeeCode, userService);
+            feedbackUpdateInput.setReportId(reportId);
+            feedbackService.create(feedbackUpdateInput);
+            model.addAttribute("feedback",feedbackUpdateInput);
+        } else if (feedbackService.count(reportId)) {
+            Feedback feedback = feedbackService.getFeedbackById(reportId);
+
+
+            model.addAttribute("feedback",feedback);
+        }
+
 
         String title = "報告詳細";
         model.addAttribute("title", title);
@@ -253,12 +277,13 @@ public class ManagerController {
         model.addAttribute("date", date);
 
         //test------------------------------------
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        int employeeCode = Integer.parseInt(authentication.getName());
         boolean isMgr = assignmentService.getCountIsManager(employeeCode,reportId);
+        model.addAttribute("isManager",isMgr);
         //test------------------------------------
-        return "manager/report-detail";
+        return "member/report-detail";
+//        return "manager/report-detail";
     }
+
 
     @GetMapping("/create")
     public String display(Model model) {
@@ -266,6 +291,7 @@ public class ManagerController {
         String title = "ユーザー作成";
         model.addAttribute("title", title);
         List<Team> teamList = teamService.getAllTeam();
+        List<AssignmentCreateInput> astList = new ArrayList<>();
         model.addAttribute("teamList", teamList);
         model.addAttribute("userCreateInput", new UserCreateInput());
         model.addAttribute("assignmentCreateInput", new AssignmentCreateInput());
@@ -313,13 +339,6 @@ public class ManagerController {
                     assignmentCreateInput.getIsManager(),
                     assignmentCreateInput.getTeamId()
             );
-//
-//
-//            Assignment newAssignment = new Assignment();
-//            newAssignment.setTeamId(assignmentCreateInput.getTeamId());
-//            newAssignment.setIsManager(assignmentCreateInput.getIsManager());
-//            newAssignment.setEmployeeCode(userCreateInput.getEmployeeCode());
-//            assignmentService.create(newAssignment);
         }
 
         return "redirect:/manager/employeeList";
@@ -355,6 +374,7 @@ public class ManagerController {
         List<Integer> reportIdAllIdGet = reportService.getIdsByEmployeeCode(employeeCode);
 
         for (Integer id : reportIdAllIdGet) {
+            feedbackService.deleteById(id);
             taskLogService.deleteByReportId(id);
             reportService.deleteById(id);
         }
@@ -572,6 +592,7 @@ public class ManagerController {
     ) {
         Team team = teamService.getTeamById(teamId);
 
+        this.assignmentService.deleteByTeam(teamId);
         this.teamService.deleteById(teamId);
 
         return "redirect:/manager/teamlist";

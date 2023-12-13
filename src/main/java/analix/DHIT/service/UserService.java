@@ -152,5 +152,13 @@ public class UserService {
 
 //    public List<User> searchEmployeeList(int searchType){
 //        searchType =
+
+    //名前取得
+    public String getUserName(int employeeCode){
+        return userRepository.getUserName(employeeCode);
+    }
+//    public List<User> selectEmployeeList(){
+//
+
 //    }
 }

@@ -28,18 +28,21 @@ public class ManagerController {
     private final TaskLogService taskLogService;
     private final TeamService teamService;
     private final AssignmentService assignmentService;
+    private final FeedbackService feedbackService;
 
     public ManagerController(
             UserService userservice,
             ReportService reportService,
             TaskLogService taskLogService,
             TeamService teamService,
-            AssignmentService assignmentService) {
+            AssignmentService assignmentService,
+            FeedbackService feedbackService) {
         this.userService = userservice;
         this.reportService = reportService;
         this.taskLogService = taskLogService;
         this.teamService = teamService;
         this.assignmentService = assignmentService;
+        this.feedbackService = feedbackService;
     }
 
     @GetMapping("/home/{teamId}")
@@ -228,11 +231,31 @@ public class ManagerController {
     }
 
     @GetMapping("/reports/{reportId}")
-    public String displayReportDetail(@PathVariable("reportId") int reportId, /*@PathVariable("isManager") Boolean isManager,*/ Model model) {
+    public String displayReportDetail(@PathVariable("reportId") int reportId, FeedbackUpdateInput feedbackUpdateInput, Model model,Boolean del) {
 
         //test-------------------------
         //model.addAttribute("test",isManager);
         //test-------------------------
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        int employeeCode = Integer.parseInt(authentication.getName());
+
+
+        if(del != null && del){
+            feedbackService.deleteById(reportId);
+        }
+
+        if(feedbackUpdateInput.getComment() != null && !feedbackService.count(reportId)) {
+            feedbackUpdateInput.setNameByEmployeeCode(employeeCode, userService);
+            feedbackUpdateInput.setReportId(reportId);
+            feedbackService.create(feedbackUpdateInput);
+            model.addAttribute("feedback",feedbackUpdateInput);
+        } else if (feedbackService.count(reportId)) {
+            Feedback feedback = feedbackService.getFeedbackById(reportId);
+
+
+            model.addAttribute("feedback",feedback);
+        }
+
 
         String title = "報告詳細";
         model.addAttribute("title", title);
@@ -253,12 +276,13 @@ public class ManagerController {
         model.addAttribute("date", date);
 
         //test------------------------------------
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        int employeeCode = Integer.parseInt(authentication.getName());
         boolean isMgr = assignmentService.getCountIsManager(employeeCode,reportId);
+        model.addAttribute("isManager",isMgr);
         //test------------------------------------
-        return "manager/report-detail";
+        return "member/report-detail";
+//        return "manager/report-detail";
     }
+
 
     @GetMapping("/create")
     public String display(Model model) {

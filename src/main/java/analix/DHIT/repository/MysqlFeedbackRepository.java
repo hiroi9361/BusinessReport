@@ -34,4 +34,8 @@ public class MysqlFeedbackRepository implements FeedbackRepository {
     public void update(Feedback feedback){
         this.feedbackMapper.updateFeedback(feedback);
     }
+    @Override
+    public int count(int reportId){
+        return this.feedbackMapper.countFeedback(reportId);
+    }
 }

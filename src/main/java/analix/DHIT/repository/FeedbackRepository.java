@@ -12,4 +12,6 @@ public interface FeedbackRepository {
     void deleteById(int reportId);
 
     void update(Feedback feedback);
+
+    int count(int reportId);
 }

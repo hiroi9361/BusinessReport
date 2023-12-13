@@ -2,6 +2,8 @@ package analix.DHIT.input;
 
 import analix.DHIT.model.Report;
 import analix.DHIT.model.TaskLog;
+import analix.DHIT.model.User;
+import analix.DHIT.service.UserService;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
@@ -14,7 +16,7 @@ public class FeedbackUpdateInput {
     private String name;
     private int rating;
     private String comment;
-    private Report report;
+    private int reportId;
 
     public int getFeedbackId(){
         return feedbackId;
@@ -28,6 +30,9 @@ public class FeedbackUpdateInput {
     public void setName(String name) {
         this.name=name;
     }
+    public void setNameByEmployeeCode(int employeeCode, UserService userService){
+        this.name=userService.getUserName(employeeCode);
+    }
     public int getRating(){
         return rating;
     }
@@ -40,10 +45,10 @@ public class FeedbackUpdateInput {
     public void setComment(String comment) {
         this.comment = comment;
     }
-    public Report getReport(){
-        return report;
+    public int getReportId(){
+        return reportId;
     }
-    public void setReport(Report report) {
-        this.report = report;
+    public void setReportId(int reportId) {
+        this.reportId = reportId;
     }
 }

@@ -150,6 +150,10 @@ public class UserService {
         return null;
     }
 
+    //名前取得
+    public String getUserName(int employeeCode){
+        return userRepository.getUserName(employeeCode);
+    }
 //    public List<User> selectEmployeeList(){
 //
 //    }

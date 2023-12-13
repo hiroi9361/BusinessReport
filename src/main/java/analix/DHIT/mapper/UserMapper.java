@@ -46,7 +46,7 @@ public interface UserMapper {
 // /////////// 2023/12/08 START 富山 //////////
 
     //roleでの従業員の絞り込み
-    @Select("select * from user where employeeRole = #{employeeRole}")
+    @Select("select * from user where employeeRole = #{role}")
     List<User> selectEmployeeRole(@Param("role") String role);
 
 // /////////// 2023/12/08 END 富山 //////////

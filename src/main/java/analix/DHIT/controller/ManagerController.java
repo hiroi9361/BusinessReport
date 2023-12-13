@@ -599,18 +599,18 @@ public class ManagerController {
     }
 
 
-    @PostMapping("/search-employeeList")
-    public String searchEmployeeList(
-            MemberSearchInput memberSearchInput,
-            RedirectAttributes redirectAttributes
-    ) {
-        List<User> members = userService.getMemberBySearchCharacters(memberSearchInput.getSearchCharacters());
-        redirectAttributes.addFlashAttribute("members", members);
-        redirectAttributes.addAttribute("searchCharacters", memberSearchInput.getSearchCharacters());
-
-        return "redirect:/manager/home";
-
-    }
+//    @PostMapping("/search-employeeList")
+//    public String searchEmployeeList(
+//            MemberSearchInput memberSearchInput,
+//            RedirectAttributes redirectAttributes
+//    ) {
+//        List<User> members = userService.getMemberBySearchCharacters(memberSearchInput.getSearchCharacters());
+//        redirectAttributes.addFlashAttribute("members", members);
+//        redirectAttributes.addAttribute("searchCharacters", memberSearchInput.getSearchCharacters());
+//
+//        return "redirect:/manager/home";
+//
+//    }
 
 
 }

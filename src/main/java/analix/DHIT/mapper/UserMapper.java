@@ -65,6 +65,7 @@ public interface UserMapper {
     })
     List<User> searchEmployeeInfo();
 
+
 // /////////// 2023/12/08 END 富山 //////////
 
 }

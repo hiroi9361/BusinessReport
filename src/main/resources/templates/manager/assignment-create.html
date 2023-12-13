@@ -7,33 +7,34 @@
 </head>
 <body>
 <div layout:fragment="content">
-    <h1>チームメンバー追加</h1>
-    <h1 th:text="${team.name}"></h1>
+    <div class="container mt-3">
+    <h1 class="text-center">メンバー追加</h1>
+    <h1 th:text="${team.name}" class="text-center"></h1>
     <div class="container-form">
         <form th:action="@{/manager/assignment/create}" th:object="${assignmentCreateInput}" method="post">
             <input type="hidden" name="teamId" th:value="${team.teamId}"/>
-            <div class="form-group">
+            <div class="form-group mb-3">
                 <label>ユーザー</label>
-                <select th:field="${assignmentCreateInput.employeeCode}">
+                <select th:field="${assignmentCreateInput.employeeCode}" class="form-select">
                     <option th:each="user : ${users}" th:text="${user.name}" name="employeeCode" th:value="${user.employeeCode}"></option>
                 </select>
             </div>
-            <div class="form-group">
+            <div class="form-group mb-3">
                 <label>役割</label>
-                <select name="isManager">
+                <select name="isManager" class="form-select">
                     <option value="false">Member</option>
                     <option value="true">Manager</option>
                 </select>
             </div>
-            <div class="form-group">
-                <button type="submit" class="btn btn-primary">追加</button>
+            <div class="form-group mb-3">
+                <button type="submit" class="w-100 btn btn-lg btn-success">追加</button>
             </div>
         </form>
     </div>
-
-    <p></p>
+        <div class="button-box">
     <a th:href=@{/manager/teamlist}>チーム一覧ページに戻る</a>
-
+        </div>
+    </div>
 </div>
 </body>
 </html>

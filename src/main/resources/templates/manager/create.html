@@ -14,7 +14,7 @@
 
 <div layout:fragment="content">
     <div class="container mt-3">
-        <h1 class="mb-4">ユーザー新規登録</h1>
+        <h1 class="mb-4 text-center">ユーザー新規登録</h1>
 <!--        <form th:action="@{/manager/createEmployee}" th:object="${userCreateInput}" th:method="post" enctype="multipart/form-data" onsubmit="return validateForm()">-->
             <form th:action="@{/manager/createEmployee}" th:method="post" enctype="multipart/form-data" onsubmit="return validateForm()">
             <!-- 社員番号 -->
@@ -62,10 +62,10 @@
             </div>
 
             <div class="mb-3" id="team-field" >
-<!--                <div class="d-flex gap-2">-->
+                <div class="d-flex gap-2">
                     <p class="d-inline d-inline-block p-0 m-0">所属チーム追加</p>
 <!--                    <button type="button" class="btn btn-success" id="add-team">追加</button>-->
-<!--                </div>-->
+                </div>
                 <div class="d-flex">
                     <select th:field="${assignmentCreateInput.teamId}" class="form-select">
                         <option value="0">選択してください</option>
@@ -83,11 +83,14 @@
 
             <!-- 登録ボタン -->
             <div class="mb-3">
-                <button type="submit" class="btn btn-success">登録</button>
+                <button type="submit" class="w-100 btn btn-lg btn-success">登録</button>
             </div>
 
         </form>
-        <a th:href=@{/manager/employeeList}>ユーザー一覧に戻る</a>
+        <div clasS="button-box">
+            <a th:href=@{/manager/employeeList}>ユーザー一覧に戻る</a>
+        </div>
+
     </div>
 </div>
 <style layout:fragment="style">
@@ -112,23 +115,17 @@
 
     const elem = document.getElementById("add-team");
     const teamField = document.getElementById("team-field");
-    let teamIndex = /*[[${assignmentCreateInput.assignments.size()}]]*/;
+<!--    let teamIndex = /*[[${assignmentCreateInput.assignments.size()}]]*/;-->
 
     elem.onclick = function() {
+    console.log("test");
         const node = document.createElement("div");
         node.setAttribute("class", "row");
-        node.innerHTML += `<div class="d-flex">
-                    <select th:field="${assignmentCreateInput.teamId}">
-                        <option th:each="team : ${teamList}" th:text="${team.name}" name="teamId" th:value="${team.teamId}"></option>
-                    </select>
-                    <select th:field="${assignmentCreateInput.isManager}">
-                        <option value="false" name="isManager">Member</option>
-                        <option value="true" name="isManager">Manager</option>
-                    </select>
-                </div>`;
+        node.innerHTML += `
+        `;
 
         teamField.appendChild(node);
-        teamIndex++;
+<!--        teamIndex++;-->
     };
 
     function removeTask(button) {

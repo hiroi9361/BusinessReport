@@ -47,6 +47,9 @@ public interface ReportMapper {
     @Delete("DELETE FROM report WHERE report_id = #{reportId}")
     void deleteById(int reportId);
 
+    @Delete("DELETE FROM report WHERE employee_code = #{employeeCode}")
+    void deleteByEmployeeCode(int employeeCode);
+
     @Update("UPDATE report SET " +
             "`condition` = #{condition}, " +
             "condition_rate = #{conditionRate}, " +

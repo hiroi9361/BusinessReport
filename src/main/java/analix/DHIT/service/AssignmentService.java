@@ -74,6 +74,7 @@ public class AssignmentService {
 //    }
 
 
+    public void deleteByTeam(int teamId){this.teamMapper.deleteAllAssignmentByTeamId(teamId);}
     public void deleteById(int assignmentId) {
         this.assignmentRepository.deleteById(assignmentId);
     }

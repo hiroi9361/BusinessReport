@@ -434,8 +434,8 @@ public class MemberController {
 
         if(!members.isEmpty()){
             for(User user : members) {
-                Report report = reportService.getLastOneByUser(user.getEmployeeCode());
-                if (report != null && report.getDate() == todaysDate){
+                Report report = reportService.getOneByUserByDate(user.getEmployeeCode(), todaysDate);
+                if (report != null){
                     todaymem.add(user);
                 }
             }

@@ -38,4 +38,8 @@ public class MysqlUserRepository implements UserRepository {
     @Override
     public List<User> selectAllEmployeeInfomation(){return this.userMapper.selectAllEmployeeInfo();}
 
+    @Override
+    public String getUserName(int employeeCode){
+        return this.userMapper.getUserName(employeeCode);
+    }
 }

@@ -19,9 +19,10 @@ public class Feedback implements Serializable {
     @Column(length=200)
     private String comment;
 
-    @OneToOne(cascade = CascadeType.ALL)
-    @JoinColumn(name = "report_id")
-    private Report report;
+//    @OneToOne(cascade = CascadeType.ALL)
+//    @JoinColumn(name = "report_id")
+//    private Report report;
+    private int reportId;
 
     public Feedback() {
     }
@@ -58,11 +59,18 @@ public class Feedback implements Serializable {
         this.comment = comment;
     }
 
-    public Report getReport() {
-        return report;
+    public int getReportId() {
+        return reportId;
     }
 
-    public void setReport(Report report) {
-        this.report = report;
+    public void setReportId(int reportId){
+        this.reportId=reportId;
     }
+//    public Report getReport() {
+//        return report;
+//    }
+//
+//    public void setReport(Report report) {
+//        this.report = report;
+//    }
 }

@@ -3,62 +3,141 @@
       xmlns:layout="http://www.ultraq.net.nz/web/thymeleaf/layout"
       layout:decorate="~{layout/layout}">
 <head>
-
   <meta charset="UTF-8" th:remove="tag">
 </head>
-
 <body>
-
 <div layout:fragment="content">
-  <h1>ユーザーメインページ</h1>
-  <h1>所属チーム</h1>
-  <block th:if="${memteamList}">
-    <ul th:each="team : ${memteamList}">
-      <li th:text="${team.name}"></li>
-    </ul>
-  </block>
 
-  <h1>報告先マネージャー</h1>
-  <block th:if="${managerList}">
-    <ul th:each="mgr : ${managerList}">
-      <li th:text="${mgr.name}"></li>
-    </ul>
-  </block>
-  <h1>今日やること</h1>
-  <block th:if="${lastReport}">
-    <p th:text="${lastReport.tomorrowSchedule}"></p>
-  </block>
-
-  <h1>未達成タスク</h1>
-  <block th:if="${taskList}">
-  <ul th:each="task : ${taskList}">
-    <li th:text="${task.name}"></li>
-    <li th:text="${task.progressRate}"></li>
-    <li>-----------</li>
-  </ul>
-  </block>
-
+  <div class="container-main">
   <block th:if="${mgrteamList}">
-  <h1>管理中のチーム</h1>
-    <ul th:each="team : ${mgrteamList}">
-      <li th:text="${team.name}"></li>
-      <a th:href="@{'/manager/home/' + ${team.teamId}}">詳細</a>
-    </ul>
-  </block>
-  <block th:if="${todaymembers}">
-    <h1>本日の報告提出済みメンバー</h1>
-    <ul th:each="mem : ${todaymembers}">
-      <li th:text="${mem.name}"></li>
-    </ul>
-  </block>
-  <block th:if="${notsubmit}">
-    <h1>昨日の報告未提出メンバー</h1>
-    <ul th:each="usr : ${notsubmit}">
-      <li th:text="${usr.name}"></li>
-    </ul>
-  </block>
-
+    <div class="main-left">
+      <h5>管理中のチーム</h5>
+      <div th:each="team : ${mgrteamList}">
+        <a th:href="@{'/manager/home/' + ${team.teamId}}"><h3 th:text="${team.name}"></h3></a>
+      </div>
+    </div>
+<div class="container-sub">
+  <div class="main-right">
+    <block th:if="${todaymembers}">
+      <h5>本日の報告提出済みメンバー</h5>
+      <div th:each="mem : ${todaymembers}">
+        <a th:href="@{'/manager/report-search?employeeCode=' + ${mem.employeeCode}}"><p th:text="${mem.name}"></p></a>
+      </div>
+<!--      <ul th:each="mem : ${todaymembers}">-->
+<!--        <li th:text="${mem.name}"></li>-->
+<!--      </ul>-->
+    </block>
+    </div>
+  <div class="main-right">
+    <block th:if="${notsubmit}">
+      <h5>昨日の報告未提出メンバー</h5>
+      <div th:each="usr : ${notsubmit}">
+        <a  th:href="@{'/manager/report-search?employeeCode=' + ${usr.employeeCode}}"><p th:text="${usr.name}"></p></a>
+      </div>
+<!--      <ul th:each="usr : ${notsubmit}">-->
+<!--        <li th:text="${usr.name}"></li>-->
+<!--      </ul>-->
+    </block>
+  </div>
 </div>
+  </block>
+    <div class="main-left">
+      <h5>所属チーム</h5>
+      <block th:if="${memteamList}">
+        <div th:each="team : ${memteamList}">
+          <h3 th:text="${team.name}"></h3>
+        </div>
+      </block>
+<div class="m-3"></div>
+      <h5>報告先マネージャー</h5>
+      <block th:if="${managerList}">
+        <div th:each="mgr : ${managerList}">
+          <p th:text="${mgr.name}"></p>
+        </div>
+      </block>
+    </div>
+    <div class="main-right">
+      <h5>今日やること</h5>
+      <div th:if="${lastReport}">
+        <p th:text="${lastReport.tomorrowSchedule}"></p>
+      </div>
+    </div>
+  <div class="main-left">
+    <h5>未達成タスク</h5>
+    <block th:if="${taskList}">
+      <div th:each="task : ${taskList}">
+        <div class="main-right">
+          <div class="d-flex justify-content-center">
+            <div class="d-flex justify-content-center me-5"><h5 th:text="${task.name}"></h5></div>
+            <div class="d-flex justify-content-center"><h5>進捗率：</h5><h5 th:text="${task.progressRate}"></h5><h5> %</h5></div>
+          </div>
+        </div>
+      </div>
+    </block>
+  </div>
+
+
+<!--  <h1>所属チーム</h1>-->
+<!--  <block th:if="${memteamList}">-->
+<!--    <ul th:each="team : ${memteamList}">-->
+<!--      <li th:text="${team.name}"></li>-->
+<!--    </ul>-->
+<!--  </block>-->
+
+<!--  <h1>報告先マネージャー</h1>-->
+<!--  <block th:if="${managerList}">-->
+<!--    <ul th:each="mgr : ${managerList}">-->
+<!--      <li th:text="${mgr.name}"></li>-->
+<!--    </ul>-->
+<!--  </block>-->
+<!--  <h1>今日やること</h1>-->
+<!--  <block th:if="${lastReport}">-->
+<!--    <p th:text="${lastReport.tomorrowSchedule}"></p>-->
+<!--  </block>-->
+
+<!--  <h1>未達成タスク</h1>-->
+<!--  <block th:if="${taskList}">-->
+<!--  <ul th:each="task : ${taskList}">-->
+<!--    <li th:text="${task.name}"></li>-->
+<!--    <li th:text="${task.progressRate}"></li>-->
+<!--    <li>-&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;</li>-->
+<!--  </ul>-->
+<!--  </block>-->
+
+<!--  <block th:if="${mgrteamList}">-->
+<!--  <h1>管理中のチーム</h1>-->
+<!--    <ul th:each="team : ${mgrteamList}">-->
+<!--      <li th:text="${team.name}"></li>-->
+<!--      <a th:href="@{'/manager/home/' + ${team.teamId}}">詳細</a>-->
+<!--    </ul>-->
+<!--  </block>-->
+<!--  <block th:if="${todaymembers}">-->
+<!--    <h1>本日の報告提出済みメンバー</h1>-->
+<!--    <ul th:each="mem : ${todaymembers}">-->
+<!--      <li th:text="${mem.name}"></li>-->
+<!--    </ul>-->
+<!--  </block>-->
+<!--  <block th:if="${notsubmit}">-->
+<!--    <h1>昨日の報告未提出メンバー</h1>-->
+<!--    <ul th:each="usr : ${notsubmit}">-->
+<!--      <li th:text="${usr.name}"></li>-->
+<!--    </ul>-->
+<!--  </block>-->
+  </div>
+</div>
+<style layout:fragment="style">
+  a{
+  text-decoration: none;
+  transition: color 0.3s;
+  color:#02990E;
+  font-weight:bold;
+}
+
+a:hover{
+  color : black;
+}
+
+</style>
 </body>
 </html>
 

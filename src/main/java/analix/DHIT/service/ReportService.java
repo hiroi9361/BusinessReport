@@ -136,6 +136,8 @@ public class ReportService {
         return this.reportMapper.selectByEmployeeCodeAndDate(employeeCode, date);
     }
 
+    public void deleteByUser(int employeeCode) {this.reportMapper.deleteByEmployeeCode(employeeCode);}
+
     //追記*****************************************************
     //報告一覧表示----------------------------------
     public  List<Report> getfindAll(int employeecode){

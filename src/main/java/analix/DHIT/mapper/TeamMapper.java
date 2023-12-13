@@ -50,6 +50,9 @@ public interface TeamMapper {
     @Delete("DELETE FROM assignment WHERE assignment_id = #{assignmentId}")
     void deleteAssignmentById(int assignmentId);
 
+    @Delete("DELETE FROM assignment WHERE team_id = #{teamId}")
+    void deleteAllAssignmentByTeamId(int teamId);
+
     @Delete("DELETE FROM assignment WHERE employee_code = #{employeeCode}")
     void deleteAssignmentByUser(int employeeCode);
 

@@ -129,3 +129,40 @@ margin-right:auto;
 margin-left:auto;
 margin-bottom:12px;
 }
+
+.report-container {
+margin:1rem;
+}
+
+.attendance-boxL {
+border:1px solid #C0C0C0;
+background:#f5f5f5;
+padding:12px;
+min-height:270px;
+margin-top:12px;
+}
+
+.attendance-boxR {
+border:1px solid #C0C0C0;
+background:#e4f4e5;
+padding:12px;
+min-height:270px;
+margin-top:12px;
+}
+
+.repo-todo-boxL {
+border:1px solid #C0C0C0;
+background:#e4f4e5;
+padding:12px;
+margin-top:12px;
+min-height:290px;
+}
+
+.repo-todo-boxR {
+border:1px solid #C0C0C0;
+background:#f5f5f5;
+padding:12px;
+margin-top:12px;
+min-height:290px;
+}
+

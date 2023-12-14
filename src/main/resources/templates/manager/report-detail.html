@@ -1,13 +1,116 @@
 <!DOCTYPE html>
-<html lang="ja" xmlns:th="http://www.w3.org/1999/xhtml">
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/web/thymeleaf/layout"
+      layout:decorate="~{layout/layout}">
 <head>
-    <meta charset="UTF-8">
-    <title>業務報告書詳細</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
+    <meta charset="UTF-8" th:remove="tag">
+</head>
+<body>
+<div layout:fragment="content">
+    <div class="container">
+        <div class="section text-center">
+            <div class="row">
+                <div class="col">
+                    <div th:if="${beforeReportId!=null}">
+                        <a th:href="@{'/manager/reports/' + ${beforeReportId}}">
+                            <button type="button" class="btn btn-primary">&lt; 前の日</button>
+                        </a>
+                    </div>
+                </div>
+                <div class="col">
+                    <h2 th:text="${date}">日付</h2>
+                </div>
+                <div class="col">
+                    <h2 th:text="${member.name}">名前</h2>
+                </div>
+                <div class="col">
+                    <div th:if="${afterReportId!=null}">
+                        <a th:href="@{'/manager/reports/' + ${afterReportId}}">
+                            <button type="button" class="btn btn-primary">&gt; 次の日</button>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
 
-    <style>
-        body {
+        <div class="section text-center">
+            <div class="row">
+                <div class="col-12 col-md-6">
+                    <h2>Todo</h2>
+                    <table class="table">
+                        <thead>
+                        <tr>
+                            <th scope="col">タスク名</th>
+                            <th scope="col">進捗率</th>
+                            <th scope="col">進捗グラフ</th> <!-- 追加: グラフ表示列 -->
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr th:each="taskLog : ${taskLogs}" class="task">
+                            <td th:text="${taskLog.name}" style="word-wrap: break-word; max-width: 200px;"></td>
+                            <td class="progress-rate" th:text="${taskLog.progressRate + '%'}"></td>
+                            <td>
+                                <!-- Bootstrapのプログレスバー -->
+                                <div class="progress">
+                                    <div class="progress-bar" role="progressbar" th:style="'width: ' + ${taskLog.progressRate} + '%;'" aria-valuenow="25" aria-valuemin="0" aria-valuemax="100"></div>
+                                </div>
+                            </td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <div class="col-12 col-md-6">
+                    <div class="row sub-section">
+                        <div class="col-12 mb-4">
+                            <h2>勤怠</h2>
+                        </div>
+
+                        <p>出勤時間: <span th:text="${report.startTime}"></span></p>
+                        <p>退勤時間: <span th:text="${report.endTime}"></span></p>
+                        <div th:if="${report.isLateness}" class="col-md-12 red-text">
+                            <p>遅刻</p>
+                            <p>理由: <span th:text="${report.latenessReason}"></span></p>
+                        </div>
+
+                        <div th:if="${report.isLeftEarly}" class="col-md-12 red-text">
+                            <p>早退</p>
+                        </div>
+                    </div>
+                    <div class="row sub-section">
+                        <div class="col-12 mb-4">
+                            <h2>体調</h2>
+                        </div>
+                        <i th:switch="${report.condition}">
+                            <i th:case="'良好'">
+                                <i class="bi bi-emoji-smile-fill text-success" style="font-size: 7rem;"></i>
+                            </i>
+                            <i th:case="'普通'">
+                                <i class="bi bi-emoji-neutral-fill text-warning" style="font-size: 7rem;"></i>
+                            </i>
+                            <i th:case="'不調'">
+                                <i class="bi bi-emoji-dizzy-fill text-danger" style="font-size: 7rem;"></i>
+                            </i>
+                        </i>
+                    </div>
+                    <div class="row sub-section">
+                        <div class="col-12 mb-4">
+                            <h2>感想</h2>
+                        </div>
+                        <p><span th:text="${report.impressions}"></span></p>
+                    </div>
+                    <div class="row sub-section">
+                        <div class="col-12 mb-4">
+                            <h2>明日の予定</h2>
+                        </div>
+                        <p><span th:text="${report.tomorrowSchedule}"></span></p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<style layout:fragment="style">
+    body {
             background-color: #f8f9fa;
         }
 
@@ -79,113 +182,201 @@
                 margin-right: 2px;
             }
         }
-    </style>
-</head>
-<body>
-<div th:replace="manager/navbar :: navbar"></div>
-
-<div class="container">
-    <div class="section text-center">
-            <div class="row">
-                <div class="col">
-                    <div th:if="${beforeReportId!=null}">
-                        <a th:href="@{'/manager/reports/' + ${beforeReportId}}">
-                            <button type="button" class="btn btn-primary">&lt; 前の日</button>
-                        </a>
-                    </div>
-                </div>
-                <div class="col">
-                    <h2 th:text="${date}">日付</h2>
-                </div>
-                <div class="col">
-                    <h2 th:text="${member.name}">名前</h2>
-                </div>
-                <div class="col">
-                    <div th:if="${afterReportId!=null}">
-                        <a th:href="@{'/manager/reports/' + ${afterReportId}}">
-                            <button type="button" class="btn btn-primary">&gt; 次の日</button>
-                        </a>
-                    </div>
-                </div>
-            </div>
-    </div>
-
-    <div class="section text-center">
-        <div class="row">
-            <div class="col-12 col-md-6">
-                <h2>Todo</h2>
-                <table class="table">
-                    <thead>
-                    <tr>
-                        <th scope="col">タスク名</th>
-                        <th scope="col">進捗率</th>
-                        <th scope="col">進捗グラフ</th> <!-- 追加: グラフ表示列 -->
-                    </tr>
-                    </thead>
-                    <tbody>
-                    <tr th:each="taskLog : ${taskLogs}" class="task">
-                        <td th:text="${taskLog.name}" style="word-wrap: break-word; max-width: 200px;"></td>
-                        <td class="progress-rate" th:text="${taskLog.progressRate + '%'}"></td>
-                        <td>
-                            <!-- Bootstrapのプログレスバー -->
-                            <div class="progress">
-                                <div class="progress-bar" role="progressbar" th:style="'width: ' + ${taskLog.progressRate} + '%;'" aria-valuenow="25" aria-valuemin="0" aria-valuemax="100"></div>
-                            </div>
-                        </td>
-                    </tr>
-                    </tbody>
-                </table>
-            </div>
-            <div class="col-12 col-md-6">
-                <div class="row sub-section">
-                    <div class="col-12 mb-4">
-                        <h2>勤怠</h2>
-                    </div>
-
-                    <p>出勤時間: <span th:text="${report.startTime}"></span></p>
-                    <p>退勤時間: <span th:text="${report.endTime}"></span></p>
-                    <div th:if="${report.isLateness}" class="col-md-12 red-text">
-                        <p>遅刻</p>
-                        <p>理由: <span th:text="${report.latenessReason}"></span></p>
-                    </div>
-
-                    <div th:if="${report.isLeftEarly}" class="col-md-12 red-text">
-                        <p>早退</p>
-                    </div>
-                </div>
-                <div class="row sub-section">
-                    <div class="col-12 mb-4">
-                        <h2>体調</h2>
-                    </div>
-                    <i th:switch="${report.condition}">
-                        <i th:case="'良好'">
-                            <i class="bi bi-emoji-smile-fill text-success" style="font-size: 7rem;"></i>
-                        </i>
-                        <i th:case="'普通'">
-                            <i class="bi bi-emoji-neutral-fill text-warning" style="font-size: 7rem;"></i>
-                        </i>
-                        <i th:case="'不調'">
-                            <i class="bi bi-emoji-dizzy-fill text-danger" style="font-size: 7rem;"></i>
-                        </i>
-                    </i>
-                </div>
-                <div class="row sub-section">
-                    <div class="col-12 mb-4">
-                        <h2>感想</h2>
-                    </div>
-                    <p><span th:text="${report.impressions}"></span></p>
-                </div>
-                <div class="row sub-section">
-                    <div class="col-12 mb-4">
-                        <h2>明日の予定</h2>
-                    </div>
-                    <p><span th:text="${report.tomorrowSchedule}"></span></p>
-                </div>
-            </div>
-        </div>
-    </div>
-</div>
-
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</style>
+<script layout:fragment="script"></script>
 </body>
 </html>
+
+
+
+<!--<!DOCTYPE html>-->
+<!--<html lang="ja" xmlns:th="http://www.w3.org/1999/xhtml">-->
+<!--<head>-->
+<!--    <meta charset="UTF-8">-->
+<!--    <title>業務報告書詳細</title>-->
+<!--    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">-->
+<!--    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">-->
+
+<!--    <style>-->
+<!--        body {-->
+<!--            background-color: #f8f9fa;-->
+<!--        }-->
+
+<!--        h1 {-->
+<!--            color: #343a40;-->
+<!--            font-size: 2.5rem;-->
+<!--            margin-bottom: 20px;-->
+<!--        }-->
+
+<!--        img {-->
+<!--            max-width: 100%;-->
+<!--            border-radius: 50%;-->
+<!--            margin-bottom: 20px;-->
+<!--        }-->
+
+<!--        p {-->
+<!--            font-size: 1.2rem;-->
+<!--        }-->
+
+<!--        .red-text {-->
+<!--            color: #dc3545;-->
+<!--            font-weight: bold;-->
+<!--        }-->
+
+<!--        .task {-->
+<!--            border-top: 1px solid #dee2e6;-->
+<!--            padding: 10px 0;-->
+<!--        }-->
+
+<!--        .progress-rate {-->
+<!--            color: #007bff;-->
+<!--        }-->
+
+<!--        .section {-->
+<!--            margin-top: 20px;-->
+<!--            padding: 20px;-->
+<!--            background-color: #fff;-->
+<!--            border-radius: 10px;-->
+<!--            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);-->
+<!--            border: 1px solid #dee2e6;-->
+<!--        }-->
+
+<!--        .section h2 {-->
+<!--            font-size: 1.5rem;-->
+<!--            margin-bottom: 15px;-->
+<!--        }-->
+
+<!--        .sub-section {-->
+<!--            border: 1px solid #dee2e6;-->
+<!--            border-radius: 10px;-->
+<!--            margin-bottom: 20px;-->
+<!--            padding: 15px;-->
+<!--        }-->
+<!--&lt;!&ndash;        .row .col {&ndash;&gt;-->
+<!--&lt;!&ndash;            display : flex;&ndash;&gt;-->
+<!--&lt;!&ndash;        }&ndash;&gt;-->
+<!--        @media (max-width: 768px) {-->
+<!--            .col button[type="button"] {-->
+<!--                white-space: nowrap;-->
+<!--                float: left;-->
+<!--                text-align: center;-->
+<!--                font-size: 0.64rem;-->
+<!--                /*width : auto;*/-->
+
+<!--            }-->
+<!--            .col h2 {-->
+<!--                font-size: 0.7rem;-->
+<!--                margin-left: 2px;-->
+<!--                margin-right: 2px;-->
+<!--            }-->
+<!--        }-->
+<!--    </style>-->
+<!--</head>-->
+<!--<body>-->
+<!--<div th:replace="manager/navbar :: navbar"></div>-->
+
+<!--<div class="container">-->
+<!--    <div class="section text-center">-->
+<!--            <div class="row">-->
+<!--                <div class="col">-->
+<!--                    <div th:if="${beforeReportId!=null}">-->
+<!--                        <a th:href="@{'/manager/reports/' + ${beforeReportId}}">-->
+<!--                            <button type="button" class="btn btn-primary">&lt; 前の日</button>-->
+<!--                        </a>-->
+<!--                    </div>-->
+<!--                </div>-->
+<!--                <div class="col">-->
+<!--                    <h2 th:text="${date}">日付</h2>-->
+<!--                </div>-->
+<!--                <div class="col">-->
+<!--                    <h2 th:text="${member.name}">名前</h2>-->
+<!--                </div>-->
+<!--                <div class="col">-->
+<!--                    <div th:if="${afterReportId!=null}">-->
+<!--                        <a th:href="@{'/manager/reports/' + ${afterReportId}}">-->
+<!--                            <button type="button" class="btn btn-primary">&gt; 次の日</button>-->
+<!--                        </a>-->
+<!--                    </div>-->
+<!--                </div>-->
+<!--            </div>-->
+<!--    </div>-->
+
+<!--    <div class="section text-center">-->
+<!--        <div class="row">-->
+<!--            <div class="col-12 col-md-6">-->
+<!--                <h2>Todo</h2>-->
+<!--                <table class="table">-->
+<!--                    <thead>-->
+<!--                    <tr>-->
+<!--                        <th scope="col">タスク名</th>-->
+<!--                        <th scope="col">進捗率</th>-->
+<!--                        <th scope="col">進捗グラフ</th> &lt;!&ndash; 追加: グラフ表示列 &ndash;&gt;-->
+<!--                    </tr>-->
+<!--                    </thead>-->
+<!--                    <tbody>-->
+<!--                    <tr th:each="taskLog : ${taskLogs}" class="task">-->
+<!--                        <td th:text="${taskLog.name}" style="word-wrap: break-word; max-width: 200px;"></td>-->
+<!--                        <td class="progress-rate" th:text="${taskLog.progressRate + '%'}"></td>-->
+<!--                        <td>-->
+<!--                            &lt;!&ndash; Bootstrapのプログレスバー &ndash;&gt;-->
+<!--                            <div class="progress">-->
+<!--                                <div class="progress-bar" role="progressbar" th:style="'width: ' + ${taskLog.progressRate} + '%;'" aria-valuenow="25" aria-valuemin="0" aria-valuemax="100"></div>-->
+<!--                            </div>-->
+<!--                        </td>-->
+<!--                    </tr>-->
+<!--                    </tbody>-->
+<!--                </table>-->
+<!--            </div>-->
+<!--            <div class="col-12 col-md-6">-->
+<!--                <div class="row sub-section">-->
+<!--                    <div class="col-12 mb-4">-->
+<!--                        <h2>勤怠</h2>-->
+<!--                    </div>-->
+
+<!--                    <p>出勤時間: <span th:text="${report.startTime}"></span></p>-->
+<!--                    <p>退勤時間: <span th:text="${report.endTime}"></span></p>-->
+<!--                    <div th:if="${report.isLateness}" class="col-md-12 red-text">-->
+<!--                        <p>遅刻</p>-->
+<!--                        <p>理由: <span th:text="${report.latenessReason}"></span></p>-->
+<!--                    </div>-->
+
+<!--                    <div th:if="${report.isLeftEarly}" class="col-md-12 red-text">-->
+<!--                        <p>早退</p>-->
+<!--                    </div>-->
+<!--                </div>-->
+<!--                <div class="row sub-section">-->
+<!--                    <div class="col-12 mb-4">-->
+<!--                        <h2>体調</h2>-->
+<!--                    </div>-->
+<!--                    <i th:switch="${report.condition}">-->
+<!--                        <i th:case="'良好'">-->
+<!--                            <i class="bi bi-emoji-smile-fill text-success" style="font-size: 7rem;"></i>-->
+<!--                        </i>-->
+<!--                        <i th:case="'普通'">-->
+<!--                            <i class="bi bi-emoji-neutral-fill text-warning" style="font-size: 7rem;"></i>-->
+<!--                        </i>-->
+<!--                        <i th:case="'不調'">-->
+<!--                            <i class="bi bi-emoji-dizzy-fill text-danger" style="font-size: 7rem;"></i>-->
+<!--                        </i>-->
+<!--                    </i>-->
+<!--                </div>-->
+<!--                <div class="row sub-section">-->
+<!--                    <div class="col-12 mb-4">-->
+<!--                        <h2>感想</h2>-->
+<!--                    </div>-->
+<!--                    <p><span th:text="${report.impressions}"></span></p>-->
+<!--                </div>-->
+<!--                <div class="row sub-section">-->
+<!--                    <div class="col-12 mb-4">-->
+<!--                        <h2>明日の予定</h2>-->
+<!--                    </div>-->
+<!--                    <p><span th:text="${report.tomorrowSchedule}"></span></p>-->
+<!--                </div>-->
+<!--            </div>-->
+<!--        </div>-->
+<!--    </div>-->
+<!--</div>-->
+
+<!--<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>-->
+<!--</body>-->
+<!--</html>-->

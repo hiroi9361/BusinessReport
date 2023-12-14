@@ -1,256 +1,155 @@
 <!DOCTYPE html>
-<html lang="ja" xmlns:th="http://www.w3.org/1999/xhtml">
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/web/thymeleaf/layout"
+      layout:decorate="~{layout/layout}">
 <head>
-    <meta charset="UTF-8">
-    <title>業務報告書詳細</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
-
-    <style>
-        body {
-            background-color: #f8f9fa;
-        }
-
-        h1 {
-            color: #343a40;
-            font-size: 2.5rem;
-            margin-bottom: 20px;
-        }
-
-        img {
-            max-width: 100%;
-            border-radius: 50%;
-            margin-bottom: 20px;
-        }
-
-        p {
-            font-size: 1.2rem;
-        }
-
-        .red-text {
-            color: #dc3545;
-            font-weight: bold;
-        }
-
-        .task {
-            border-top: 1px solid #dee2e6;
-            padding: 10px 0;
-        }
-
-        .progress-rate {
-            color: #007bff;
-        }
-
-        .section {
-            margin-top: 20px;
-            padding: 20px;
-            background-color: #fff;
-            border-radius: 10px;
-            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-            border: 1px solid #dee2e6;
-        }
-
-        .section h2 {
-            font-size: 1.5rem;
-            margin-bottom: 15px;
-        }
-
-        .sub-section {
-            border: 1px solid #dee2e6;
-            border-radius: 10px;
-            margin-bottom: 20px;
-            padding: 15px;
-        }
-
-<!--        .row_name_time {-->
-<!--            display : flex;-->
-<!--        }-->
-        .btn-group button {
-            margin : 10px;
-        }
-
-        @media (max-width: 768px) {
-            .col button {
-                width : auto;
-            }
-            .col button[type="button"] {
-                white-space: nowrap;
-                float: left;
-                text-align: center;
-            }
-            .col h2 {
-                font-size: 0.9rem;
-                margin-left: 2px;
-                margin-right: 2px;
-            }
-        }
-    </style>
+    <meta charset="UTF-8" th:remove="tag">
 </head>
 <body>
-<div th:replace="member/navbar :: navbar"></div>
-
-<div class="section text-center">
-    <div class="row">
-        <div class="row_name_time">
-            <div class="col">
-                <div th:if="${beforeReportId!=null}">
-                    <a th:href="@{'/member/reports/' + ${beforeReportId}}">
-                        <button type="button" class="btn btn-primary">&lt; 前の日</button>
-                    </a>
-                </div>
-            </div>
-            <div class="col">
-                <h2 th:text="${date}">日付</h2>
-            </div>
-            <div class="col">
-                <h2 th:text="${member.name}">名前</h2>
-            </div>
-            <div class="col">
-                <div th:if="${afterReportId!=null}">
-                    <a th:href="@{'/member/reports/' + ${afterReportId}}">
-                        <button type="button" class="btn btn-primary">&gt; 次の日</button>
-                    </a>
-                </div>
-            </div>
+<div layout:fragment="content">
+<div class="report-container">
+    <div class="d-flex justify-content-center">
+        <div th:if="${beforeReportId!=null}">
+            <a th:href="@{'/member/reports/' + ${beforeReportId}}">
+                <button type="button" class="btn btn-secondary me-3">&lt; 前の日</button>
+            </a>
         </div>
-
-        <!-- 編集ボタンと削除ボタンをくっつけて配置 -->
-        <div class="col">
-            <div class="btn-group" role="group">
-                <!-- 編集ボタン -->
-                <a th:href="@{${report.id} + '/edit'}">
-                    <button type="button" class="btn btn-warning">編集</button>
-                </a>
-                <!-- 削除ボタン -->
-                <button type="button" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#deleteModal">
-                    削除
-                </button>
-            </div>
+        <div th:if="${afterReportId!=null}">
+            <a th:href="@{'/member/reports/' + ${afterReportId}}">
+                <button type="button" class="btn btn-secondary">次の日 ></button>
+            </a>
         </div>
     </div>
-</div>
-
-<!-- モーダル -->
-<div class="modal fade" id="deleteModal" tabindex="-1" aria-labelledby="deleteModalLabel" aria-hidden="true">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="deleteModalLabel">削除の確認</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-            </div>
-            <div class="modal-body">
-                <p>本当に削除しますか？</p>
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">キャンセル</button>
-                <!-- 実際の削除処理を行うフォーム -->
-                <form th:action="@{${report.id} + '/delete'}" method="post">
-                    <button type="submit" class="btn btn-danger">削除</button>
-                </form>
-            </div>
-        </div>
+    <div class="button-box">
+        <h2 th:text="${date}">日付</h2>
+        <h2 th:text="${member.name}">名前</h2>
+        <a th:href="@{${report.id} + '/edit'}" class="btn btn-success">編集</a>
+        <!--    削除ボタンはリンク貼り直す必要あり-->
+        <button class="btn btn-danger">削除</button>
     </div>
-</div>
 
-
-<div class="section text-center">
-    <div class="row">
-        <div class="col-12 col-md-6">
-            <h2>Todo</h2>
-            <table class="table">
-                <thead>
-                <tr>
-                    <th scope="col">タスク名</th>
-                    <th scope="col">進捗率</th>
-                    <th scope="col">進捗グラフ</th> <!-- 追加: グラフ表示列 -->
-                </tr>
-                </thead>
-                <tbody>
-                <tr th:each="taskLog : ${taskLogs}" class="task">
-                    <td th:text="${taskLog.name}" style="word-wrap: break-word; max-width: 200px;"></td>
-                    <td class="progress-rate" th:text="${taskLog.progressRate + '%'}"></td>
-                    <td>
-                        <!-- Bootstrapのプログレスバー -->
-                        <div class="progress">
-                            <div class="progress-bar" role="progressbar" th:style="'width: ' + ${taskLog.progressRate} + '%;'" aria-valuenow="25" aria-valuemin="0" aria-valuemax="100"></div>
-                        </div>
-                    </td>
-                </tr>
-                </tbody>
-            </table>
-        </div>
-        <div class="col-12 col-md-6">
-            <div class="row sub-section">
-                <div class="col-12 mb-4">
-                    <h2>勤怠</h2>
-                </div>
-
+    <div class="row justify-content-md-center">
+        <div class="col-md-6">
+            <div class="attendance-boxL">
+                <h5 class="text-center">勤怠</h5>
                 <p>出勤時間: <span th:text="${report.startTime}"></span></p>
                 <p>退勤時間: <span th:text="${report.endTime}"></span></p>
-                <!--編集：遅刻と早退の片方か両方のチェックによって理由が表示される-->
-                <div th:if="${report.isLateness and report.isLeftEarly}" class="col-md-12 red-text">
+                <div th:if="${report.isLateness and report.isLeftEarly}" class="text-danger">
                     <p>遅刻と早退</p>
                     <p>理由: <span th:text="${report.latenessReason}"></span></p>
                 </div>
-                <div th:if="${report.isLateness and not report.isLeftEarly}" class="col-md-12 red-text">
+                <div th:if="${report.isLateness and not report.isLeftEarly}" class="text-danger">
                     <p>遅刻</p>
                     <p>理由: <span th:text="${report.latenessReason}"></span></p>
                 </div>
-                <div th:if="${report.isLeftEarly and not report.isLateness}" class="col-md-12 red-text">
+                <div th:if="${report.isLeftEarly and not report.isLateness}" class="text-danger">
                     <p>早退</p>
                     <p>理由: <span th:text="${report.latenessReason}"></span></p>
                 </div>
-                <!--編集：遅刻と早退の片方か両方のチェックによって理由が表示される-->
             </div>
-            <div class="row sub-section">
-                <div class="col-12 mb-4">
-                    <h2>体調</h2>
-                </div>
+        </div>
+
+        <div class="col-md-6">
+            <div class="attendance-boxR">
+                <h5 class="text-center">体調</h5>
                 <i th:switch="${report.conditionRate}">
                     <i th:case="1">
-                        <i class="bi bi-emoji-smile-fill text-success" style="font-size: 7rem;"></i>
+                        <i class="bi bi-emoji-smile-fill text-success" style="font-size: 2rem;"></i>
                     </i>
                     <i th:case="2">
-                        <i class="bi bi-emoji-neutral-fill text-warning" style="font-size: 7rem;"></i>
+                        <i class="bi bi-emoji-neutral-fill text-warning" style="font-size: 2rem;"></i>
                     </i>
                     <i th:case="3">
-                        <i class="bi bi-emoji-dizzy-fill text-danger" style="font-size: 7rem;"></i>
+                        <i class="bi bi-emoji-dizzy-fill text-danger" style="font-size: 2rem;"></i>
                     </i>
                 </i>
-            </div>
-            <!--            追記-->
-            <div class="row sub-section">
-                <div class="col-12 mb-4">
-                    <h2>体調コメント</h2>
-                </div>
+                <h5>体調コメント</h5>
                 <p><span th:text="${report.condition}"></span></p>
             </div>
-            <!--            追記-->
-            <div class="row sub-section">
-                <div class="col-12 mb-4">
-                    <h2>感想</h2>
+        </div>
+    </div>
+
+    <div class="row justify-content-md-center">
+        <div class="col-md-6">
+            <div class="repo-todo-boxL">
+                <div>
+                    <h5 class="text-center">報告内容</h5>
+                    <p><span th:text="${report.impressions}"></span></p>
                 </div>
-                <p><span th:text="${report.impressions}"></span></p>
             </div>
-            <div class="row sub-section">
-                <div class="col-12 mb-4">
-                    <h2>明日の予定</h2>
-                </div>
-                <p><span th:text="${report.tomorrowSchedule}"></span></p>
-            </div>
-
-<!--            追記-->
-
-            <!--分岐-------------------------------------->
-
-            <!--Memberの場合------------------------>
-                <!--Managerのフィードバックを表示-->
-            <div th:unless="${isManager}">
-                <div class="row sub-section">
-                    <div class="col-12 mb-4">
-                        <h2>フィードバック</h2>
+        </div>
+        <div class="col-md-6">
+            <div class="repo-todo-boxR">
+                    <div>
+                        <h5 class="text-center">明日の予定</h5>
+                        <p><span th:text="${report.tomorrowSchedule}"></span></p>
                     </div>
-                    <div th:if="${feedback != null}">
+            </div>
+        </div>
+    </div>
+
+        <div>
+                <h2>Todo</h2>
+                <table class="table">
+                    <thead>
+                    <tr>
+                        <th scope="col">タスク名</th>
+                        <th scope="col">進捗率</th>
+                        <th scope="col">進捗グラフ</th> <!-- 追加: グラフ表示列 -->
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr th:each="taskLog : ${taskLogs}" class="task">
+                        <td th:text="${taskLog.name}" style="word-wrap: break-word; max-width: 200px;"></td>
+                        <td class="progress-rate" th:text="${taskLog.progressRate + '%'}"></td>
+                        <td>
+                            <!-- Bootstrapのプログレスバー -->
+                            <div class="progress">
+                                <div class="progress-bar" role="progressbar" th:style="'width: ' + ${taskLog.progressRate} + '%;'" aria-valuenow="25" aria-valuemin="0" aria-valuemax="100"></div>
+                            </div>
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
+        </div>
+    </div>
+
+    <div class="fb-container-mem">
+        <!--Memberの場合------------------------>
+        <!--Managerのフィードバックを表示-->
+        <div th:unless="${isManager}">
+            <h5>フィードバック</h5>
+                <div th:if="${feedback != null}">
+                    <i th:switch="${feedback.rating}">
+                        <i th:case="2">
+                            <i class="bi bi-emoji-smile-fill text-success" style="font-size: 4rem;"></i>
+                        </i>
+                        <i th:case="1">
+                            <i class="bi bi-emoji-neutral-fill text-warning" style="font-size: 4rem;"></i>
+                        </i>
+                        <i th:case="0">
+                            <i class="bi bi-emoji-dizzy-fill text-danger" style="font-size: 4rem;"></i>
+                        </i>
+                    </i>
+                    <p><span th:text="${feedback.name}"></span>さんによるコメント</p>
+                    <p><span th:text="${feedback.comment}"></span></p>
+                </div>
+                <div th:if="${feedback == null}">
+                    <p>フィードバックがありません。</p>
+                </div>
+        </div>
+    </div>
+
+    <div class="fb-container-mgr">
+        <!--Managerの場合------------------------>
+        <!--Memberのフィードバックの入力フォームを作成-->
+        <div th:if="${isManager}">
+            <div class="row sub-section">
+                <div th:if="${feedback != null}">
+                    <form th:object="${FeedbackUpdateInput}" method="get">
+                        <div class="col-12 mb-4">
+                            <h2>フィードバック</h2>
+                        </div>
                         <i th:switch="${feedback.rating}">
                             <i th:case="2">
                                 <i class="bi bi-emoji-smile-fill text-success" style="font-size: 4rem;"></i>
@@ -262,84 +161,415 @@
                                 <i class="bi bi-emoji-dizzy-fill text-danger" style="font-size: 4rem;"></i>
                             </i>
                         </i>
-                        <p><span th:text="${feedback.name}"></span>さんによるコメント</p>
+                        <p>コメント</p>
                         <p><span th:text="${feedback.comment}"></span></p>
-                    </div>
-                    <div th:if="${feedback == null}">
-                        <p>フィードバックがありません。</p>
-                    </div>
+                        <form th:action="@{'/manager/reports/' + ${report.Id}}" method="post">
+                            <button type="submit" class="btn btn-danger" name="del" value="true">削除する</button>
+                        </form>
+                    </form>
                 </div>
             </div>
-
-            <!--Managerの場合------------------------>
-
-
-
-
-                <!--Memberのフィードバックの入力フォームを作成-->
-            <div th:if="${isManager}">
+            <div th:if="${feedback == null}">
                 <div class="row sub-section">
-                    <div th:if="${feedback != null}">
-                        <form th:object="${FeedbackUpdateInput}" method="get">
-                            <div class="col-12 mb-4">
-                                <h2>フィードバック</h2>
-                            </div>
-                            <i th:switch="${feedback.rating}">
-                                <i th:case="2">
-                                    <i class="bi bi-emoji-smile-fill text-success" style="font-size: 4rem;"></i>
-                                </i>
-                                <i th:case="1">
-                                    <i class="bi bi-emoji-neutral-fill text-warning" style="font-size: 4rem;"></i>
-                                </i>
-                                <i th:case="0">
-                                    <i class="bi bi-emoji-dizzy-fill text-danger" style="font-size: 4rem;"></i>
-                                </i>
-                            </i>
-                            <p>コメント</p>
-                            <p><span th:text="${feedback.comment}"></span></p>
+                    <form th:object="${FeedbackUpdateInput}" method="get">
+                        <div class="col-12 mb-4">
+                            <h2>フィードバック</h2>
+                        </div>
+                        <div class="form-group">
+                            <input type="radio" th:value="2" th:name="rating" required><i class="bi bi-emoji-smile-fill text-success" style="font-size: 4rem;"></i><!--良好-->
+                            <input type="radio" th:value="1" th:name="rating" required><i class="bi bi-emoji-neutral-fill text-warning" style="font-size: 4rem;"></i><!--普通-->
+                            <input type="radio" th:value="0" th:name="rating" required><i class="bi bi-emoji-dizzy-fill text-danger" style="font-size: 4rem;"></i><!--悪い-->
+                        </div>
+                        <div class="col-12 d-flex flex-row align-items-center gap-3">
+                            <label class="text-nowrap">コメント</label>
+                            <label for="text_tomorrowSchedule"></label><textarea class="form-control"
+                                                                                 name="comment"
+                                                                                 id="text_tomorrowSchedule"
+                                                                                 rows="3" required></textarea>
+                        </div>
+                        <div>
                             <form th:action="@{'/manager/reports/' + ${report.Id}}" method="post">
-                                <button type="submit" class="btn btn-danger" name="del" value="true">削除する</button>
+                                <button type="submit" class="btn btn-success">既読にする</button>
                             </form>
-                        </form>
-                    </div>
-                </div>
-                <div th:if="${feedback == null}">
-                    <div class="row sub-section">
-                        <form th:object="${FeedbackUpdateInput}" method="get">
-                            <div class="col-12 mb-4">
-                                <h2>フィードバック</h2>
-                            </div>
-                            <div class="form-group">
-                                <input type="radio" th:value="2" th:name="rating" required><i class="bi bi-emoji-smile-fill text-success" style="font-size: 4rem;"></i><!--良好-->
-                                <input type="radio" th:value="1" th:name="rating" required><i class="bi bi-emoji-neutral-fill text-warning" style="font-size: 4rem;"></i><!--普通-->
-                                <input type="radio" th:value="0" th:name="rating" required><i class="bi bi-emoji-dizzy-fill text-danger" style="font-size: 4rem;"></i><!--悪い-->
-                            </div>
-                            <div class="col-12 d-flex flex-row align-items-center gap-3">
-                                <label class="text-nowrap">コメント</label>
-                                <label for="text_tomorrowSchedule"></label><textarea class="form-control"
-                                                                                     name="comment"
-                                                                                     id="text_tomorrowSchedule"
-                                                                                     rows="3" required></textarea>
-                            </div>
-                            <div>
-                                <form th:action="@{'/manager/reports/' + ${report.Id}}" method="post">
-                                    <button type="submit" class="btn btn-success">既読にする</button>
-                                </form>
-                            </div>
+                        </div>
 
-                        </form>
-                    </div>
+                    </form>
                 </div>
             </div>
-
-<!--            追記-->
-
         </div>
     </div>
+
+
+    <!-- モーダル -->
+<!--    <div class="modal fade" id="deleteModal" tabindex="-1" aria-labelledby="deleteModalLabel" aria-hidden="true">-->
+<!--        <div class="modal-dialog">-->
+<!--            <div class="modal-content">-->
+<!--                <div class="modal-header">-->
+<!--                    <h5 class="modal-title" id="deleteModalLabel">削除の確認</h5>-->
+<!--                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>-->
+<!--                </div>-->
+<!--                <div class="modal-body">-->
+<!--                    <p>本当に削除しますか？</p>-->
+<!--                </div>-->
+<!--                <div class="modal-footer">-->
+<!--                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">キャンセル</button>-->
+<!--                    &lt;!&ndash; 実際の削除処理を行うフォーム &ndash;&gt;-->
+<!--                    <form th:action="@{${report.id} + '/delete'}" method="post">-->
+<!--                        <button type="submit" class="btn btn-danger">削除</button>-->
+<!--                    </form>-->
+<!--                </div>-->
+<!--            </div>-->
+<!--        </div>-->
+<!--    </div>-->
 </div>
-
-
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</div>
+<style layout:fragment="style"></style>
+<script layout:fragment="script"></script>
 </body>
 </html>
+
+<!--<!DOCTYPE html>-->
+<!--<html lang="ja" xmlns:th="http://www.w3.org/1999/xhtml">-->
+<!--<head>-->
+<!--    <meta charset="UTF-8">-->
+<!--    <title>業務報告書詳細</title>-->
+<!--    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">-->
+<!--    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">-->
+
+<!--    <style>-->
+<!--        body {-->
+<!--            background-color: #f8f9fa;-->
+<!--        }-->
+
+<!--        h1 {-->
+<!--            color: #343a40;-->
+<!--            font-size: 2.5rem;-->
+<!--            margin-bottom: 20px;-->
+<!--        }-->
+
+<!--        img {-->
+<!--            max-width: 100%;-->
+<!--            border-radius: 50%;-->
+<!--            margin-bottom: 20px;-->
+<!--        }-->
+
+<!--        p {-->
+<!--            font-size: 1.2rem;-->
+<!--        }-->
+
+<!--        .red-text {-->
+<!--            color: #dc3545;-->
+<!--            font-weight: bold;-->
+<!--        }-->
+
+<!--        .task {-->
+<!--            border-top: 1px solid #dee2e6;-->
+<!--            padding: 10px 0;-->
+<!--        }-->
+
+<!--        .progress-rate {-->
+<!--            color: #007bff;-->
+<!--        }-->
+
+<!--        .section {-->
+<!--            margin-top: 20px;-->
+<!--            padding: 20px;-->
+<!--            background-color: #fff;-->
+<!--            border-radius: 10px;-->
+<!--            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);-->
+<!--            border: 1px solid #dee2e6;-->
+<!--        }-->
+
+<!--        .section h2 {-->
+<!--            font-size: 1.5rem;-->
+<!--            margin-bottom: 15px;-->
+<!--        }-->
+
+<!--        .sub-section {-->
+<!--            border: 1px solid #dee2e6;-->
+<!--            border-radius: 10px;-->
+<!--            margin-bottom: 20px;-->
+<!--            padding: 15px;-->
+<!--        }-->
+
+<!--&lt;!&ndash;        .row_name_time {&ndash;&gt;-->
+<!--&lt;!&ndash;            display : flex;&ndash;&gt;-->
+<!--&lt;!&ndash;        }&ndash;&gt;-->
+<!--        .btn-group button {-->
+<!--            margin : 10px;-->
+<!--        }-->
+
+<!--        @media (max-width: 768px) {-->
+<!--            .col button {-->
+<!--                width : auto;-->
+<!--            }-->
+<!--            .col button[type="button"] {-->
+<!--                white-space: nowrap;-->
+<!--                float: left;-->
+<!--                text-align: center;-->
+<!--            }-->
+<!--            .col h2 {-->
+<!--                font-size: 0.9rem;-->
+<!--                margin-left: 2px;-->
+<!--                margin-right: 2px;-->
+<!--            }-->
+<!--        }-->
+<!--    </style>-->
+<!--</head>-->
+<!--<body>-->
+<!--<div th:replace="member/navbar :: navbar"></div>-->
+
+<!--<div class="section text-center">-->
+<!--    <div class="row">-->
+<!--        <div class="row_name_time">-->
+<!--            <div class="col">-->
+<!--                <div th:if="${beforeReportId!=null}">-->
+<!--                    <a th:href="@{'/member/reports/' + ${beforeReportId}}">-->
+<!--                        <button type="button" class="btn btn-primary">&lt; 前の日</button>-->
+<!--                    </a>-->
+<!--                </div>-->
+<!--            </div>-->
+<!--            <div class="col">-->
+<!--                <h2 th:text="${date}">日付</h2>-->
+<!--            </div>-->
+<!--            <div class="col">-->
+<!--                <h2 th:text="${member.name}">名前</h2>-->
+<!--            </div>-->
+<!--            <div class="col">-->
+<!--                <div th:if="${afterReportId!=null}">-->
+<!--                    <a th:href="@{'/member/reports/' + ${afterReportId}}">-->
+<!--                        <button type="button" class="btn btn-primary">&gt; 次の日</button>-->
+<!--                    </a>-->
+<!--                </div>-->
+<!--            </div>-->
+<!--        </div>-->
+
+<!--        &lt;!&ndash; 編集ボタンと削除ボタンをくっつけて配置 &ndash;&gt;-->
+<!--        <div class="col">-->
+<!--            <div class="btn-group" role="group">-->
+<!--                &lt;!&ndash; 編集ボタン &ndash;&gt;-->
+<!--                <a th:href="@{${report.id} + '/edit'}">-->
+<!--                    <button type="button" class="btn btn-warning">編集</button>-->
+<!--                </a>-->
+<!--                &lt;!&ndash; 削除ボタン &ndash;&gt;-->
+<!--                <button type="button" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#deleteModal">-->
+<!--                    削除-->
+<!--                </button>-->
+<!--            </div>-->
+<!--        </div>-->
+<!--    </div>-->
+<!--</div>-->
+
+<!--&lt;!&ndash; モーダル &ndash;&gt;-->
+<!--<div class="modal fade" id="deleteModal" tabindex="-1" aria-labelledby="deleteModalLabel" aria-hidden="true">-->
+<!--    <div class="modal-dialog">-->
+<!--        <div class="modal-content">-->
+<!--            <div class="modal-header">-->
+<!--                <h5 class="modal-title" id="deleteModalLabel">削除の確認</h5>-->
+<!--                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>-->
+<!--            </div>-->
+<!--            <div class="modal-body">-->
+<!--                <p>本当に削除しますか？</p>-->
+<!--            </div>-->
+<!--            <div class="modal-footer">-->
+<!--                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">キャンセル</button>-->
+<!--                &lt;!&ndash; 実際の削除処理を行うフォーム &ndash;&gt;-->
+<!--                <form th:action="@{${report.id} + '/delete'}" method="post">-->
+<!--                    <button type="submit" class="btn btn-danger">削除</button>-->
+<!--                </form>-->
+<!--            </div>-->
+<!--        </div>-->
+<!--    </div>-->
+<!--</div>-->
+
+
+<!--<div class="section text-center">-->
+<!--    <div class="row">-->
+<!--        <div class="col-12 col-md-6">-->
+<!--            <h2>Todo</h2>-->
+<!--            <table class="table">-->
+<!--                <thead>-->
+<!--                <tr>-->
+<!--                    <th scope="col">タスク名</th>-->
+<!--                    <th scope="col">進捗率</th>-->
+<!--                    <th scope="col">進捗グラフ</th> &lt;!&ndash; 追加: グラフ表示列 &ndash;&gt;-->
+<!--                </tr>-->
+<!--                </thead>-->
+<!--                <tbody>-->
+<!--                <tr th:each="taskLog : ${taskLogs}" class="task">-->
+<!--                    <td th:text="${taskLog.name}" style="word-wrap: break-word; max-width: 200px;"></td>-->
+<!--                    <td class="progress-rate" th:text="${taskLog.progressRate + '%'}"></td>-->
+<!--                    <td>-->
+<!--                        &lt;!&ndash; Bootstrapのプログレスバー &ndash;&gt;-->
+<!--                        <div class="progress">-->
+<!--                            <div class="progress-bar" role="progressbar" th:style="'width: ' + ${taskLog.progressRate} + '%;'" aria-valuenow="25" aria-valuemin="0" aria-valuemax="100"></div>-->
+<!--                        </div>-->
+<!--                    </td>-->
+<!--                </tr>-->
+<!--                </tbody>-->
+<!--            </table>-->
+<!--        </div>-->
+<!--        <div class="col-12 col-md-6">-->
+<!--            <div class="row sub-section">-->
+<!--                <div class="col-12 mb-4">-->
+<!--                    <h2>勤怠</h2>-->
+<!--                </div>-->
+
+<!--                <p>出勤時間: <span th:text="${report.startTime}"></span></p>-->
+<!--                <p>退勤時間: <span th:text="${report.endTime}"></span></p>-->
+<!--                &lt;!&ndash;編集：遅刻と早退の片方か両方のチェックによって理由が表示される&ndash;&gt;-->
+<!--                <div th:if="${report.isLateness and report.isLeftEarly}" class="col-md-12 red-text">-->
+<!--                    <p>遅刻と早退</p>-->
+<!--                    <p>理由: <span th:text="${report.latenessReason}"></span></p>-->
+<!--                </div>-->
+<!--                <div th:if="${report.isLateness and not report.isLeftEarly}" class="col-md-12 red-text">-->
+<!--                    <p>遅刻</p>-->
+<!--                    <p>理由: <span th:text="${report.latenessReason}"></span></p>-->
+<!--                </div>-->
+<!--                <div th:if="${report.isLeftEarly and not report.isLateness}" class="col-md-12 red-text">-->
+<!--                    <p>早退</p>-->
+<!--                    <p>理由: <span th:text="${report.latenessReason}"></span></p>-->
+<!--                </div>-->
+<!--                &lt;!&ndash;編集：遅刻と早退の片方か両方のチェックによって理由が表示される&ndash;&gt;-->
+<!--            </div>-->
+<!--            <div class="row sub-section">-->
+<!--                <div class="col-12 mb-4">-->
+<!--                    <h2>体調</h2>-->
+<!--                </div>-->
+<!--                <i th:switch="${report.conditionRate}">-->
+<!--                    <i th:case="1">-->
+<!--                        <i class="bi bi-emoji-smile-fill text-success" style="font-size: 7rem;"></i>-->
+<!--                    </i>-->
+<!--                    <i th:case="2">-->
+<!--                        <i class="bi bi-emoji-neutral-fill text-warning" style="font-size: 7rem;"></i>-->
+<!--                    </i>-->
+<!--                    <i th:case="3">-->
+<!--                        <i class="bi bi-emoji-dizzy-fill text-danger" style="font-size: 7rem;"></i>-->
+<!--                    </i>-->
+<!--                </i>-->
+<!--            </div>-->
+<!--            &lt;!&ndash;            追記&ndash;&gt;-->
+<!--            <div class="row sub-section">-->
+<!--                <div class="col-12 mb-4">-->
+<!--                    <h2>体調コメント</h2>-->
+<!--                </div>-->
+<!--                <p><span th:text="${report.condition}"></span></p>-->
+<!--            </div>-->
+<!--            &lt;!&ndash;            追記&ndash;&gt;-->
+<!--            <div class="row sub-section">-->
+<!--                <div class="col-12 mb-4">-->
+<!--                    <h2>感想</h2>-->
+<!--                </div>-->
+<!--                <p><span th:text="${report.impressions}"></span></p>-->
+<!--            </div>-->
+<!--            <div class="row sub-section">-->
+<!--                <div class="col-12 mb-4">-->
+<!--                    <h2>明日の予定</h2>-->
+<!--                </div>-->
+<!--                <p><span th:text="${report.tomorrowSchedule}"></span></p>-->
+<!--            </div>-->
+
+<!--&lt;!&ndash;            追記&ndash;&gt;-->
+
+<!--            &lt;!&ndash;分岐&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&ndash;&gt;-->
+
+<!--            &lt;!&ndash;Memberの場合&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&ndash;&gt;-->
+<!--                &lt;!&ndash;Managerのフィードバックを表示&ndash;&gt;-->
+<!--            <div th:unless="${isManager}">-->
+<!--                <div class="row sub-section">-->
+<!--                    <div class="col-12 mb-4">-->
+<!--                        <h2>フィードバック</h2>-->
+<!--                    </div>-->
+<!--                    <div th:if="${feedback != null}">-->
+<!--                        <i th:switch="${feedback.rating}">-->
+<!--                            <i th:case="2">-->
+<!--                                <i class="bi bi-emoji-smile-fill text-success" style="font-size: 4rem;"></i>-->
+<!--                            </i>-->
+<!--                            <i th:case="1">-->
+<!--                                <i class="bi bi-emoji-neutral-fill text-warning" style="font-size: 4rem;"></i>-->
+<!--                            </i>-->
+<!--                            <i th:case="0">-->
+<!--                                <i class="bi bi-emoji-dizzy-fill text-danger" style="font-size: 4rem;"></i>-->
+<!--                            </i>-->
+<!--                        </i>-->
+<!--                        <p><span th:text="${feedback.name}"></span>さんによるコメント</p>-->
+<!--                        <p><span th:text="${feedback.comment}"></span></p>-->
+<!--                    </div>-->
+<!--                    <div th:if="${feedback == null}">-->
+<!--                        <p>フィードバックがありません。</p>-->
+<!--                    </div>-->
+<!--                </div>-->
+<!--            </div>-->
+
+<!--            &lt;!&ndash;Managerの場合&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&ndash;&gt;-->
+
+
+
+
+<!--                &lt;!&ndash;Memberのフィードバックの入力フォームを作成&ndash;&gt;-->
+<!--            <div th:if="${isManager}">-->
+<!--                <div class="row sub-section">-->
+<!--                    <div th:if="${feedback != null}">-->
+<!--                        <form th:object="${FeedbackUpdateInput}" method="get">-->
+<!--                            <div class="col-12 mb-4">-->
+<!--                                <h2>フィードバック</h2>-->
+<!--                            </div>-->
+<!--                            <i th:switch="${feedback.rating}">-->
+<!--                                <i th:case="2">-->
+<!--                                    <i class="bi bi-emoji-smile-fill text-success" style="font-size: 4rem;"></i>-->
+<!--                                </i>-->
+<!--                                <i th:case="1">-->
+<!--                                    <i class="bi bi-emoji-neutral-fill text-warning" style="font-size: 4rem;"></i>-->
+<!--                                </i>-->
+<!--                                <i th:case="0">-->
+<!--                                    <i class="bi bi-emoji-dizzy-fill text-danger" style="font-size: 4rem;"></i>-->
+<!--                                </i>-->
+<!--                            </i>-->
+<!--                            <p>コメント</p>-->
+<!--                            <p><span th:text="${feedback.comment}"></span></p>-->
+<!--                            <form th:action="@{'/manager/reports/' + ${report.Id}}" method="post">-->
+<!--                                <button type="submit" class="btn btn-danger" name="del" value="true">削除する</button>-->
+<!--                            </form>-->
+<!--                        </form>-->
+<!--                    </div>-->
+<!--                </div>-->
+<!--                <div th:if="${feedback == null}">-->
+<!--                    <div class="row sub-section">-->
+<!--                        <form th:object="${FeedbackUpdateInput}" method="get">-->
+<!--                            <div class="col-12 mb-4">-->
+<!--                                <h2>フィードバック</h2>-->
+<!--                            </div>-->
+<!--                            <div class="form-group">-->
+<!--                                <input type="radio" th:value="2" th:name="rating" required><i class="bi bi-emoji-smile-fill text-success" style="font-size: 4rem;"></i>&lt;!&ndash;良好&ndash;&gt;-->
+<!--                                <input type="radio" th:value="1" th:name="rating" required><i class="bi bi-emoji-neutral-fill text-warning" style="font-size: 4rem;"></i>&lt;!&ndash;普通&ndash;&gt;-->
+<!--                                <input type="radio" th:value="0" th:name="rating" required><i class="bi bi-emoji-dizzy-fill text-danger" style="font-size: 4rem;"></i>&lt;!&ndash;悪い&ndash;&gt;-->
+<!--                            </div>-->
+<!--                            <div class="col-12 d-flex flex-row align-items-center gap-3">-->
+<!--                                <label class="text-nowrap">コメント</label>-->
+<!--                                <label for="text_tomorrowSchedule"></label><textarea class="form-control"-->
+<!--                                                                                     name="comment"-->
+<!--                                                                                     id="text_tomorrowSchedule"-->
+<!--                                                                                     rows="3" required></textarea>-->
+<!--                            </div>-->
+<!--                            <div>-->
+<!--                                <form th:action="@{'/manager/reports/' + ${report.Id}}" method="post">-->
+<!--                                    <button type="submit" class="btn btn-success">既読にする</button>-->
+<!--                                </form>-->
+<!--                            </div>-->
+
+<!--                        </form>-->
+<!--                    </div>-->
+<!--                </div>-->
+<!--            </div>-->
+
+<!--&lt;!&ndash;            追記&ndash;&gt;-->
+
+<!--        </div>-->
+<!--    </div>-->
+<!--</div>-->
+
+
+<!--<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>-->
+<!--</body>-->
+<!--</html>-->
 

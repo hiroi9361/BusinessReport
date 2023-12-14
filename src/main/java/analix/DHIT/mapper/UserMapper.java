@@ -38,6 +38,9 @@ public interface UserMapper {
     @Update("UPDATE user SET name=#{name}, password=#{password}, role=#{role}, icon=#{convertIcon} WHERE employee_code=#{employeeCode}")
     void editEmployeeInfomation(UserEditInput userEditInput);
 
+    @Select("SELECT name FROM user WHERE employee_code = #{employeeCode}")
+    String getUserName(int employeeCode);
+
 //    //user情報を取ってくる
 //    @Select("SELECT * FROM user WHERE employeeCode=#{employeeCode}")
 //    User getuser(int employeeCode);

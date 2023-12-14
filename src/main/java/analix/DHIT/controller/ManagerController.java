@@ -67,7 +67,7 @@ public class ManagerController {
             for(User usr : alluser){
                 if(ast.getEmployeeCode() == usr.getEmployeeCode() && !ast.getIsManager()){
                     members.add(usr);
-                }else if (ast.getEmployeeCode() == usr.getEmployeeCode() && ast.getIsManager() && ast.getEmployeeCode() != employeeCode){
+                }else if (ast.getEmployeeCode() == usr.getEmployeeCode() && ast.getIsManager()){
                     mgrs.add(usr);
                 }
             }

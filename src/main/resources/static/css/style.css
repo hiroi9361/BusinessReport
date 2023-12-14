@@ -119,5 +119,13 @@ text-align:center;
 border: 1px solid #C0C0C0;
 background:#f5f5f5;
 padding:12px;
+}
 
+.member-container {
+border:1px solid #C0C0C0;
+background:#f5f5f5;
+padding:12px;
+margin-right:auto;
+margin-left:auto;
+margin-bottom:12px;
 }

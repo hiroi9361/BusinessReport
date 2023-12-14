@@ -13,8 +13,8 @@
 <form th:action="@{/manager/team-create}" th:object="${TeamCreateInput}"
       method="post">
     <div class="form-group mb-3">
-    <label>チーム名</label>
-    <input name="name" class="form-control" required/>
+    <label>チーム名（最大30文字）</label>
+    <input name="name" class="form-control" maxlength="30" required/>
     </div>
     <div class="form-group">
     <button type="submit" class="w-100 btn btn-lg btn-success">作成</button>

@@ -7,8 +7,8 @@
 </head>
 <body>
 <div layout:fragment="content">
-    <div class="container mt-5">
-        <h2 class="text-center mb-4">業務報告書検索</h2>
+    <div class="container mt-3">
+        <h2 class="text-center mb-4">報告検索</h2>
 
         <form action="#" th:action="@{/member/search-report}" th:object="${reportSearchInput}" method="post">
             <div class="mb-3">
@@ -17,13 +17,13 @@
             </div>
 
             <div class="d-grid gap-2">
-                <button type="submit" class="btn btn-primary btn-lg">検索</button>
+                <button type="submit" class="btn btn-success btn-lg">検索</button>
             </div>
         </form>
         <div class="mb-5"></div>
         <form th:action="@{/member/search-report}" th:object="${ReportSortInput}" method="post">
             <div>
-                <h2 class="text-center mb-4">報告書一覧</h2>
+                <h2 class="text-center mb-4">報告一覧</h2>
 
                 <div class="d-flex">
                     <div class="mb-3">

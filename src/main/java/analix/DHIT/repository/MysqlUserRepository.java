@@ -40,7 +40,7 @@ public class MysqlUserRepository implements UserRepository {
 
     @Override
     public String getUserName(int employeeCode){
-//        return this.userMapper.getUserName(employeeCode);
-        return null;
+        return this.userMapper.getUserName(employeeCode);
+
     }
 }

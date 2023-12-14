@@ -74,8 +74,8 @@ public interface ReportMapper {
     @Select("SELECT * FROM report WHERE employee_code=#{employeeCode}")
     List<Report> selectAll(int employeeCode);
     //検索条件-------------------------------------
-    @Select("SELECT * FROM report.report as r " +
-            "LEFT OUTER JOIN report.feedback as f ON r.report_id=f.report_id " +
+    @Select("SELECT * FROM report as r " +
+            "LEFT OUTER JOIN feedback as f ON r.report_id=f.report_id " +
             "WHERE " +
             "(#{reportSortInput.date} IS NULL OR DATE_FORMAT(r.date,'%Y-%m')=DATE_FORMAT(#{reportSortInput.date},'%Y-%m')) " +
             "AND " +

@@ -64,7 +64,7 @@ public interface TeamMapper {
     boolean getIsManager(int employeeCode, int teamId);
     //test****************************
     @Select("SELECT COUNT(*) AS count " +
-            "FROM report.assignment AS r " +
+            "FROM assignment AS r " +
             "WHERE r.team_id IN ( " +
             "    SELECT team_id " +
             "    FROM assignment " +
@@ -72,7 +72,7 @@ public interface TeamMapper {
             ") " +
             "AND r.employee_code = ( " +
             "    SELECT employee_code " +
-            "    FROM report.report " +
+            "    FROM report " +
             "    WHERE report_id = #{reportId} " +
             ") " +
             "AND r.is_manager = false;")

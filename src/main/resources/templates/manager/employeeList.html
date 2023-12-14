@@ -40,16 +40,6 @@
             </form>
         </div>
 
-
-        <!--        <form action="#" th:action="@{/manager/search-member}" th:object="${memberSearchInput}" method="post">-->
-        <!--            <div class="mb-3">-->
-        <!--                <label for="employeeName" class="form-label">社員名 TEST</label>-->
-        <!--                <div class="input-group">-->
-        <!--                    <input type="text" class="form-control" id="employeeName" name="searchCharacters" th:value="${memberSearchInput.searchCharacters}" placeholder="社員名を入力">-->
-        <!--                    <button class="btn btn-primary" type="submit" id="searchButton">検索</button>-->
-        <!--                </div>-->
-        <!--            </div>-->
-        <!--        </form>-->
         <!-- 2023/12/07 富山 END -->
 
         <table class="StripeTable">
@@ -64,52 +54,52 @@
                 <th>削除</th>
             </tr>
             </thead>
-            <tbody>
-            <tr th:each="userList : ${userList}" th:object="${userList}" class="align-middle">
-                <td data-label="社員番号" th:text="${userList.employeeCode}"></td>
-                <td data-label="名前" th:text="${userList.name}"></td>
-                <td data-label="パスワード" th:text="'*****'"></td>
-                <td data-label="役割" th:text="${userList.role}"></td>
-                <td data-label="アイコン">
-                    <img th:src="'data:image/png;base64,' + ${userList.icon}" class="rounded-circle" style="max-width: 50px;"/>
-                </td>
-                <td data-label="編集">
-                    <form th:action="@{/manager/employeeList-edit}" method="get">
-                        <input type="submit" class="btn btn-outline-success" name="edit" value="編集">
-                        <input type="hidden" name="employeeCode" th:value="${userList.employeeCode}" />
-                    </form>
-                </td>
-                <td data-label="削除">
-                    <form th:action="@{/manager/employeeList-deleteUser}" method="post" onSubmit="return check()">
-                        <button type="submit" class="btn btn-outline-danger" name="delete" value="削除" >削除</button>
-                        <input type="hidden" name="employeeCode" th:value="${userList.employeeCode}" />
-                        <input type="hidden" name="name" th:value="${userList.name}" />
-                    </form>
-                </td>
+<!--            <tbody>-->
+<!--            <tr th:each="userList : ${userList}" th:object="${userList}" class="align-middle">-->
+<!--                <td data-label="社員番号" th:text="${userList.employeeCode}"></td>-->
+<!--                <td data-label="名前" th:text="${userList.name}"></td>-->
+<!--                <td data-label="パスワード" th:text="'*****'"></td>-->
+<!--                <td data-label="役割" th:text="${userList.role}"></td>-->
+<!--                <td data-label="アイコン">-->
+<!--                    <img th:src="'data:image/png;base64,' + ${userList.icon}" class="rounded-circle" style="max-width: 50px;"/>-->
+<!--                </td>-->
+<!--                <td data-label="編集">-->
+<!--                    <form th:action="@{/manager/employeeList-edit}" method="get">-->
+<!--                        <input type="submit" class="btn btn-outline-success" name="edit" value="編集">-->
+<!--                        <input type="hidden" name="employeeCode" th:value="${userList.employeeCode}" />-->
+<!--                    </form>-->
+<!--                </td>-->
+<!--                <td data-label="削除">-->
+<!--                    <form th:action="@{/manager/employeeList-deleteUser}" method="post" onSubmit="return check()">-->
+<!--                        <button type="submit" class="btn btn-outline-danger" name="delete" value="削除" >削除</button>-->
+<!--                        <input type="hidden" name="employeeCode" th:value="${userList.employeeCode}" />-->
+<!--                        <input type="hidden" name="name" th:value="${userList.name}" />-->
+<!--                    </form>-->
+<!--                </td>-->
 
-            </tr>
-            </tbody>
-        </table>
-    </div>
+<!--            </tr>-->
+<!--            </tbody>-->
+<!--        </table>-->
+<!--    </div>-->
   
   <!-- 2023/12/13 富山 START -->
 
-        <tbody>
+    <tbody>
         <tr th:each="userList : ${userList}" th:object="${userList}" class="align-middle">
-            <td data-label="社員番号" th:text="${userList.employeeCode}"></td>
-            <td data-label="名前" th:text="${userList.name}"></td>
-            <td data-label="パスワード" th:text="'*****'"></td>
-            <td data-label="役割" th:text="${userList.role}"></td>
-            <td data-label="アイコン">
+            <td th:text="${userList.employeeCode}"></td>
+            <td th:text="${userList.name}"></td>
+            <td th:text="'*****'"></td>
+            <td th:text="${userList.role}"></td>
+            <td>
                 <img th:src="'data:image/png;base64,' + ${userList.icon}" class="rounded-circle" style="max-width: 50px;"/>
             </td>
-            <td data-label="編集">
+            <td>
                 <form th:action="@{/manager/employeeList-edit}" method="get">
                     <input type="submit" class="btn btn-outline-primary" name="edit" value="編集">
                     <input type="hidden" name="employeeCode" th:value="${userList.employeeCode}" />
                 </form>
             </td>
-            <td data-label="削除">
+            <td>
                 <form th:action="@{/manager/employeeList-deleteUser}" method="post">
                     <button type="submit" class="btn btn-outline-danger" name="delete" value="削除">削除</button>
                     <input type="hidden" name="employeeCode" th:value="${userList.employeeCode}" />
@@ -117,10 +107,11 @@
                 </form>
             </td>
         </tr>
-        </tbody>
+    </tbody>
 
 <!-- 2023/12/13 富山 END -->
-  
+        </table>
+    </div>
 </div>
 <style layout:fragment="style">
     /* 任意のカスタムスタイルを追加する場合はここに記述 */
@@ -205,47 +196,6 @@
 </body>
 </html>
 
-
-    <!-- 2023/12/07 富山 START -->
-        <!--    <div class="container">-->
-        <div class="container mt-5">
-    <!-- 2023/12/07 富山 END -->
-
-    <h1>ユーザー編集一覧</h1>
-    <h2 th:text="${errorEmployeeMsg}"></h2>
-    <h2 th:text="${deleteCompleteMSG}"></h2>
-    <h2 th:text="${editCompleteMSG}"></h2>
-
-<!-- 2023/12/07 富山 START -->
-<!--  検索窓  -->
-    <form id="searchForm">
-        <label for="searchType"></label>
-        <select id="searchType" name="searchType">
-            <option value="employeeCode">社員番号</option>
-            <option value="name">名前</option>
-            <option value="role">役割</option>
-        </select>
-        <label for="searchInput"></label>
-        <input type="text" id="searchInput" name="searchInput" placeholder="検索キーワード" style="width: 500px ;margin-right: 10px;">
-        <input type="submit" class="btn btn-secondary" name="search" value="検索" onclick="searchTable()">
-    </form>
-</div>
-<!-- 2023/12/07 富山 END -->
-
-
-
-    <table class="table table-bordered table-striped">
-        <thead>
-        <tr>
-            <th>社員番号</th>
-            <th>名前</th>
-            <th>パスワード</th>
-            <th>役割</th>
-            <th>アイコン</th>
-            <th>編集</th>
-            <th>削除</th>
-        </tr>
-        </thead>
 
 
 <!--<!DOCTYPE html>-->

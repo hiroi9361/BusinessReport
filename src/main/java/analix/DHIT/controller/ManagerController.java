@@ -3,6 +3,7 @@ package analix.DHIT.controller;
 import analix.DHIT.input.*;
 import analix.DHIT.model.*;
 import analix.DHIT.service.*;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
@@ -617,5 +618,26 @@ public class ManagerController {
 
     }
 
+//    ////////// 2023/12/14 富山 START //////////
+
+    @GetMapping("/employeeList")
+    public String showEmployeeList(Model model) {
+        List<User> userList = userService.getAllEmployeeInfo();
+        model.addAttribute("userList", userList);
+        model.addAttribute("searchForm", new SearchForm());
+
+        return "employeeList";
+    }
+
+    @PostMapping("/employeeList")
+    public String searchEmployeeList(@ModelAttribute("SearchForm") SearchForm searchForm, Model model) {
+        List<User> userList = employeeService.searchEmployees(searchForm.getSearchType(), searchForm.getSearchInput());
+        model.addAttribute("userList", userList);
+
+        return "employeeList";
+    }
+
+
+//    ////////// 2023/12/14 富山 END //////////
 
 }

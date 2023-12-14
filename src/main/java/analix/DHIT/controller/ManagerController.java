@@ -29,8 +29,6 @@ public class ManagerController {
     private final AssignmentService assignmentService;
     private final FeedbackService feedbackService;
 
-    private final FeedbackService feedbackService;
-
     public ManagerController(
             UserService userservice,
             ReportService reportService,
@@ -295,6 +293,13 @@ public class ManagerController {
         model.addAttribute("teamList", teamList);
         model.addAttribute("userCreateInput", new UserCreateInput());
         model.addAttribute("assignmentCreateInput", new AssignmentCreateInput());
+
+        //test=-----------------------------------
+        //AssignmentCreateInput assignmentCreateInput = new AssignmentCreateInput();
+
+        //test=-----------------------------------
+
+
         return "manager/create";
     }
 

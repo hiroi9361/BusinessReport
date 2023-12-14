@@ -66,7 +66,7 @@
                         </thead>
                         <tbody>
                         <tr th:each="report : ${reports}">
-                            <td th:text>既読か未読</td>
+                            <td th:text="${report.readStatus}"></td>
                             <td th:text="${report.date}"></td>
                             <td th:text="${report.condition}"></td>
                         </tr>

@@ -132,6 +132,11 @@ public class ManagerController {
 
         //報告一覧表示---------------------------------
         List<Report> reports = reportService.getfindAll(employeeCode);
+        //既読or未読
+        for(Report report : reports){
+            boolean isFeedbackGiven = feedbackService.count(report.getId());
+            report.setReadStatus(isFeedbackGiven ? "既読" : "未読");
+        }
         model.addAttribute("reports", reports);
         //検索機能---------------------------------------
         //年月で重複しないList作成
@@ -145,25 +150,9 @@ public class ManagerController {
         model.addAttribute("reportSortInput",new ReportSortInput());
 
 
-
-
-
-
-
         //test---------------------------------
         model.addAttribute("assignment", assignmentCreateInput);
         //test---------------------------------
-
-
-
-
-
-
-
-
-
-
-
 
         return "manager/report-search";
     }

@@ -150,4 +150,13 @@ public class Report {
     public void setConditionRate(int conditionRate) {
         this.conditionRate=conditionRate;
     }
+
+    //未読or既読（=readStatus）
+    private String readStatus;
+    public String getReadStatus(){
+        return readStatus;
+    }
+    public void setReadStatus(String readStatus){
+        this.readStatus = readStatus;
+    }
 }

@@ -55,29 +55,34 @@
             <!-- アイコン画像 -->
             <div class="mb-3">
                 <label for="icon" class="form-label">アイコン画像</label>
-                <!--            送信タイプをfileに、ユーザーから受け付けるファイルを画像のみに-->
-<!--                ファイルを選択<input type="file" id="icon" th:field="*{icon}" accept="image/*" class="form-control">-->
                 ファイルを選択<input type="file" id="icon" th:field="${userCreateInput.icon}" accept="image/*" class="form-control">
                 <div th:if="${EnCodeError != null}" class="text-danger mt-1" th:text="${EnCodeError}"></div>
             </div>
 
-                <div class="mb-3" id="team-field">
+                <div class="mb-3" id="team-field" >
                     <div class="d-flex gap-2">
                         <p class="d-inline d-inline-block p-0 m-0">所属チーム追加</p>
                         <button type="button" class="btn btn-success" id="add-team">追加</button>
                     </div>
-                    <div class="d-flex" th:each="assignment, assignmentIndex : ${assignmentCreateInput.assignments}">
-                        <select th:field="${assignmentCreateInput.assignments[__${assignmentIndex.index}__].teamId}">
+
+                <!--増やしたい範囲--------------------------->
+
+                    <div class="d-flex">
+                        <select th:field="${assignmentCreateInput.teamId}" class="form-select">
                             <option value="0">選択してください</option>
-                            <option th:each="team : ${teamList}" th:text="${team.name}" th:value="${team.teamId}"></option>
+                            <option th:each="team : ${teamList}" th:text="${team.name}" name="teamId" th:value="${team.teamId}"></option>
                         </select>
-                        <select th:field="${assignmentCreateInput.assignments[__${assignmentIndex.index}__].isManager}">
+                        <select th:field="${assignmentCreateInput.isManager}" class="form-select">
                             <option value="false">選択してください</option>
-                            <option value="false">Member</option>
-                            <option value="true">Manager</option>
+                            <option value="false" name="isManager">Member</option>
+                            <option value="true" name="isManager">Manager</option>
                         </select>
-                        <button type="button" class="btn btn-danger" onclick="removeTask(this)">削除</button>
+                        <button type="button" class="btn btn-danger" onclick="removeTeam(this)">削除</button>
                     </div>
+
+                    <!--増やしたい範囲--------------------------->
+
+                    <div></div>
                 </div>
 
 
@@ -102,32 +107,55 @@
 </style>
 <script layout:fragment="script" th:inline="javascript">
 <!--test---------------------------------------------------------->
+    /*<![CDATA[*/
     const elem = document.getElementById("add-team");
-    const todoField = document.getElementById("team-field");
+    const teamField = document.getElementById("team-field");
+    var teamList = /*[[${teamList}]]*/ [];
     let assignmentIndex = /*[[${assignmentCreateInput.assignments.size()}]]*/;
 
-    elem.onclick = function() {
-        const node = document.createElement("div");
-        node.setAttribute("class", "row");
-        node.innerHTML += `<select th:field="${assignmentCreateInput.assignments[__${assignmentIndex.index}__].teamId}">
-                            <option value="0">選択してください</option>
-                            <option th:each="team : ${teamList}" th:text="${team.name}" th:value="${team.teamId}"></option>
-                            </select>
-                        <select th:field="${assignmentCreateInput.assignments[__${assignmentIndex.index}__].isManager}">
-                            <option value="false">選択してください</option>
-                            <option value="false">Member</option>
-                            <option value="true">Manager</option>
-                        </select>
-                        <button type="button" class="btn btn-danger" onclick="removeTeam(this)">削除</button>`;
+    elem.onclick = function () {
+        const row = document.createElement("div");
+        row.className = "d-flex";
 
-        teamField.appendChild(node);
+        const teamSelect = document.createElement("select");
+        teamSelect.className = "form-select";
+        teamSelect.innerHTML += '<option value="0">選択してください</option>';
+        teamList.forEach(function (team) {
+            const option = document.createElement("option");
+            option.value = team.teamId;
+            option.text = team.name;
+            teamSelect.appendChild(option);
+        });
+
+        const managerSelect = document.createElement("select");
+        managerSelect.className = "form-select";
+        managerSelect.innerHTML += '<option value="false">選択してください</option>';
+        managerSelect.innerHTML += '<option value="false" name="isManager">Member</option>';
+        managerSelect.innerHTML += '<option value="true" name="isManager">Manager</option>';
+
+        const removeButton = document.createElement("button");
+        removeButton.type = "button";
+        removeButton.className = "btn btn-danger";
+        removeButton.onclick = function () {
+            removeTeam(this);
+        };
+        removeButton.innerHTML = "削除";
+
+        row.appendChild(teamSelect);
+        row.appendChild(managerSelect);
+        row.appendChild(removeButton);
+
+        teamField.appendChild(row);
+
         assignmentIndex++;
-};
+    };
 
-function removeTeam(button) {
-    button.parentNode.parentNode.remove();
-}
-
+    function removeTeam(button) {
+        const row = button.parentElement;
+        row.remove();
+        assignmentIndex--;  // 削除されたらインデックスを減らす
+    }
+    /*]]>*/
 <!--test---------------------------------------------------------->
     function validateForm() {
         var employeeCode = document.getElementById('employeeCode').value;
@@ -141,24 +169,24 @@ function removeTeam(button) {
         return true;
     };
 
-    const elem = document.getElementById("add-team");
-    const teamField = document.getElementById("team-field");
+<!--    const elem = document.getElementById("add-team");-->
+<!--    const teamField = document.getElementById("team-field");-->
 <!--    let teamIndex = /*[[${assignmentCreateInput.assignments.size()}]]*/;-->
 
-    elem.onclick = function() {
-    console.log("test");
-        const node = document.createElement("div");
-        node.setAttribute("class", "row");
-        node.innerHTML += `
-        `;
+<!--    elem.onclick = function() {-->
+<!--    console.log("test");-->
+<!--        const node = document.createElement("div");-->
+<!--        node.setAttribute("class", "row");-->
+<!--        node.innerHTML += `-->
+<!--        `;-->
 
-        teamField.appendChild(node);
+<!--        teamField.appendChild(node);-->
 <!--        teamIndex++;-->
-    };
+<!--    };-->
 
-    function removeTask(button) {
-        button.parentNode.parentNode.remove();
-    }
+<!--    function removeTask(button) {-->
+<!--        button.parentNode.parentNode.remove();-->
+<!--    }-->
 
 </script>
 </body>

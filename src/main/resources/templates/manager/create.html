@@ -61,27 +61,27 @@
                 <div th:if="${EnCodeError != null}" class="text-danger mt-1" th:text="${EnCodeError}"></div>
             </div>
 
-            <div class="mb-3" id="team-field" >
-                <div class="d-flex gap-2">
-                    <p class="d-inline d-inline-block p-0 m-0">所属チーム追加</p>
-<!--                    <button type="button" class="btn btn-success" id="add-team">追加</button>-->
+                <div class="mb-3" id="team-field">
+                    <div class="d-flex gap-2">
+                        <p class="d-inline d-inline-block p-0 m-0">所属チーム追加</p>
+                        <button type="button" class="btn btn-success" id="add-team">追加</button>
+                    </div>
+                    <div class="d-flex" th:each="assignment, assignmentIndex : ${assignmentCreateInput.assignments}">
+                        <select th:field="${assignmentCreateInput.assignments[__${assignmentIndex.index}__].teamId}">
+                            <option value="0">選択してください</option>
+                            <option th:each="team : ${teamList}" th:text="${team.name}" th:value="${team.teamId}"></option>
+                        </select>
+                        <select th:field="${assignmentCreateInput.assignments[__${assignmentIndex.index}__].isManager}">
+                            <option value="false">選択してください</option>
+                            <option value="false">Member</option>
+                            <option value="true">Manager</option>
+                        </select>
+                        <button type="button" class="btn btn-danger" onclick="removeTask(this)">削除</button>
+                    </div>
                 </div>
-                <div class="d-flex">
-                    <select th:field="${assignmentCreateInput.teamId}" class="form-select">
-                        <option value="0">選択してください</option>
-                        <option th:each="team : ${teamList}" th:text="${team.name}" name="teamId" th:value="${team.teamId}"></option>
-                    </select>
-                    <select th:field="${assignmentCreateInput.isManager}" class="form-select">
-                        <option value="false">選択してください</option>
-                        <option value="false" name="isManager">Member</option>
-                        <option value="true" name="isManager">Manager</option>
-                    </select>
-                </div>
-                <div></div>
-            </div>
 
 
-            <!-- 登録ボタン -->
+                <!-- 登録ボタン -->
             <div class="mb-3">
                 <button type="submit" class="w-100 btn btn-lg btn-success">登録</button>
             </div>
@@ -101,6 +101,34 @@
     }
 </style>
 <script layout:fragment="script" th:inline="javascript">
+<!--test---------------------------------------------------------->
+    const elem = document.getElementById("add-team");
+    const todoField = document.getElementById("team-field");
+    let assignmentIndex = /*[[${assignmentCreateInput.assignments.size()}]]*/;
+
+    elem.onclick = function() {
+        const node = document.createElement("div");
+        node.setAttribute("class", "row");
+        node.innerHTML += `<select th:field="${assignmentCreateInput.assignments[__${assignmentIndex.index}__].teamId}">
+                            <option value="0">選択してください</option>
+                            <option th:each="team : ${teamList}" th:text="${team.name}" th:value="${team.teamId}"></option>
+                            </select>
+                        <select th:field="${assignmentCreateInput.assignments[__${assignmentIndex.index}__].isManager}">
+                            <option value="false">選択してください</option>
+                            <option value="false">Member</option>
+                            <option value="true">Manager</option>
+                        </select>
+                        <button type="button" class="btn btn-danger" onclick="removeTeam(this)">削除</button>`;
+
+        teamField.appendChild(node);
+        assignmentIndex++;
+};
+
+function removeTeam(button) {
+    button.parentNode.parentNode.remove();
+}
+
+<!--test---------------------------------------------------------->
     function validateForm() {
         var employeeCode = document.getElementById('employeeCode').value;
         var name = document.getElementById('name').value;
@@ -134,148 +162,5 @@
 
 </script>
 </body>
-<!--<script th:inline="javascript">-->
-<!--    function validateForm() {-->
-<!--        var employeeCode = document.getElementById('employeeCode').value;-->
-<!--        var name = document.getElementById('name').value;-->
-<!--        var password = document.getElementById('password').value;-->
 
-<!--        if (employeeCode.trim() === '' || name.trim() === '' || password.trim() === '') {-->
-<!--            alert('全てのフィールドを記入してください');-->
-<!--            return false;-->
-<!--        }-->
-<!--        return true;-->
-<!--    };-->
-
-<!--    const elem = document.getElementById("add-team");-->
-<!--    const teamField = document.getElementById("team-field");-->
-<!--    let teamIndex = /*[[${assignmentCreateInput.assignments.size()}]]*/;-->
-
-<!--    elem.onclick = function() {-->
-<!--        const node = document.createElement("div");-->
-<!--        node.setAttribute("class", "row");-->
-<!--        node.innerHTML += `<div class="d-flex">-->
-<!--                    <select th:field="${assignmentCreateInput.teamId}">-->
-<!--                        <option th:each="team : ${teamList}" th:text="${team.name}" name="teamId" th:value="${team.teamId}"></option>-->
-<!--                    </select>-->
-<!--                    <select th:field="${assignmentCreateInput.isManager}">-->
-<!--                        <option value="false" name="isManager">Member</option>-->
-<!--                        <option value="true" name="isManager">Manager</option>-->
-<!--                    </select>-->
-<!--                </div>`;-->
-
-<!--        teamField.appendChild(node);-->
-<!--        teamIndex++;-->
-<!--    };-->
-
-<!--    function removeTask(button) {-->
-<!--        button.parentNode.parentNode.remove();-->
-<!--    }-->
-
-<!--</script>-->
-<!--<style >-->
-<!--    @media (max-width: 768px) {-->
-<!--        h1 {-->
-<!--            font-size: 1.3em;-->
-<!--        }-->
-<!--    }-->
-<!--</style>-->
 </html>
-
-
-
-
-
-<!--<!DOCTYPE html>-->
-<!--<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">-->
-
-<!--<head>-->
-<!--    <meta charset="UTF-8" />-->
-<!--    <meta name="viewport" content="width=device-width, initial-scale=1">-->
-<!--    <title>ユーザー新規登録</title>-->
-<!--    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">-->
-<!--    &lt;!&ndash; Bootstrap 5 CSSをCDN経由で読み込む &ndash;&gt;-->
-<!--    <script>-->
-<!--        function validateForm() {-->
-<!--            // 各フィールドの値を取得-->
-<!--            var employeeCode = document.getElementById('employeeCode').value;-->
-<!--            var name = document.getElementById('name').value;-->
-<!--            var password = document.getElementById('password').value;-->
-
-<!--            // 必須フィールドが空でないかチェック-->
-<!--            if (employeeCode.trim() === '' || name.trim() === '' || password.trim() === '') {-->
-<!--                alert('全てのフィールドを記入してください');-->
-<!--                return false; // 送信をブロックする-->
-<!--            }-->
-<!--            return true; // 送信を許可する-->
-<!--        }-->
-<!--    </script>-->
-<!--    <style >-->
-<!--        @media (max-width: 768px) {-->
-<!--            h1 {-->
-<!--                font-size: 1.3em;-->
-<!--            }-->
-<!--        }-->
-<!--    </style>-->
-<!--</head>-->
-
-<!--<body>-->
-<!--<div th:replace="manager/navbar :: navbar"></div>-->
-<!--<div class="container mt-5">-->
-<!--    <h1 class="mb-4">ユーザー新規登録</h1>-->
-
-<!--    <form th:action="@{/manager/createEmployee}" th:object="${userCreateInput}" th:method="post" enctype="multipart/form-data" onsubmit="return validateForm()">-->
-<!--        &lt;!&ndash; 社員番号 &ndash;&gt;-->
-<!--        <div class="mb-3">-->
-<!--            <label for="employeeCode" class="form-label">社員番号：<span class="text-danger">※</span></label>-->
-<!--            <input type="text" id="employeeCode" th:field="*{employeeCode}" class="form-control" pattern="[0-9]{1,5}" title="5桁以下の数字を入力してください">-->
-
-<!--            &lt;!&ndash;            <input type="text" id="employeeCode" th:field="*{employeeCode}" class="form-control">&ndash;&gt;-->
-<!--            <div th:if="${EmployeeCodeError != null}" class="text-danger mt-1" th:text="${EmployeeCodeError}"></div>-->
-<!--        </div>-->
-
-<!--        &lt;!&ndash; 名前 &ndash;&gt;-->
-<!--        <div class="mb-3">-->
-<!--            <label for="name" class="form-label">名前：<span class="text-danger">※</span></label>-->
-<!--            <input type="text" id="name" th:field="*{name}" class="form-control" pattern="[A-Za-zぁ-んァ-ン一-龯]+" title="アルファベット、ひらがな、漢字のみが許可されています">-->
-<!--        </div>-->
-
-<!--        &lt;!&ndash; パスワード &ndash;&gt;-->
-<!--        <div class="mb-3">-->
-<!--            <label for="password" class="form-label">パスワード：<span class="text-danger">※</span></label>-->
-<!--            <input type="password" id="password" th:field="*{password}" class="form-control">-->
-<!--        </div>-->
-
-<!--        &lt;!&ndash; 役割 &ndash;&gt;-->
-<!--        <div class="mb-3">-->
-<!--            <label for="role" class="form-label">役割：<span class="text-danger">※</span></label>-->
-<!--            <select id="role" name="role" th:field="*{role}" class="form-select">-->
-<!--&lt;!&ndash;                <option value="MEMBER">Member</option>&ndash;&gt;-->
-<!--&lt;!&ndash;                <option value="MANAGER">Manager</option>&ndash;&gt;-->
-<!--                <option value="USER">User</option>-->
-<!--                <option value="ADMIN">Admin</option>-->
-<!--            </select>-->
-<!--        </div>-->
-
-<!--        &lt;!&ndash; アイコン画像 &ndash;&gt;-->
-<!--        <div class="mb-3">-->
-<!--            <label for="icon" class="form-label">アイコン画像</label>-->
-<!--&lt;!&ndash;            送信タイプをfileに、ユーザーから受け付けるファイルを画像のみに&ndash;&gt;-->
-<!--            ファイルを選択<input type="file" id="icon" th:field="*{icon}" accept="image/*" class="form-control">-->
-<!--            <div th:if="${EnCodeError != null}" class="text-danger mt-1" th:text="${EnCodeError}"></div>-->
-
-<!--        </div>-->
-
-<!--        &lt;!&ndash; 登録ボタン &ndash;&gt;-->
-<!--        <div class="mb-3">-->
-<!--            <button type="submit" class="btn btn-primary">登録</button>-->
-<!--        </div>-->
-
-<!--    </form>-->
-<!--</div>-->
-
-<!--<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>-->
-<!--&lt;!&ndash; Bootstrap 5 JavaScriptをCDN経由で読み込む &ndash;&gt;-->
-<!--</body>-->
-
-<!--</html>-->

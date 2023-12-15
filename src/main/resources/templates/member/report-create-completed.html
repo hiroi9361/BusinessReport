@@ -10,43 +10,55 @@
   <div class="container">
     <div class="card">
       <div class="card-body">
-        <h1 class="card-title">業務報告書提出完了</h1>
-        <p class="text-secondary">お疲れさまでした。</p>
+        <h1 class="card-title">業務報告提出完了</h1>
+        <p class="text-secondary mt-3">お疲れさまでした。</p>
         <p class="text-secondary">業務報告書が正常に提出されました。</p>
       </div>
     </div>
   </div>
 </div>
 <style layout:fragment="style">
-  body {
-          background-color: #f8f9fa;
-      }
+  html, body{
+      background-color: #2B2B2B;
+  }
 
-      .card {
-          background-color: #fff;
-          border: 1px solid #ccc;
-          border-radius: 10px;
-          box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-          text-align: center;
-          width: 60%; /* 60% of the viewport width */
-          margin: 0 auto; /* Center the card */
-          margin-top: 10%; /* Adjust as needed for vertical centering */
-      }
+    .card {
+        background-color: #fff;
+        border: 12px solid #02990E;;
+        border-radius: 10px;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        text-align: center;
+        width: 60%; /* 60% of the viewport width */
+        margin: 0 auto; /* Center the card */
+        margin-top: 10%; /* Adjust as needed for vertical centering */
+        animation: zoomIn 0.8s cubic-bezier(0.25, 1, 0.5, 1) forwards;
+    }
 
-      .card-body {
-          padding: 2rem;
-      }
+@keyframes zoomIn {
+  0% {
+    transform: scale(0.8);
+    opacity: 0;
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
 
-      h1 {
-          color: #0d6efd;
-          margin-bottom: 1rem;
-      }
+    .card-body {
+        padding: 2rem;
+    }
 
-      @media (max-width: 768px) {
-        .card-title {
-          font-size: 1.3em;
-        }
+    h1 {
+        color: #0d6efd;
+        margin-bottom: 1rem;
+    }
+
+    @media (max-width: 768px) {
+      .card-title {
+        font-size: 1.3em;
       }
+    }
 </style>
 <script layout:fragment="script"></script>
 </body>

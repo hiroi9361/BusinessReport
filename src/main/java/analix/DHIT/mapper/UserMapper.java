@@ -46,8 +46,8 @@ public interface UserMapper {
 //    User getuser(int employeeCode);
 
     //name取得
-    @Select("SELECT name FROM user WHERE employee_code = #{employeeCode}")
-    String getUserName(int employeeCode);
+    //@Select("SELECT name FROM user WHERE employee_code = #{employeeCode}")
+    //String getUserName(int employeeCode);
 // /////////// 2023/12/08 START 富山 //////////
 
     //roleでの従業員の絞り込み

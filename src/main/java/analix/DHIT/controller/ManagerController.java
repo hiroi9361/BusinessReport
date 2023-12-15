@@ -617,7 +617,7 @@ public class ManagerController {
 //
 //        return "employeeList";
 //    }
-//
+
 //    @PostMapping("/employeeList")
 //    public String searchEmployeeList(@ModelAttribute("SearchForm") SearchForm searchForm, Model model) {
 //        List<User> userList = employeeService.searchEmployees(searchForm.getSearchType(), searchForm.getSearchInput());

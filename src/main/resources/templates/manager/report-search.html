@@ -11,23 +11,24 @@
         <h2 class="text-center mb-4">報告書検索 </h2>
 
         <form action="#" th:action="@{/manager/search-report}" th:object="${reportSearchInput}" method="post">
-            <div class="mb-3">
-                <label for="employeeName" class="form-label">社員名</label>
-                <input type="text" class="form-control" id="employeeName" readonly th:value="${member.name}">
-            </div>
+            <div class="mb-3 d-flex align-items-end">
+                <div class="mb-3 me-3">
+                    <label for="employeeName" class="form-label">社員名</label>
+                    <input type="text" class="form-control" id="employeeName" readonly th:value="${member.name}">
+                </div>
 
-            <div class="mb-3">
-                <label for="datePicker" class="form-label">日付</label>
-                <input type="date" class="form-control" id="datePicker" name="date">
+                <div class="mb-3 me-3">
+                    <label for="datePicker" class="form-label">日付</label>
+                    <input type="date" class="form-control" id="datePicker" name="date">
+                </div>
+                <div class="mb-3 me-3">
+                    <button type="submit" class="btn btn-success btn-lg">検索</button>
+                </div>
             </div>
-
             <div class="mb-5">
                 <input type="hidden" name="employeeCode" th:value="${member.employeeCode}"/>
             </div>
 
-            <div class="d-grid gap-2">
-                <button type="submit" class="btn btn-success btn-lg">検索</button>
-            </div>
 
             <div class="mb-5"></div>
             <form th:action="@{/member/search-report}" th:object="${ReportSortInput}" method="post">
@@ -35,15 +36,15 @@
                     <h2 class="text-center mb-4">報告一覧</h2>
 
                     <div class="d-flex">
-                        <div class="mb-3">
-                            <select  name="feedback">
+                        <div class="mb-3 me-3">
+                            <select  name="feedback" class="form-select">
                                 <option th:value="${null}">選択してください。</option>
                                 <option th:value="${true}">既読</option>
                                 <option th:value="${false}">未読</option>
                             </select>
                         </div>
-                        <div class="mb-3">
-                            <select  name="date">
+                        <div class="mb-3 me-3">
+                            <select  name="date" class="form-select">
                                 <option th:value="${null}">選択してください。</option>
                                 <option th:each="date : ${dateList}"
                                         th:value="${date}"
@@ -51,15 +52,21 @@
                                 </option>
                             </select>
                         </div>
-                        <div >
-                            <button type="submit" name="sort" th:value="${true}">検索</button>
+                        <div class="mb-3 me-3">
+                            <button type="submit" name="sort" th:value="${true}" class="btn btn-success btn-lg">検索</button>
                         </div>
+
+                        <div th:if="${error != null}" class="text-center mb-4">
+                            <h3 style="color: red;" th:text="${error}"></h3>
+                        </div>
+
+
                     </div>
 
                     <table class="table">
                         <thead>
                         <tr>
-                            <th>フィードバック</th>
+                            <th>PM確認</th>
                             <th>日付</th>
                             <th>体調</th>
                         </tr>
@@ -69,17 +76,16 @@
                             <td th:text="${report.readStatus}"></td>
                             <td th:text="${report.date}"></td>
                             <td th:text="${report.condition}"></td>
+                            <td>
+                                <!--Detailへのリンクボタン-->
+                                <a th:href="@{'/manager/reports/' + ${report.id}}" class="btn btn-success btn-sm">詳細</a>
+                            </td>
                         </tr>
                         </tbody>
                     </table>
                 </div>
             </form>
 
-            <div class="mb-5"></div>
-
-            <div th:if="${error != null}" class="text-center mb-4">
-                <h3 style="color: red;" th:text="${error}"></h3>
-            </div>
         </form>
     </div>
 </div>

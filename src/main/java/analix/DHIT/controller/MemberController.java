@@ -245,7 +245,28 @@ public class MemberController {
         return "member/report-detail";
     }
 
-    @PostMapping("/reports/{reportId}/delete")
+    @PostMapping("/reports/{reportId}/delete/list")
+    @Transactional
+    public String listTransitionAfterDeleteReport(
+            @PathVariable int reportId
+    ) {
+        Report report = reportService.getReportById(reportId);
+
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        int employeeCode = Integer.parseInt(authentication.getName());
+
+        if (report.getEmployeeCode() != employeeCode) {
+            return "redirect:/member/report/create";
+        }
+        this.feedbackService.deleteById(reportId);
+        this.taskLogService.deleteByReportId(reportId);
+        this.reportService.deleteById(reportId);
+
+
+        return "redirect:/member/report-search";
+    }
+
+    @GetMapping("/reports/{reportId}/delete")
     @Transactional
     public String deleteReport(
             @PathVariable int reportId

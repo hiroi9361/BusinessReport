@@ -139,14 +139,23 @@ public class MemberController {
         model.addAttribute("error", model.getAttribute("error"));
 
     //追記*****************************************************
+
         //ログイン中のユーザーのemployeeCodeを取得する
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         int employeeCode = Integer.parseInt(authentication.getName());
+        User member = userService.getUserByEmployeeCode(employeeCode);
+        model.addAttribute("member", member);
         //報告一覧表示---------------------------------
         List<Report> reports = reportService.getfindAll(employeeCode);
-        model.addAttribute("reports", reports);
+//        model.addAttribute("reports", reports);
 
         //検索機能---------------------------------------
+        //既読or未読
+        for(Report report : reports){
+            boolean isFeedbackGiven = feedbackService.count(report.getId());
+            report.setReadStatus(isFeedbackGiven ? "既読" : "未読");
+        }
+        model.addAttribute("reports", reports);
         //年月で重複しないList作成
         List<LocalDate> dateList = reports.stream()
                 .map(Report::getDate)
@@ -184,8 +193,12 @@ public class MemberController {
 
             //ソート用
             List<Report> reports = reportService.getSorrtReport(reportSortInput);
-
-
+            User member = userService.getUserByEmployeeCode(employeeCode);
+            for(Report report : reports){
+                boolean isFeedbackGiven = feedbackService.count(report.getId());
+                report.setReadStatus(isFeedbackGiven ? "既読" : "未読");
+            }
+            model.addAttribute("member", member);
             model.addAttribute("reportSearchInput", new ReportSearchInput());
             model.addAttribute("error", model.getAttribute("error"));
             model.addAttribute("reports", reports);

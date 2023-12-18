@@ -169,7 +169,7 @@ public class ManagerController {
             Model model
     ) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        int employeeCode = Integer.parseInt(authentication.getName());
+        int employeeCode = Integer.parseInt(authentication.getName());//自分じゃなくて、選択した人のを取得しなきゃ
 
         String reportId = reportService.searchId(
                 reportSearchInput.getEmployeeCode(),
@@ -179,7 +179,7 @@ public class ManagerController {
 
 
         //検索結果がある場合、Detailにリダイレクト
-        redirectAttributes.addAttribute("reportId", reportId);
+//        redirectAttributes.addAttribute("reportId", reportId);
 
         //追記*****************************************************
         if(reportSortInput.getSort() == true) {
@@ -187,7 +187,12 @@ public class ManagerController {
 
             //ソート用
             List<Report> reports = reportService.getSorrtReport(reportSortInput);
-
+            User member = userService.getUserByEmployeeCode(employeeCode);
+            for(Report report : reports){
+                boolean isFeedbackGiven = feedbackService.count(report.getId());
+                report.setReadStatus(isFeedbackGiven ? "既読" : "未読");
+            }
+            model.addAttribute("member", member);
             model.addAttribute("reportSearchInput", new ReportSearchInput());
             model.addAttribute("error", model.getAttribute("error"));
             model.addAttribute("reports", reports);
@@ -200,7 +205,7 @@ public class ManagerController {
             model.addAttribute("dateList",dateList);
             //データ格納用
             model.addAttribute("reportSortInput",new ReportSortInput());
-            return "member/report-search";
+            return "manager/report-search";
         }
 //追記*****************************************************
 

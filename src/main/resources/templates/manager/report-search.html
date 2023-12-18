@@ -28,9 +28,9 @@
             <div class="mb-5">
                 <input type="hidden" name="employeeCode" th:value="${member.employeeCode}"/>
             </div>
+        </form>
 
-
-        <form th:action="@{/member/search-report}" th:object="${ReportSortInput}" method="post">
+        <form th:action="@{/manager/search-report}" th:object="${ReportSortInput}" method="post">
                 <div>
                     <h2 class="text-center mb-4">報告一覧</h2>
 
@@ -82,8 +82,6 @@
                     </table>
                 </div>
             </form>
-
-        </form>
     </div>
 </div>
 <style layout:fragment="style">

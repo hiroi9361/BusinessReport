@@ -12,7 +12,6 @@ import java.util.List;
 public interface ReportMapper {
     @Select("SELECT report_id FROM report WHERE employee_code = #{employeeCode} and date = #{date}")
     String selectIdByEmployeeCodeAndDate(int employeeCode, LocalDate date);
-
     @Select("SELECT * FROM report WHERE report_id = #{reportId}")
     Report SelectById(int reportId);
 

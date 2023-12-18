@@ -52,6 +52,7 @@
                     <tr>
                         <th>日付</th>
                         <th>体調</th>
+                        <th>詳細</th>
                         <th>削除</th>
                     </tr>
                     </thead>
@@ -59,6 +60,7 @@
                     <tr th:each="report : ${reports}">
                         <td th:text="${report.date}"></td>
                         <td th:text="${report.condition}"></td>
+                        <td><a th:href="@{'reports/' + ${report.Id}}" class="btn btn-secondary">詳細</a></td>
                         <td>
 <!--                            eachのフォーム一個目がなぜか表示されないため無理やりフォームを二つ並べています。他の解決方法があればそちらを利用予定。-->
                             <form th:action="@{'reports/' + ${report.id} + '/delete/list'}" method="post" onSubmit="return check()">

@@ -152,4 +152,7 @@ public class ReportService {
         Collections.sort(reports, Comparator.comparing(Report::getDate).reversed());
         return  reports;
     }
+    public  Report getEmployrrCode(int reportId){
+        return reportRepository.findById(reportId);
+    }
 }

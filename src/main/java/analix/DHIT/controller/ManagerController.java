@@ -133,6 +133,7 @@ public class ManagerController {
 
         //報告一覧表示---------------------------------
         List<Report> reports = reportService.getfindAll(employeeCode);
+
         //既読or未読
         for(Report report : reports){
             boolean isFeedbackGiven = feedbackService.count(report.getId());

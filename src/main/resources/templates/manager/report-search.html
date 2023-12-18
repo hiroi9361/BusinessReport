@@ -30,8 +30,7 @@
             </div>
 
 
-            <div class="mb-5"></div>
-            <form th:action="@{/member/search-report}" th:object="${ReportSortInput}" method="post">
+        <form th:action="@{/member/search-report}" th:object="${ReportSortInput}" method="post">
                 <div>
                     <h2 class="text-center mb-4">報告一覧</h2>
 
@@ -55,12 +54,10 @@
                         <div class="mb-3 me-3">
                             <button type="submit" name="sort" th:value="${true}" class="btn btn-success btn-lg">検索</button>
                         </div>
+                    </div>
 
-                        <div th:if="${error != null}" class="text-center mb-4">
-                            <h3 style="color: red;" th:text="${error}"></h3>
-                        </div>
-
-
+                    <div th:if="${error != null}" class="text-center mb-4">
+                    <h3 style="color: red;" th:text="${error}"></h3>
                     </div>
 
                     <table class="table">
@@ -78,7 +75,7 @@
                             <td th:text="${report.condition}"></td>
                             <td>
                                 <!--Detailへのリンクボタン-->
-                                <a th:href="@{'/manager/reports/' + ${report.id}}" class="btn btn-success btn-sm">詳細</a>
+                                <a th:href="@{'/manager/reports/' + ${report.Id}}" class="btn btn-success btn-sm">詳細</a>
                             </td>
                         </tr>
                         </tbody>

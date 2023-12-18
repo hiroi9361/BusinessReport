@@ -166,10 +166,9 @@ public class ManagerController {
             RedirectAttributes redirectAttributes,
             ReportSortInput reportSortInput,
             AssignmentCreateInput assignmentCreateInput,//test
+            User member,
             Model model
     ) {
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        int employeeCode = Integer.parseInt(authentication.getName());//自分じゃなくて、選択した人のを取得しなきゃ
 
         String reportId = reportService.searchId(
                 reportSearchInput.getEmployeeCode(),
@@ -183,11 +182,11 @@ public class ManagerController {
 
         //追記*****************************************************
         if(reportSortInput.getSort() == true) {
-            reportSortInput.setEmployeeCode(employeeCode);
+            reportSortInput.setEmployeeCode(member.getEmployeeCode());
 
             //ソート用
             List<Report> reports = reportService.getSorrtReport(reportSortInput);
-            User member = userService.getUserByEmployeeCode(employeeCode);
+            member = userService.getUserByEmployeeCode(member.getEmployeeCode());
             for(Report report : reports){
                 boolean isFeedbackGiven = feedbackService.count(report.getId());
                 report.setReadStatus(isFeedbackGiven ? "既読" : "未読");

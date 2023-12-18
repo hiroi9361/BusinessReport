@@ -608,7 +608,7 @@ public class ManagerController {
     }
 
 //    ////////// 2023/12/14 富山 START //////////
-
+//
 //    @GetMapping("/employeeList")
 //    public String showEmployeeList(Model model) {
 //        List<User> userList = userService.getAllEmployeeInfo();
@@ -617,7 +617,7 @@ public class ManagerController {
 //
 //        return "employeeList";
 //    }
-
+//
 //    @PostMapping("/employeeList")
 //    public String searchEmployeeList(@ModelAttribute("SearchForm") SearchForm searchForm, Model model) {
 //        List<User> userList = employeeService.searchEmployees(searchForm.getSearchType(), searchForm.getSearchInput());

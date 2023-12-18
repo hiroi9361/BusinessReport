@@ -176,11 +176,7 @@ public class ManagerController {
                 reportSearchInput.getDate()
         );
 
-        //検索結果がない場合
-        if (reportId == null) {
-            redirectAttributes.addFlashAttribute("error", "ヒットしませんでした");
-            return "redirect:/manager/report-search?employeeCode=" + reportSearchInput.getEmployeeCode();
-        }
+
 
         //検索結果がある場合、Detailにリダイレクト
         redirectAttributes.addAttribute("reportId", reportId);
@@ -207,6 +203,7 @@ public class ManagerController {
             return "member/report-search";
         }
 //追記*****************************************************
+
 
         //検索結果がない場合
         if (reportId == null) {

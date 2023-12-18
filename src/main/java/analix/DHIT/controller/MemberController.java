@@ -145,6 +145,7 @@ public class MemberController {
         //報告一覧表示---------------------------------
         List<Report> reports = reportService.getfindAll(employeeCode);
         model.addAttribute("reports", reports);
+
         //検索機能---------------------------------------
         //年月で重複しないList作成
         List<LocalDate> dateList = reports.stream()

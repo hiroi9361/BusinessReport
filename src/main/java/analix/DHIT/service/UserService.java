@@ -157,4 +157,8 @@ public class UserService {
 //    public List<User> selectEmployeeList(){
 //
 //    }
+
+    public List<User> getUserByName(String searchWords) {return this.userMapper.getUserByName(searchWords);}
+
+    public List<User> getUserByRole(String searchWords) {return this.userMapper.getUserByRole(searchWords);}
 }

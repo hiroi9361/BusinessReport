@@ -14,29 +14,25 @@
         <!--    <div class="container">-->
         <div class="container mt-3">
             <!-- 2023/12/07 富山 END -->
+
             <h1>ユーザー一覧</h1>
             <a class="btn btn-success" th:href=@{/manager/create}>ユーザー作成</a>
 
             <h2 th:text="${errorEmployeeMsg}"></h2>
             <h2 th:text="${deleteCompleteMSG}"></h2>
             <h2 th:text="${editCompleteMSG}"></h2>
+            <h2 th:text="${searchError}" class="text-danger"></h2>
 
             <!-- 2023/12/07 富山 START -->
             <!--  検索窓  -->
-            <form id="searchForm">
-                <label for="searchType"></label>
-                <select id="searchType" name="searchType">
-                    <option value="employeeNumber">社員番号</option>
-                    <option value="name">名前</option>
-                    <option value="role">役割</option>
+            <form action="" method="get" th:object="${userSearchInput}">
+                <select id="searchKeyword" name="searchKeyword" th:field="*{searchKeyword}">
+                    <option value="社員番号">社員番号</option>
+                    <option value="名前">名前</option>
+                    <option value="役割">役割</option>
                 </select>
-                <label for="searchInput"></label>
-                <input type="text" id="searchInput" name="searchInput" placeholder="検索キーワード" style="width: 500px ;margin-right: 10px;">
-                <script>
-
-
-                </script>
-                <input type="submit" class="btn btn-secondary"　name="search" value="検索">
+                <input type="text" th:field="*{searchWords}" placeholder="検索キーワード" style="width: 500px ;margin-right: 10px;">
+                <input type="submit" class="btn btn-secondary" value="検索">
             </form>
         </div>
 
@@ -95,7 +91,7 @@
             </td>
             <td>
                 <form th:action="@{/manager/employeeList-edit}" method="get">
-                    <input type="submit" class="btn btn-outline-primary" name="edit" value="編集">
+                    <input type="submit" class="btn btn-outline-success" name="edit" value="編集">
                     <input type="hidden" name="employeeCode" th:value="${userList.employeeCode}" />
                 </form>
             </td>
@@ -370,7 +366,7 @@
 <!--</div>-->
 
 <!-- 
-<!-- 2023/12/13 富山 START -->
+ 2023/12/13 富山 START -->
 
 <!--         <tbody>
         <tr th:each="userList : ${userList}" th:object="${userList}" class="align-middle">

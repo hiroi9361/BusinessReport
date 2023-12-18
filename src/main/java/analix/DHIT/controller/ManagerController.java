@@ -341,14 +341,44 @@ public class ManagerController {
     }
 
     @GetMapping("/employeeList")
-    public String displayEmployeeList(Model model) {
-        List<User> userList = userService.getAllEmployeeInfo();
+    public String displayEmployeeList(Model model, @ModelAttribute UserSearchInput userSearchInput, RedirectAttributes redirectAttributes) {
+
         String title = "ユーザー一覧";
         model.addAttribute("title", title);
 
+        List<User> userList = new ArrayList<User>();
+
+        if (userSearchInput.getSearchWords() != null){
+            switch (userSearchInput.getSearchKeyword()){
+                case "社員番号":
+                    int num = Integer.parseInt(userSearchInput.getSearchWords());
+                    userList.add(userService.getUserByEmployeeCode(num));
+                    break;
+                case "名前":
+                    userList = userService.getUserByName(userSearchInput.getSearchWords());
+                    break;
+                case "役割":
+                    userList = userService.getUserByRole(userSearchInput.getSearchWords());
+                    break;
+            }
+
+            if(userList.size() == 0) {
+                redirectAttributes.addFlashAttribute("searchError", "ヒットしませんでした。");
+                return "redirect:manager/employeeList";
+            }else {
+                model.addAttribute("userList", userList);
+                return "manager/employeeList";
+            }
+        }
+
+        userList = userService.getAllEmployeeInfo();
+
         model.addAttribute("userList", userList);
         return "manager/employeeList";
+
     }
+
+
     //社員削除画面表示
     @Transactional
     @PostMapping("employeeList-deleteUser")

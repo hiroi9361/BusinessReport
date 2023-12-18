@@ -7,99 +7,101 @@
 </head>
 <body>
 <div layout:fragment="content">
-<div class="report-container">
-    <div class="d-flex justify-content-center">
-        <div th:if="${beforeReportId!=null}">
-            <a th:href="@{'/member/reports/' + ${beforeReportId}}">
-                <button type="button" class="btn btn-secondary me-3">&lt; 前の日</button>
-            </a>
+    <div class="report-container">
+        <div class="d-flex justify-content-center">
+            <div th:if="${beforeReportId!=null}">
+                <a th:href="@{'/member/reports/' + ${beforeReportId}}">
+                    <button type="button" class="btn btn-secondary me-3">&lt; 前の日</button>
+                </a>
+            </div>
+            <div th:if="${afterReportId!=null}">
+                <a th:href="@{'/member/reports/' + ${afterReportId}}">
+                    <button type="button" class="btn btn-secondary">次の日 ></button>
+                </a>
+            </div>
         </div>
-        <div th:if="${afterReportId!=null}">
-            <a th:href="@{'/member/reports/' + ${afterReportId}}">
-                <button type="button" class="btn btn-secondary">次の日 ></button>
-            </a>
+        <div class="button-box">
+            <h2 th:text="${date}">日付</h2>
+            <h2 th:text="${member.name}">名前</h2>
+            <div th:unless="${isManager}">
+                <a th:href="@{${report.id} + '/edit'}" class="btn btn-success">編集</a>
+                <!--    削除ボタンはリンク貼り直す必要あり-->
+                <a th:href="@{${report.id} + '/delete'}" class="btn btn-danger">削除</a>
+        <!--        <button class="btn btn-danger">削除</button>-->
+            </div>
         </div>
-    </div>
-    <div class="button-box">
-        <h2 th:text="${date}">日付</h2>
-        <h2 th:text="${member.name}">名前</h2>
-        <a th:href="@{${report.id} + '/edit'}" class="btn btn-success">編集</a>
-        <!--    削除ボタンはリンク貼り直す必要あり-->
-        <a th:href="@{${report.id} + '/delete'}" class="btn btn-danger">削除</a>
-<!--        <button class="btn btn-danger">削除</button>-->
-    </div>
 
-    <div class="row justify-content-md-center">
-        <div class="col-md-6">
-            <div class="attendance-boxL">
-                <h5 class="text-center">勤怠</h5>
-                <p>出勤時間: <span th:text="${report.startTime}"></span></p>
-                <p>退勤時間: <span th:text="${report.endTime}"></span></p>
-                <div th:if="${report.isLateness and report.isLeftEarly}" class="text-danger">
-                    <p>遅刻と早退</p>
-                    <p>理由: <span th:text="${report.latenessReason}"></span></p>
+        <div class="row justify-content-md-center">
+            <div class="col-md-6">
+                <div class="attendance-boxL">
+                    <h5 class="text-center">勤怠</h5>
+                    <p>出勤時間: <span th:text="${report.startTime}"></span></p>
+                    <p>退勤時間: <span th:text="${report.endTime}"></span></p>
+                    <div th:if="${report.isLateness and report.isLeftEarly}" class="text-danger">
+                        <p>遅刻と早退</p>
+                        <p>理由: <span th:text="${report.latenessReason}"></span></p>
+                    </div>
+                    <div th:if="${report.isLateness and not report.isLeftEarly}" class="text-danger">
+                        <p>遅刻</p>
+                        <p>理由: <span th:text="${report.latenessReason}"></span></p>
+                    </div>
+                    <div th:if="${report.isLeftEarly and not report.isLateness}" class="text-danger">
+                        <p>早退</p>
+                        <p>理由: <span th:text="${report.latenessReason}"></span></p>
+                    </div>
                 </div>
-                <div th:if="${report.isLateness and not report.isLeftEarly}" class="text-danger">
-                    <p>遅刻</p>
-                    <p>理由: <span th:text="${report.latenessReason}"></span></p>
-                </div>
-                <div th:if="${report.isLeftEarly and not report.isLateness}" class="text-danger">
-                    <p>早退</p>
-                    <p>理由: <span th:text="${report.latenessReason}"></span></p>
+            </div>
+
+            <div class="col-md-6">
+                <div class="attendance-boxR">
+                    <h5 class="text-center">体調</h5>
+                    <i th:switch="${report.conditionRate}">
+                        <i th:case="1">
+                            <i class="bi bi-emoji-smile-fill text-success" style="font-size: 2rem;"></i>
+                        </i>
+                        <i th:case="2">
+                            <i class="bi bi-emoji-neutral-fill text-warning" style="font-size: 2rem;"></i>
+                        </i>
+                        <i th:case="3">
+                            <i class="bi bi-emoji-dizzy-fill text-danger" style="font-size: 2rem;"></i>
+                        </i>
+                    </i>
+                    <h5>体調コメント</h5>
+                    <p><span th:text="${report.condition}"></span></p>
                 </div>
             </div>
         </div>
 
-        <div class="col-md-6">
-            <div class="attendance-boxR">
-                <h5 class="text-center">体調</h5>
-                <i th:switch="${report.conditionRate}">
-                    <i th:case="1">
-                        <i class="bi bi-emoji-smile-fill text-success" style="font-size: 2rem;"></i>
-                    </i>
-                    <i th:case="2">
-                        <i class="bi bi-emoji-neutral-fill text-warning" style="font-size: 2rem;"></i>
-                    </i>
-                    <i th:case="3">
-                        <i class="bi bi-emoji-dizzy-fill text-danger" style="font-size: 2rem;"></i>
-                    </i>
-                </i>
-                <h5>体調コメント</h5>
-                <p><span th:text="${report.condition}"></span></p>
-            </div>
-        </div>
-    </div>
-
-    <div class="row justify-content-md-center">
-        <div class="col-md-6">
-            <div class="repo-todo-boxL">
-                <div>
-                    <h5 class="text-center">報告内容</h5>
-                    <p><span th:text="${report.impressions}"></span></p>
+        <div class="row justify-content-md-center">
+            <div class="col-md-6">
+                <div class="repo-todo-boxL">
+                    <div>
+                        <h5 class="text-center">報告内容</h5>
+                        <p><span th:text="${report.impressions}"></span></p>
+                    </div>
                 </div>
             </div>
-        </div>
-        <div class="col-md-6">
-            <div class="repo-todo-boxR">
+            <div class="col-md-6">
+                <div class="repo-todo-boxR">
                     <div>
                         <h5 class="text-center">明日の予定</h5>
                         <p><span th:text="${report.tomorrowSchedule}"></span></p>
                     </div>
+                </div>
             </div>
         </div>
-    </div>
 
-        <div>
-                <h2>Todo</h2>
-                <table class="table">
-                    <thead>
+        <div class="attendance-boxR">
+            <h2 class="text-center">タスク一覧</h2>
+            <table class="DatailTable">
+                <thead>
                     <tr>
                         <th scope="col">タスク名</th>
                         <th scope="col">進捗率</th>
                         <th scope="col">進捗グラフ</th> <!-- 追加: グラフ表示列 -->
                     </tr>
-                    </thead>
-                    <tbody>
+                </thead>
+                <tbody>
                     <tr th:each="taskLog : ${taskLogs}" class="task">
                         <td th:text="${taskLog.name}" style="word-wrap: break-word; max-width: 200px;"></td>
                         <td class="progress-rate" th:text="${taskLog.progressRate + '%'}"></td>
@@ -110,96 +112,95 @@
                             </div>
                         </td>
                     </tr>
-                    </tbody>
-                </table>
+                </tbody>
+            </table>
         </div>
-    </div>
 
-    <div class="fb-container-mem">
-        <!--Memberの場合------------------------>
-        <!--Managerのフィードバックを表示-->
-        <div th:unless="${isManager}">
-            <h5>フィードバック</h5>
-                <div th:if="${feedback != null}">
-                    <i th:switch="${feedback.rating}">
-                        <i th:case="2">
-                            <i class="bi bi-emoji-smile-fill text-success" style="font-size: 4rem;"></i>
-                        </i>
-                        <i th:case="1">
-                            <i class="bi bi-emoji-neutral-fill text-warning" style="font-size: 4rem;"></i>
-                        </i>
-                        <i th:case="0">
-                            <i class="bi bi-emoji-dizzy-fill text-danger" style="font-size: 4rem;"></i>
-                        </i>
-                    </i>
-                    <p><span th:text="${feedback.name}"></span>さんによるコメント</p>
-                    <p><span th:text="${feedback.comment}"></span></p>
-                </div>
-                <div th:if="${feedback == null}">
-                    <p>フィードバックがありません。</p>
-                </div>
-        </div>
-    </div>
-
-    <div class="fb-container-mgr">
-        <!--Managerの場合------------------------>
-        <!--Memberのフィードバックの入力フォームを作成-->
-        <div th:if="${isManager}">
-            <div class="row sub-section">
-                <div th:if="${feedback != null}">
-                    <form th:object="${FeedbackUpdateInput}" method="get">
-                        <div class="col-12 mb-4">
-                            <h2>フィードバック</h2>
+        <div class="row justify-content-md-center">
+            <div class="col-md-6">
+                <div class="repo-todo-boxL">
+                    <!--Memberの場合------------------------>
+                    <!--Managerのフィードバックを表示-->
+                    <div th:unless="${isManager}">
+                        <h2 class="text-center">フィードバック</h2>
+                        <div th:if="${feedback != null}">
+                            <i th:switch="${feedback.rating}">
+                                <i th:case="2">
+                                    <i class="bi bi-emoji-smile-fill text-success" style="font-size: 4rem;"></i>
+                                </i>
+                                <i th:case="1">
+                                    <i class="bi bi-emoji-neutral-fill text-warning" style="font-size: 4rem;"></i>
+                                </i>
+                                <i th:case="0">
+                                    <i class="bi bi-emoji-dizzy-fill text-danger" style="font-size: 4rem;"></i>
+                                </i>
+                            </i>
+                            <p><span th:text="${feedback.name}"></span>さんによるコメント</p>
+                            <p><span th:text="${feedback.comment}"></span></p>
                         </div>
-                        <i th:switch="${feedback.rating}">
-                            <i th:case="2">
-                                <i class="bi bi-emoji-smile-fill text-success" style="font-size: 4rem;"></i>
-                            </i>
-                            <i th:case="1">
-                                <i class="bi bi-emoji-neutral-fill text-warning" style="font-size: 4rem;"></i>
-                            </i>
-                            <i th:case="0">
-                                <i class="bi bi-emoji-dizzy-fill text-danger" style="font-size: 4rem;"></i>
-                            </i>
-                        </i>
-                        <p>コメント</p>
-                        <p><span th:text="${feedback.comment}"></span></p>
-                        <form th:action="@{'/manager/reports/' + ${report.Id}}" method="post">
-                            <button type="submit" class="btn btn-danger" name="del" value="true">削除する</button>
-                        </form>
-                    </form>
+                        <div th:if="${feedback == null}">
+                            <p>フィードバックがありません。</p>
+                        </div>
+                    </div>
+                    <!--Managerの場合------------------------>
+                    <!--Memberのフィードバックの入力フォームを作成-->
+                    <div th:if="${isManager}">
+                        <div class="row sub-section">
+                            <div th:if="${feedback != null}">
+                                <form th:object="${FeedbackUpdateInput}" method="get">
+                                    <div class="col-12 mb-4">
+                                        <h2>フィードバック</h2>
+                                    </div>
+                                    <i th:switch="${feedback.rating}">
+                                        <i th:case="2">
+                                            <i class="bi bi-emoji-smile-fill text-success" style="font-size: 4rem;"></i>
+                                        </i>
+                                        <i th:case="1">
+                                            <i class="bi bi-emoji-neutral-fill text-warning" style="font-size: 4rem;"></i>
+                                        </i>
+                                        <i th:case="0">
+                                            <i class="bi bi-emoji-dizzy-fill text-danger" style="font-size: 4rem;"></i>
+                                        </i>
+                                    </i>
+                                    <p>コメント</p>
+                                    <p><span th:text="${feedback.comment}"></span></p>
+                                    <form th:action="@{'/manager/reports/' + ${report.Id}}" method="post">
+                                        <button type="submit" class="btn btn-danger" name="del" value="true">削除する</button>
+                                    </form>
+                                </form>
+                            </div>
+                        </div>
+                        <div th:if="${feedback == null}">
+                            <div class="row sub-section">
+                                <form th:object="${FeedbackUpdateInput}" method="get">
+                                    <div class="col-12 mb-4">
+                                        <h2>フィードバック</h2>
+                                    </div>
+                                    <div class="form-group">
+                                        <input type="radio" th:value="2" th:name="rating" required><i class="bi bi-emoji-smile-fill text-success" style="font-size: 4rem;"></i><!--良好-->
+                                        <input type="radio" th:value="1" th:name="rating" required><i class="bi bi-emoji-neutral-fill text-warning" style="font-size: 4rem;"></i><!--普通-->
+                                        <input type="radio" th:value="0" th:name="rating" required><i class="bi bi-emoji-dizzy-fill text-danger" style="font-size: 4rem;"></i><!--悪い-->
+                                    </div>
+                                    <div class="col-12 d-flex flex-row align-items-center gap-3">
+                                        <label class="text-nowrap">コメント</label>
+                                        <label for="text_tomorrowSchedule"></label><textarea class="form-control"
+                                                                                             name="comment"
+                                                                                             id="text_tomorrowSchedule"
+                                                                                             rows="3" required></textarea>
+                                    </div>
+                                    <div>
+                                        <form th:action="@{'/manager/reports/' + ${report.Id}}" method="post">
+                                            <button type="submit" class="btn btn-success">既読にする</button>
+                                        </form>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
-            <div th:if="${feedback == null}">
-                <div class="row sub-section">
-                    <form th:object="${FeedbackUpdateInput}" method="get">
-                        <div class="col-12 mb-4">
-                            <h2>フィードバック</h2>
-                        </div>
-                        <div class="form-group">
-                            <input type="radio" th:value="2" th:name="rating" required><i class="bi bi-emoji-smile-fill text-success" style="font-size: 4rem;"></i><!--良好-->
-                            <input type="radio" th:value="1" th:name="rating" required><i class="bi bi-emoji-neutral-fill text-warning" style="font-size: 4rem;"></i><!--普通-->
-                            <input type="radio" th:value="0" th:name="rating" required><i class="bi bi-emoji-dizzy-fill text-danger" style="font-size: 4rem;"></i><!--悪い-->
-                        </div>
-                        <div class="col-12 d-flex flex-row align-items-center gap-3">
-                            <label class="text-nowrap">コメント</label>
-                            <label for="text_tomorrowSchedule"></label><textarea class="form-control"
-                                                                                 name="comment"
-                                                                                 id="text_tomorrowSchedule"
-                                                                                 rows="3" required></textarea>
-                        </div>
-                        <div>
-                            <form th:action="@{'/manager/reports/' + ${report.Id}}" method="post">
-                                <button type="submit" class="btn btn-success">既読にする</button>
-                            </form>
-                        </div>
-
-                    </form>
-                </div>
-            </div>
         </div>
-    </div>
-
+    <div></div>
 
     <!-- モーダル -->
 <!--    <div class="modal fade" id="deleteModal" tabindex="-1" aria-labelledby="deleteModalLabel" aria-hidden="true">-->

@@ -25,9 +25,7 @@
             <h2 th:text="${member.name}">名前</h2>
             <div th:unless="${isManager}">
                 <a th:href="@{${report.id} + '/edit'}" class="btn btn-success">編集</a>
-                <!--    削除ボタンはリンク貼り直す必要あり-->
                 <a th:href="@{${report.id} + '/delete'}" class="btn btn-danger">削除</a>
-        <!--        <button class="btn btn-danger">削除</button>-->
             </div>
         </div>
 
@@ -91,38 +89,44 @@
             </div>
         </div>
 
-        <div class="attendance-boxR">
-            <h2 class="text-center">タスク一覧</h2>
-            <table class="DatailTable">
-                <thead>
-                    <tr>
-                        <th scope="col">タスク名</th>
-                        <th scope="col">進捗率</th>
-                        <th scope="col">進捗グラフ</th> <!-- 追加: グラフ表示列 -->
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr th:each="taskLog : ${taskLogs}" class="task">
-                        <td th:text="${taskLog.name}" style="word-wrap: break-word; max-width: 200px;"></td>
-                        <td class="progress-rate" th:text="${taskLog.progressRate + '%'}"></td>
-                        <td>
-                            <!-- Bootstrapのプログレスバー -->
-                            <div class="progress">
-                                <div class="progress-bar" role="progressbar" th:style="'width: ' + ${taskLog.progressRate} + '%;'" aria-valuenow="25" aria-valuemin="0" aria-valuemax="100"></div>
-                            </div>
-                        </td>
-                    </tr>
-                </tbody>
-            </table>
-        </div>
-
         <div class="row justify-content-md-center">
             <div class="col-md-6">
+                <div class="attendance-boxR">
+                    <h2 class="text-center">タスク一覧</h2>
+                    <div th:if="${!#lists.isEmpty(taskLogs)}">
+                        <table class="DatailTable">
+                            <thead>
+                            <tr>
+                                <th scope="col">タスク名</th>
+                                <th scope="col">進捗率</th>
+                                <th scope="col">進捗グラフ</th> <!-- 追加: グラフ表示列 -->
+                            </tr>
+                            </thead>
+                            <tbody>
+                            <tr th:each="taskLog : ${taskLogs}" class="task">
+                                <td th:text="${taskLog.name}" style="word-wrap: break-word;"></td> <!--max-width: 200px;-->
+                                <td class="progress-rate" th:text="${taskLog.progressRate + '%'}"></td>
+                                <td>
+                                    <!-- Bootstrapのプログレスバー -->
+                                    <div class="progress">
+                                        <div class="progress-bar" role="progressbar" th:style="'width: ' + ${taskLog.progressRate} + '%;'" aria-valuenow="25" aria-valuemin="0" aria-valuemax="100"></div>
+                                    </div>
+                                </td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <div th:if="${#lists.isEmpty(taskLogs)}">
+                        <p>タスクがありません</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-6">
                 <div class="repo-todo-boxL">
-                    <!--Memberの場合------------------------>
-                    <!--Managerのフィードバックを表示-->
+                    <h2 class="text-center">フィードバック</h2>
+                    <!-----------Member用------------------------------------------------>
                     <div th:unless="${isManager}">
-                        <h2 class="text-center">フィードバック</h2>
                         <div th:if="${feedback != null}">
                             <i th:switch="${feedback.rating}">
                                 <i th:case="2">
@@ -143,14 +147,10 @@
                         </div>
                     </div>
                     <!--Managerの場合------------------------>
-                    <!--Memberのフィードバックの入力フォームを作成-->
                     <div th:if="${isManager}">
                         <div class="row sub-section">
                             <div th:if="${feedback != null}">
                                 <form th:object="${FeedbackUpdateInput}" method="get">
-                                    <div class="col-12 mb-4">
-                                        <h2>フィードバック</h2>
-                                    </div>
                                     <i th:switch="${feedback.rating}">
                                         <i th:case="2">
                                             <i class="bi bi-emoji-smile-fill text-success" style="font-size: 4rem;"></i>
@@ -173,9 +173,6 @@
                         <div th:if="${feedback == null}">
                             <div class="row sub-section">
                                 <form th:object="${FeedbackUpdateInput}" method="get">
-                                    <div class="col-12 mb-4">
-                                        <h2>フィードバック</h2>
-                                    </div>
                                     <div class="form-group">
                                         <input type="radio" th:value="2" th:name="rating" required><i class="bi bi-emoji-smile-fill text-success" style="font-size: 4rem;"></i><!--良好-->
                                         <input type="radio" th:value="1" th:name="rating" required><i class="bi bi-emoji-neutral-fill text-warning" style="font-size: 4rem;"></i><!--普通-->
@@ -200,30 +197,9 @@
                 </div>
             </div>
         </div>
-    <div></div>
+        <div></div>
 
-    <!-- モーダル -->
-<!--    <div class="modal fade" id="deleteModal" tabindex="-1" aria-labelledby="deleteModalLabel" aria-hidden="true">-->
-<!--        <div class="modal-dialog">-->
-<!--            <div class="modal-content">-->
-<!--                <div class="modal-header">-->
-<!--                    <h5 class="modal-title" id="deleteModalLabel">削除の確認</h5>-->
-<!--                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>-->
-<!--                </div>-->
-<!--                <div class="modal-body">-->
-<!--                    <p>本当に削除しますか？</p>-->
-<!--                </div>-->
-<!--                <div class="modal-footer">-->
-<!--                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">キャンセル</button>-->
-<!--                    &lt;!&ndash; 実際の削除処理を行うフォーム &ndash;&gt;-->
-<!--                    <form th:action="@{${report.id} + '/delete'}" method="post">-->
-<!--                        <button type="submit" class="btn btn-danger">削除</button>-->
-<!--                    </form>-->
-<!--                </div>-->
-<!--            </div>-->
-<!--        </div>-->
-<!--    </div>-->
-</div>
+    </div>
 </div>
 <style layout:fragment="style"></style>
 <script layout:fragment="script"></script>

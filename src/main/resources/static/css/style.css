@@ -40,11 +40,23 @@ border:10px solid #02990E;
   }
 }
 
+.DatailTable {
+    text-align:center;
+    width:90%;
+    margin-right:auto;
+    margin-left:auto;
+}
+
+.DatailTable tr {
+  border: 1px solid #C0C0C0;
+}
+
 .StripeTable {
 text-align:center;
 width:90%;
 margin-right:auto;
 margin-left:auto;
+background-color:#e4f4e5;
   border-collapse:collapse;
   border: 1px solid #C0C0C0;
 }
@@ -165,4 +177,3 @@ padding:12px;
 margin-top:12px;
 min-height:290px;
 }
-

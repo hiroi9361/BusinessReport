@@ -54,6 +54,9 @@
                         <div class="mb-3 me-3">
                             <button type="submit" name="sort" th:value="${true}" class="btn btn-success btn-lg">検索</button>
                         </div>
+                        <div class="mb-5">
+                            <input type="hidden" name="employeeCode" th:value="${member.employeeCode}"/>
+                        </div>
                     </div>
 
                     <div th:if="${error != null}" class="text-center mb-4">

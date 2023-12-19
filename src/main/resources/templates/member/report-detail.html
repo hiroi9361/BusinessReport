@@ -91,8 +91,8 @@
 
         <div class="row justify-content-md-center">
             <div class="col-md-6">
-                <div class="attendance-boxR">
-                    <h2 class="text-center">タスク一覧</h2>
+                <div class="attendance-boxL">
+                    <h5 class="text-center">タスク一覧</h5>
                     <div th:if="${!#lists.isEmpty(taskLogs)}">
                         <table class="DatailTable">
                             <thead>
@@ -124,7 +124,7 @@
 
             <div class="col-md-6">
                 <div class="repo-todo-boxL">
-                    <h2 class="text-center">フィードバック</h2>
+                    <h5 class="text-center">フィードバック</h5>
                     <!-----------Member用------------------------------------------------>
                     <div th:unless="${isManager}">
                         <div th:if="${feedback != null}">

@@ -1,10 +1,7 @@
 package analix.DHIT.controller;
 
 
-import analix.DHIT.input.ReportCreateInput;
-import analix.DHIT.input.ReportSearchInput;
-import analix.DHIT.input.ReportSortInput;
-import analix.DHIT.input.ReportUpdateInput;
+import analix.DHIT.input.*;
 import analix.DHIT.model.*;
 import analix.DHIT.service.*;
 import org.springframework.security.core.Authentication;
@@ -33,14 +30,22 @@ public class MemberController {
     private final FeedbackService feedbackService;
     private final AssignmentService assignmentService;
     private final TeamService teamService;
+    private final SettingService settingService;
 
-    public MemberController(UserService userService, TaskLogService taskLogService, ReportService reportService, FeedbackService feedbackService, AssignmentService assignmentService, TeamService teamService) {
+    public MemberController(UserService userService,
+                            TaskLogService taskLogService,
+                            ReportService reportService,
+                            FeedbackService feedbackService,
+                            AssignmentService assignmentService,
+                            TeamService teamService,
+                            SettingService settingService) {
         this.userService = userService;
         this.taskLogService = taskLogService;
         this.reportService = reportService;
         this.feedbackService=feedbackService;
         this.assignmentService=assignmentService;
         this.teamService = teamService;
+        this.settingService=settingService;
     }
 
     @GetMapping("/report/create")
@@ -53,6 +58,7 @@ public class MemberController {
         //employeeCodeを使用し、直近のreportがあるか調べる(取得)
         String latestReportId = reportService.getLatestIdByEmployeeCode(employeeCode);
         ReportCreateInput reportCreateInput = new ReportCreateInput();
+        SettingInput settingInput = new SettingInput();
         //java.timeパッケージから現在の時刻を取得
         reportCreateInput.setDate(LocalDate.now());
 
@@ -71,6 +77,12 @@ public class MemberController {
         reportCreateInput.setEndTime(report.getEndTime());
         //report_idを参照してtask_Logの値を取得しset
         reportCreateInput.setTaskLogs(taskLogService.getIncompleteTaskLogsByReportId(Integer.parseInt(latestReportId)));
+        //規定の終業時間を取得し、セット
+        Setting setting = settingService.getSettingTime();
+        settingInput.setStartTime(setting.getStartTime());
+        settingInput.setEndTime(setting.getEndTime());
+        settingInput.setEmployment(false);
+        model.addAttribute("settingInput",settingInput);
 
         model.addAttribute("reportCreateInput", reportCreateInput);
         return "member/report-create";
@@ -80,15 +92,53 @@ public class MemberController {
     //↓Transactionalはトランザクション処理で一連の流れが失敗した場合ロールバックする
     @Transactional
     @PostMapping("/report/create")
-    public String createReport(ReportCreateInput reportCreateInput, RedirectAttributes redirectAttributes) {
+    public String createReport(ReportCreateInput reportCreateInput, RedirectAttributes redirectAttributes, SettingInput settingInput, Model model) {
 
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         int employeeCode = Integer.parseInt(authentication.getName());
 
+        //遅刻早退を判定
+        Setting setting = settingService.getSettingTime();
+
+        if(!settingInput.getEmployment()){
+            if(settingInput.getStartTime().isAfter(setting.getStartTime()) || settingInput.getEndTime().isBefore(setting.getEndTime())){
+                String reason = "";
+                if(settingInput.getStartTime().isAfter(setting.getStartTime()) && settingInput.getEndTime().isBefore(setting.getEndTime())) {
+                    reason = "※遅刻 及び 早退の理由を記入してください";
+                    reportCreateInput.setIsLateness(true);
+                    reportCreateInput.setIsLeftEarly(true);
+                }else if(settingInput.getStartTime().isAfter(setting.getStartTime())){
+                    reason = "※遅刻の理由を記入してください";
+                    reportCreateInput.setIsLateness(true);
+                }else if(settingInput.getEndTime().isBefore(setting.getEndTime())){
+                    reason = "※早退の理由を記入してください";
+                    reportCreateInput.setIsLeftEarly(true);
+                }
+
+                settingInput.setEmployment(true);
+
+                model.addAttribute("settingInput",settingInput);
+                model.addAttribute("reportCreateInput", reportCreateInput);
+                String title = "報告作成";
+                model.addAttribute("title", title);
+                model.addAttribute("reason",reason);
+                return "member/report-create";
+            }
+        }
 
         if (reportService.existsReport(employeeCode, reportCreateInput.getDate())) {
             redirectAttributes.addFlashAttribute("error", reportCreateInput.getDate() + "は既に業務報告書が存在しています");
             return "redirect:/member/report/create";
+        }
+
+        //遅刻・早退判定
+        if(settingInput.getStartTime().isAfter(setting.getStartTime()) && settingInput.getEndTime().isBefore(setting.getEndTime())) {
+            reportCreateInput.setIsLateness(true);
+            reportCreateInput.setIsLeftEarly(true);
+        }else if(settingInput.getStartTime().isAfter(setting.getStartTime())){
+            reportCreateInput.setIsLateness(true);
+        }else if(settingInput.getEndTime().isBefore(setting.getEndTime())){
+            reportCreateInput.setIsLeftEarly(true);
         }
 
         //newReportIdには新たにInsertされたreportのIDが入る
@@ -323,6 +373,28 @@ public class MemberController {
             return "redirect:/member/report/create";
         }
 
+        //遅刻・早退　関係
+        Setting setting = this.settingService.getSettingTime();
+        SettingInput settingInput = new SettingInput();
+        String reason = "";
+        if(report.getStartTime().isAfter(setting.getStartTime()) && report.getEndTime().isBefore(setting.getEndTime())) {
+            settingInput.setEmployment(true);
+            reason = "※遅刻 及び 早退の理由を記入してください";
+        }else if(report.getStartTime().isAfter(setting.getStartTime())){
+            settingInput.setEmployment(true);
+            reason = "※遅刻の理由を記入してください";
+        }else if(report.getEndTime().isBefore(setting.getEndTime())){
+            settingInput.setEmployment(true);
+            reason = "※早退の理由を記入してください";
+        }
+
+        model.addAttribute("reason",reason);
+        model.addAttribute("settingInput",settingInput);
+
+
+
+
+
         List<TaskLog> taskLogs = this.taskLogService.getTaskLogsByReportId(reportId);
 
         model.addAttribute("report", report);
@@ -344,6 +416,17 @@ public class MemberController {
 
         if (report.getEmployeeCode() != employeeCode) {
             return "redirect:/member/report/create";
+        }
+
+        //遅刻・早退関係
+        Setting setting = settingService.getSettingTime();
+        if(report.getStartTime().isAfter(setting.getStartTime()) && report.getEndTime().isBefore(setting.getEndTime())) {
+            reportUpdateInput.setIsLateness(true);
+            reportUpdateInput.setIsLeftEarly(true);
+        }else if(report.getStartTime().isAfter(setting.getStartTime())){
+            reportUpdateInput.setIsLateness(true);
+        }else if(report.getEndTime().isBefore(setting.getEndTime())){
+            reportUpdateInput.setIsLeftEarly(true);
         }
 
         this.reportService.update(reportUpdateInput);

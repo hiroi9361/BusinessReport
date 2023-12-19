@@ -27,43 +27,51 @@
                     </div>
 
 
-                    <div id= "startTime_mb" class="col-md-12 d-flex flex-row align-items-center gap-3">
+                    <div id="startTime_mb" class="col-md-12 d-flex flex-row align-items-center gap-3">
                         <p class="text-center">出勤時間</p>
                         <div class="cs-form">
                             <input type="time" class="form-control" name="startTime"
-                                   th:value="${reportCreateInput.startTime}" required/>
+                                   th:value="${settingInput.startTime}" required/>
                         </div>
                     </div>
                     <div id= "endTime_mb" class="col-md-12 d-flex flex-row align-items-center gap-3" >
                         <p class="text-center">退勤時間</p>
                         <div class="cs-form">
-                            <input type="time" class="form-control" name="endTime" th:value="${reportCreateInput.endTime}"
+                            <input type="time" class="form-control" name="endTime" th:value="${settingInput.endTime}"
                                    required/>
                         </div>
                     </div>
-                    <div class="col-md-12 d-flex flex-row gap-5">
-                        <label>※遅刻・早退の場合はチェックマーク</label>
-                    </div>
-                    <div id = "radio-check_mb" class="col-md-12 d-flex flex-row gap-5">
-                        <div class="form-check">
-                            <input class="form-check-input" type="checkbox" value="true" id="check_Lateness"
-                                   name="isLateness" th:checked="${reportCreateInput.isLateness}"/>
-                            <label class="form-check-label" for="check_Lateness">遅刻</label>
-                        </div>
+<!--                    削除予定-->
+<!--                    <div th:if="${settingInput.employment == true}">-->
+<!--                        <p>おぽぽぽぽぽぽぽぽぽぽｐ</p>-->
+<!--                    </div>-->
+<!--                    <div class="col-md-12 d-flex flex-row gap-5">-->
+<!--                        <label>※遅刻・早退の場合はチェックマーク</label>-->
+<!--                    </div>-->
+<!--                    <div id = "radio-check_mb" class="col-md-12 d-flex flex-row gap-5">-->
+<!--                        <div class="form-check">-->
+<!--                            <input class="form-check-input" type="checkbox" value="true" id="check_Lateness"-->
+<!--                                   name="isLateness" th:checked="${reportCreateInput.isLateness}"/>-->
+<!--                            <label class="form-check-label" for="check_Lateness">遅刻</label>-->
+<!--                        </div>-->
 
-                        <div class="form-check">
-                            <input class="form-check-input" type="checkbox" value="true" id="check_LeftEarly"
-                                   name="isLeftEarly" th:checked="${reportCreateInput.isLeftEarly}"/>
-                            <label class="form-check-label" for="check_LeftEarly">早退</label>
-                        </div>
-                    </div>
+<!--                        <div class="form-check">-->
+<!--                            <input class="form-check-input" type="checkbox" value="true" id="check_LeftEarly"-->
+<!--                                   name="isLeftEarly" th:checked="${reportCreateInput.isLeftEarly}"/>-->
+<!--                            <label class="form-check-label" for="check_LeftEarly">早退</label>-->
+<!--                        </div>-->
+<!--                    </div>-->
+<!--                    削除予定-->
                     <!--編集----------------------------------------------->
 <!--                    <div class="col-12 d-flex flex-row align-items-center gap-3">-->
-                    <div>
-                        <label class="text-nowrap">※チェックを付けた場合は理由を記入</label>
+
+                    <div th:if="${settingInput.employment == true}">
+                        <label class="text-nowrap" th:text="${reason}" style="color: red;"></label>
                         <label for="text_latenessReason"></label>
-                        <input name="latenessReason" class="form-control" id="text_latenessReason" rows="3" maxlength="100">
+                        <input name="latenessReason" class="form-control" id="text_latenessReason" rows="3" maxlength="100"
+                               th:field="${reportCreateInput.latenessReason}" required>
                         <span id="charCountLt" style="margin-left: 5px;"></span>
+                        <input type="hidden" th:field="${settingInput.employment}" th:value="true">
                     </div>
 
                     <!--編集----------------------------------------------->
@@ -79,16 +87,17 @@
                         <div>
                         <label class="text-nowrap">体調コメント</label>
                         <label for="text_condition"></label>
-                        <input name="condition" class="form-control" id="text_condition" rows="3" maxlength="50" required>
+                        <input name="condition" class="form-control" id="text_condition" rows="3" maxlength="50" th:value="${reportCreateInput.condition}" required>
                         <span id="charCount" style="margin-left: 5px;"></span>
                     </div>
                     <!--追記----------------------------------------------->
 <!--                    <div class="col-12 d-flex flex-row align-items-center gap-3">-->
-                        <div>
+                    <div>
                         <label class="text-nowrap">報告内容</label>
                         <label for="text_impressions"></label><textarea name="impressions" class="form-control"
                                                                         id="text_impressions"
-                                                                        rows="3" maxlength="300" required></textarea>
+                                                                        rows="3" maxlength="300"
+                                                                        th:field="${reportCreateInput.impressions}" required></textarea>
                             <span id="charCount-im" style="margin-left: 5px;"></span>
                     </div>
 <!--                    <div class="col-12 d-flex flex-row align-items-center gap-3">-->
@@ -97,7 +106,8 @@
                         <label for="text_tomorrowSchedule"></label><textarea class="form-control"
                                                                              name="tomorrowSchedule"
                                                                              id="text_tomorrowSchedule"
-                                                                             rows="3" maxlength="200" required></textarea>
+                                                                             rows="3" maxlength="200"
+                                                                             th:field="${reportCreateInput.tomorrowSchedule}" required></textarea>
                             <span id="charCount-tom" style="margin-left: 5px;"></span>
                     </div>
                     <div class="col-12 d-flex flex-column gap-2" id="todo-field">
@@ -172,7 +182,8 @@
             }
         }
 </style>
-<script layout:fragment="script" th:inline="javascript">
+<script  src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.1/moment.min.js" layout:fragment="script" th:inline="javascript">
+
     const elem = document.getElementById("add-todo");
 const todoField = document.getElementById("todo-field");
 let taskIndex = /*[[${reportCreateInput.taskLogs.size()}]]*/;
@@ -197,56 +208,6 @@ function removeTask(button) {
 }
 /*]]>*/
 <!--編集----------------------------------------------->
-function checkInput() {
-    var check_LeftEarly = document.getElementById("check_LeftEarly");//早退のチェックボックスの要素を取得
-    var check_Lateness = document.getElementById("check_Lateness");//遅刻のチェックボックスの要素を取得
-    var text_latenessReason = document.getElementById("text_latenessReason");//テキストボックスの要素を取得
-    //早退か遅刻がチェックされているか判定
-    if(check_Lateness.checked || check_LeftEarly .checked) {
-        if (text_latenessReason.value.trim() === "") {
-            text_latenessReason.setCustomValidity("チェックした理由を記入してください");
-        }else {
-            text_latenessReason.setCustomValidity("");
-        }
-    }
-}
-
-// 遅刻のcheckbokにvalidationをチェックします。
-document.addEventListener('DOMContentLoaded', function() {
-    var isLeftEarly = document.getElementById("check_LeftEarly");//早退のチェックボックスの要素を取得
-    var isLateness = document.getElementById('check_Lateness');//遅刻のチェックボックスの要素を取得
-    var text_latenessReason = document.getElementById('text_latenessReason');//テキストボックスの要素を取得
-    //遅刻のチェックボックスの状態を監視
-    isLateness.addEventListener('change', function() {
-        if (this.checked) {
-            validateInput();
-        } else {
-            text_latenessReason.setCustomValidity("");
-        }
-    });
-    //早退のチェックボックスの状態を監視
-    isLeftEarly.addEventListener('change', function() {
-        if (this.checked) {
-            validateInput();
-        } else {
-            text_latenessReason.setCustomValidity("");
-        }
-    });
-    //テキストボックスの状態を監視
-    text_latenessReason.addEventListener('input', function() {
-        if (isLateness.checked || isLeftEarly.checked) {
-            validateInput();
-        }
-    });
-    //テキストボックスの中身を判定
-    function validateInput() {
-        if (text_latenessReason.value.trim() === '') {
-            text_latenessReason.setCustomValidity("チェックした理由を記入してください");
-        } else {
-            text_latenessReason.setCustomValidity("");
-        }
-    }
-});
 
 //体調コメント文字数制限５０文字
 const textCondition = document.getElementById('text_condition');

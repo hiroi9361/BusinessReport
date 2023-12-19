@@ -4,6 +4,7 @@ import analix.DHIT.model.User;
 import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
+import java.util.Set;
 
 public interface UserRepository {
     User selectByEmployeeCode(int employeeCode);
@@ -13,4 +14,5 @@ public interface UserRepository {
     List<User> selectAllEmployeeInfomation();
     String getUserName(int employeeCode);
 
+    void saveAll(Set<User> users);
 }

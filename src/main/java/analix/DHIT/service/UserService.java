@@ -6,16 +6,25 @@ import analix.DHIT.input.UserEditInput;
 import analix.DHIT.logic.IconConvertToBase64;
 import analix.DHIT.logic.EncodePasswordSha256;
 import analix.DHIT.mapper.UserMapper;
+import analix.DHIT.model.Assignment;
 import analix.DHIT.model.User;
 import analix.DHIT.repository.UserRepository;
+import com.opencsv.bean.CsvToBean;
+import com.opencsv.bean.CsvToBeanBuilder;
+import com.opencsv.bean.HeaderColumnNameMappingStrategy;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.Reader;
 import java.util.Base64;
 import java.util.Collections;
 import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
 //DBに接続するための処理を記述するところ
 
 @Service
@@ -161,4 +170,39 @@ public class UserService {
     public List<User> getUserByName(String searchWords) {return this.userMapper.getUserByName(searchWords);}
 
     public List<User> getUserByRole(String searchWords) {return this.userMapper.getUserByRole(searchWords);}
+
+    public List<User> getUserByCode(int searchWords) {return this.userMapper.getUserByCode(searchWords);}
+
+    //for csv upload
+//    public Integer uploadUsers(MultipartFile file) throws IOException {
+//        Set<User> users = parseCSV(file);
+//        userRepository.saveAll(users);
+//            return users.size();
+//    }
+//
+//    private Set<User> parseCSV(MultipartFile file) throws IOException{
+//        try(Reader reader = new BufferedReader(new InputStreamReader(file.getInputStream()))){
+//            HeaderColumnNameMappingStrategy<UserCsvRepresentation> strategy =
+//                    new HeaderColumnNameMappingStrategy<>();
+//            strategy.setType(UserCsvRepresentation.class);
+//            CsvToBean<UserCsvRepresentation> csvToBean=
+//            new CsvToBeanBuilder<UserCsvRepresentation>(reader)
+//                    .withMappingStrategy(strategy)
+//                    .withIgnoreEmptyLine(true)
+//                    .withIgnoreLeadingWhiteSpace(true)
+//                    .build();
+//            return csvToBean.parse()
+//                    .stream()
+//                    .map(csvLine -> User.builder()
+//                            .employeeCode(csvLine.getEmployeeCode())
+//                            .name(csvLine.getName())
+//                            .password(csvLine.getPassword())
+//                            .role(csvLine.getRole())
+//                            .build()
+//                    )
+//                    .collect(Collectors.toSet());
+//        }
+//
+//    }
+
 }

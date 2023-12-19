@@ -39,31 +39,43 @@
                             <input type="time" class="form-control" name="endTime" th:value="${report.endTime}" required/>
                         </div>
                     </div>
-                    <div class="col-md-12 d-flex flex-row gap-5">
-                        <label>※遅刻・早退の場合はチェックマーク</label>
-                    </div>
-                    <div id = "radio-check_mb" class="col-md-12 d-flex flex-row gap-5">
-                        <div class="form-check">
-                            <input class="form-check-input" type="checkbox" id="check_Lateness"
-                                   name="isLateness" th:checked="${report.isLateness}"/>
-                            <label class="form-check-label" for="check_Lateness">遅刻</label>
-                        </div>
 
-                        <div class="form-check">
-                            <input class="form-check-input" type="checkbox" id="check_LeftEarly"
-                                   name="isLeftEarly" th:checked="${report.isLeftEarly}"/>
-                            <label class="form-check-label" for="check_LeftEarly">早退</label>
-                        </div>
+                    <div th:if="${settingInput.employment == true}">
+                        <label class="text-nowrap" th:text="${reason}"></label>
+                        <label for="text_latenessReason"></label>
+                        <input name="latenessReason" class="form-control" id="text_latenessReason" rows="3" maxlength="100"
+                               th:field="${report.latenessReason}" required>
+                        <span id="charCountLt" style="margin-left: 5px;"></span>
+                        <input type="hidden" th:field="${settingInput.employment}" th:value="true">
                     </div>
+
+<!--                    <div class="col-md-12 d-flex flex-row gap-5">-->
+<!--                        <label>※遅刻・早退の場合はチェックマーク</label>-->
+<!--                    </div>-->
+<!--                    <div id = "radio-check_mb" class="col-md-12 d-flex flex-row gap-5">-->
+<!--                        <div class="form-check">-->
+<!--                            <input class="form-check-input" type="checkbox" id="check_Lateness"-->
+<!--                                   name="isLateness" th:checked="${report.isLateness}"/>-->
+<!--                            <label class="form-check-label" for="check_Lateness">遅刻</label>-->
+<!--                        </div>-->
+
+<!--                        <div class="form-check">-->
+<!--                            <input class="form-check-input" type="checkbox" id="check_LeftEarly"-->
+<!--                                   name="isLeftEarly" th:checked="${report.isLeftEarly}"/>-->
+<!--                            <label class="form-check-label" for="check_LeftEarly">早退</label>-->
+<!--                        </div>-->
+<!--                    </div>-->
+
+
                     <!--編集----------------------------------------------->
 <!--                    <div class="col-12 d-flex flex-row align-items-center gap-3">-->
-                        <div>
-                        <label class="text-nowrap">※チェックを付けた場合は理由を記入</label>
-                        <label for="text_latenessReason"></label><input name="latenessReason" class="form-control"
-                                                                           id="text_latenessReason" th:value="${report.latenessReason}"
-                                                                           rows="3"  maxlength="100" required>
-                            <span id="charCountLt" style="margin-left: 5px;"></span>
-                    </div>
+<!--                        <div>-->
+<!--                        <label class="text-nowrap">※チェックを付けた場合は理由を記入</label>-->
+<!--                        <label for="text_latenessReason"></label><input name="latenessReason" class="form-control"-->
+<!--                                                                           id="text_latenessReason" th:value="${report.latenessReason}"-->
+<!--                                                                           rows="3"  maxlength="100" required>-->
+<!--                            <span id="charCountLt" style="margin-left: 5px;"></span>-->
+<!--                    </div>-->
                     <!--編集----------------------------------------------->
                     <!--追記----------------------------------------------->
                     <div class="form-group">

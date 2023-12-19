@@ -41,6 +41,10 @@ INSERT INTO team (team_id, name) VALUES
     (4, "新作チョコレート捜索隊"),
     (5, "アプリテストチーム");
 
+-- Setting
+INSERT INTO setting(setting_id, start_time, end_time) VALUES
+    (1, '9:00:00', '18:00:00');
+
 --assignment
 INSERT INTO assignment (assignment_id, employee_code, team_id, is_manager) VALUES
     (1, 1, 1, 0),

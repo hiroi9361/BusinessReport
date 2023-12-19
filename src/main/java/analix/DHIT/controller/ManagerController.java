@@ -33,6 +33,7 @@ public class ManagerController {
     private final TeamService teamService;
     private final AssignmentService assignmentService;
     private final FeedbackService feedbackService;
+    private final SettingService settingService;
 
     public ManagerController(
             UserService userservice,
@@ -40,13 +41,15 @@ public class ManagerController {
             TaskLogService taskLogService,
             TeamService teamService,
             AssignmentService assignmentService,
-            FeedbackService feedbackService) {
+            FeedbackService feedbackService,
+            SettingService settingService) {
         this.userService = userservice;
         this.reportService = reportService;
         this.taskLogService = taskLogService;
         this.teamService = teamService;
         this.assignmentService = assignmentService;
         this.feedbackService = feedbackService;
+        this.settingService = settingService;
     }
 
     @GetMapping("/home/{teamId}")
@@ -660,6 +663,27 @@ public class ManagerController {
 
         return "redirect:/manager/home";
 
+    }
+
+    //規定の業務時間
+    @GetMapping("/setting-time")
+    public String settingTime(Model model){
+
+        Setting setting = settingService.getSettingTime();
+
+        model.addAttribute("setting",setting);
+        model.addAttribute("SettingInput",new SettingInput());
+
+        return "manager/setting";
+    }
+    @PostMapping("/setting-time/edit")
+    public String settingTimeEdit(@ModelAttribute("SettingInput") SettingInput settingInput,
+                                  Model model){
+        settingService.update(settingInput);
+        Setting setting = settingService.getSettingTime();
+        model.addAttribute("setting",setting);
+        model.addAttribute("SettingInput",settingInput);
+        return "manager/setting";
     }
 
 //    ////////// 2023/12/14 富山 START //////////

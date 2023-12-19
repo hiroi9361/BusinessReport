@@ -5,6 +5,7 @@ import analix.DHIT.model.User;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import java.util.Set;
 
 @Repository
 
@@ -43,4 +44,11 @@ public class MysqlUserRepository implements UserRepository {
         return this.userMapper.getUserName(employeeCode);
 
     }
+
+    @Override
+    public void saveAll(Set<User> users) {
+
+    }
+
+
 }

@@ -47,6 +47,9 @@ public interface UserMapper {
     @Select("SELECT * FROM user WHERE role LIKE CONCAT('%', #{searchWords}, '%')")
     List<User> getUserByRole(@Param("searchWords")String searchWords);
 
+    @Select("SELECT * FROM user WHERE employee_code LIKE CONCAT(#{searchWords}, '%')")
+    List<User> getUserByCode(@Param("searchWords")int searchWords);
+
 //    //user情報を取ってくる
 //    @Select("SELECT * FROM user WHERE employeeCode=#{employeeCode}")
 //    User getuser(int employeeCode);

@@ -217,7 +217,7 @@ public class MemberController {
 
 
         if (reportId == null) {
-            redirectAttributes.addFlashAttribute("error", "ヒットしませんでした");
+            redirectAttributes.addFlashAttribute("error", "選択された日付に提出されたレポートはありません");
             return "redirect:/member/report-search";
         }
 

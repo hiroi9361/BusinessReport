@@ -8,34 +8,36 @@
 <body>
 <div layout:fragment="content">
     <div class="container mt-3">
-        <h2 class="text-center mb-4">報告検索</h2>
+        <h2 class="text-center mb-4">報告一覧</h2>
 
         <form action="#" th:action="@{/member/search-report}" th:object="${reportSearchInput}" method="post">
-            <div class="mb-3 d-flex align-items-end">
+            <div class="mb-3 d-flex align-items-end justify-content-center text-center">
                 <div class="mb-3 me-3">
-                    <label for="employeeName" class="form-label">社員名</label>
-                    <input type="text" class="form-control" id="employeeName" readonly th:value="${member.name}">
+                    <label for="employeeName" class="form-label">報告者</label>
+                    <span class="form-control" id="employeeName" th:text="${member.name}"></span>
                 </div>
                 <div class="mb-3 me-3">
                     <label for="datePicker" class="form-label">日付</label>
                     <input type="date" class="form-control" id="datePicker" name="date">
                 </div>
                 <div class="mb-3 me-3">
-                    <button type="submit" class="btn btn-success btn-lg">検索</button>
+                    <button type="submit" class="btn btn-secondary">検索</button>
                 </div>
+                <div th:if="${error != null}" class="text-center mb-4">
+                    <p style="color: red;" th:text="${error}"></p>
+                </div>
+
             </div>
             <div class="mb-5">
                 <input type="hidden" name="employeeCode" th:value="${member.employeeCode}"/>
             </div>
         </form>
-<!--        <div class="mb-5"></div>-->
+
         <form th:action="@{/member/search-report}" th:object="${ReportSortInput}" method="post">
             <div>
-                <h2 class="text-center mb-4">報告一覧</h2>
-
-                <div class="mb-3 d-flex align-items-end">
+                <div class="mb-3 d-flex align-items-end justify-content-center text-center">
                     <div class="mb-3 me-3">
-                        <label class="form-label">フィードバック</label>
+                        <label class="form-label">チームマネージャー(TM)の確認</label>
                         <select  name="feedback"  class="form-select">
                             <option th:value="${null}">選択してください。</option>
                             <option th:value="${true}">既読</option>
@@ -53,36 +55,63 @@
                         </select>
                     </div>
                     <div class="mb-3 me-3">
-                        <button type="submit" name="sort" th:value="${true}" class="btn btn-success btn-lg">検索</button>
+                        <button type="submit" name="sort" th:value="${true}" class="btn btn-secondary">検索</button>
                     </div>
                 </div>
 
-                <table class="table">
+                <table class="StripeTable mb-4">
                     <thead>
                     <tr>
-                        <th>PM確認</th>
+                        <th>TM確認</th>
                         <th>日付</th>
                         <th>体調</th>
+                        <th>報告内容</th>
+                        <th>明日の予定</th>
                     </tr>
                     </thead>
                     <tbody>
                     <tr th:each="report : ${reports}">
-                        <td th:text="${report.readStatus}"></td>
-                        <td th:text="${report.date}"></td>
-                        <td th:text="${report.condition}"></td>
-                        <td><a th:href="@{'reports/' + ${report.Id}}" class="btn btn-success btn-sm">詳細</a></td>
                         <td>
-<!--                            eachのフォーム一個目がなぜか表示されないため無理やりフォームを二つ並べています。他の解決方法があればそちらを利用予定。-->
-                            <form th:action="@{'reports/' + ${report.id} + '/delete/list'}" method="post" onSubmit="return check()">
-                                <input type="hidden" name="reportId" th:value="${report.id}" />
-                                <input type="hidden" value="削除" class="btn btn-outline-danger" />
-                            </form>
-                            <form th:action="@{'reports/' + ${report.id} + '/delete/list'}" method="post" onSubmit="return check()">
-                                <input type="hidden" name="reportId" th:value="${report.id}" />
-                                <input type="submit" value="削除" class="btn btn-danger btn-sm" />
-                            </form>
-<!--                            <a th:href="@{'reports/' + ${report.id} + '/delete/list'}" class="btn btn-outline-danger" onSubmit="return check()" >削除</a>-->
+                            <!-- PM確認のテキストを表示 -->
+                            <span th:class="${report.readStatus == '既読' ? 'text-kidoku' : 'text-midoku'}" th:text="${report.readStatus}"></span>
                         </td>
+                        <td th:text="${report.date}"></td>
+                        <td th:switch="${report.conditionRate}">
+                            <i th:case="'1'">
+                                <i class="bi bi-emoji-smile-fill text-success" style="font-size: 1.5rem;"></i>
+                            </i>
+                            <i th:case="'2'">
+                                <i class="bi bi-emoji-neutral-fill text-warning" style="font-size: 1.5rem;"></i>
+                            </i>
+                            <i th:case="'3'">
+                                <i class="bi bi-emoji-dizzy-fill text-danger" style="font-size: 1.5rem;"></i>
+                            </i>
+                        </td>
+                        <!-- 報告内容を30文字まで表示し、残りは非表示にする -->
+                        <td>
+                            <div th:attr="data-content=${report.impressions}" class="d-flex align-items-center" style="white-space: pre-line; word-wrap: break-word; overflow: hidden; text-overflow: ellipsis; text-align: left;">
+                                <span th:text="${#strings.abbreviate(report.impressions, 25)}"></span>
+                            </div>
+                        </td>
+                        <!-- 明日の予定を30文字まで表示し、残りは非表示にする -->
+                        <td>
+                            <div th:attr="data-content=${report.tomorrowSchedule}" class="d-flex align-items-center" style="white-space: pre-line; word-wrap: break-word; overflow: hidden; text-overflow: ellipsis; text-align: left;">
+                                <span th:text="${#strings.abbreviate(report.tomorrowSchedule, 25)}"></span>
+                            </div>
+                        </td>
+                        <td><a th:href="@{'reports/' + ${report.Id}}" class="btn btn-outline-secondary">詳細</a></td>
+<!--                        <td>-->
+<!--&lt;!&ndash;                            eachのフォーム一個目がなぜか表示されないため無理やりフォームを二つ並べています。他の解決方法があればそちらを利用予定。&ndash;&gt;-->
+<!--                            <form th:action="@{'reports/' + ${report.id} + '/delete/list'}" method="post" onSubmit="return check()">-->
+<!--                                <input type="hidden" name="reportId" th:value="${report.id}" />-->
+<!--                                <input type="hidden" value="削除" class="btn btn-outline-danger" />-->
+<!--                            </form>-->
+<!--                            <form th:action="@{'reports/' + ${report.id} + '/delete/list'}" method="post" onSubmit="return check()">-->
+<!--                                <input type="hidden" name="reportId" th:value="${report.id}" />-->
+<!--                                <input type="submit" value="削除" class="btn btn-outline-danger" />-->
+<!--                            </form>-->
+<!--&lt;!&ndash;                            <a th:href="@{'reports/' + ${report.id} + '/delete/list'}" class="btn btn-outline-danger" onSubmit="return check()" >削除</a>&ndash;&gt;-->
+<!--                        </td>-->
                     </tr>
                     </tbody>
                 </table>
@@ -91,12 +120,18 @@
 
         <div class="mb-5"></div>
 
-        <div th:if="${error != null}" class="text-center mb-4">
-            <h3 style="color: red;" th:text="${error}"></h3>
-        </div>
     </div>
 </div>
 <style layout:fragment="style">
+    .text-kidoku {
+                    color: #02990E;
+                 }
+
+    .text-midoku {
+                    color: red;
+                 }
+
+
     .gap-2 {
                 justify-content: center;
                 width : 100%;

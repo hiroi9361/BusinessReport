@@ -211,7 +211,7 @@ public class ManagerController {
 
         //検索結果がない場合
         if (reportId == null) {
-            redirectAttributes.addFlashAttribute("error", "ヒットしませんでした");
+            redirectAttributes.addFlashAttribute("error", "選択された日付に提出されたレポートはありません");
             return "redirect:/manager/report-search?employeeCode=" + reportSearchInput.getEmployeeCode();
         }
 

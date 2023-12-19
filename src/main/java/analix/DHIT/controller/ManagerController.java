@@ -4,19 +4,23 @@ import analix.DHIT.input.*;
 import analix.DHIT.model.*;
 import analix.DHIT.service.*;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import java.io.IOException;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
+import java.util.Objects;
 
 
 @Controller
@@ -341,6 +345,14 @@ public class ManagerController {
         return "redirect:/manager/employeeList";
     }
 
+// CSVアップロード用
+//    @PostMapping(value = "/upload", consumes = {"multipart/form-data"})
+//    public ResponseEntity<Integer> uploadUsers(
+//            @RequestPart("file")MultipartFile file
+//            ) throws IOException {
+//        return ResponseEntity.ok(userService.uploadUsers(file));
+//    }
+
     @GetMapping("/employeeList")
     public String displayEmployeeList(Model model, @ModelAttribute UserSearchInput userSearchInput, RedirectAttributes redirectAttributes) {
 
@@ -349,33 +361,44 @@ public class ManagerController {
 
         List<User> userList = new ArrayList<User>();
 
-        if (userSearchInput.getSearchWords() != null){
-            switch (userSearchInput.getSearchKeyword()){
-                case "社員番号":
-                    int num = Integer.parseInt(userSearchInput.getSearchWords());
-                    userList.add(userService.getUserByEmployeeCode(num));
-                    break;
-                case "名前":
-                    userList = userService.getUserByName(userSearchInput.getSearchWords());
-                    break;
-                case "役割":
-                    userList = userService.getUserByRole(userSearchInput.getSearchWords());
-                    break;
-            }
-
-            if(userList.size() == 0) {
-                redirectAttributes.addFlashAttribute("searchError", "ヒットしませんでした。");
-                return "redirect:manager/employeeList";
-            }else {
+        if (userSearchInput.getSearchKeyword() != null ){
+            if (userSearchInput.getSearchWords() == null || Objects.equals(userSearchInput.getSearchWords(), ""))
+            {
+                userList = userService.getAllEmployeeInfo();
                 model.addAttribute("userList", userList);
                 return "manager/employeeList";
             }
+            try {
+            switch (userSearchInput.getSearchKeyword()){
+                case "社員番号":
+                    if (isNumeric(userSearchInput.getSearchWords())){
+                    int num = Integer.parseInt(userSearchInput.getSearchWords());
+                    if (userService.getUserByCode(num) != null) {
+                        userList = userService.getUserByCode(num);
+                        break;
+                    }
+                    }
+                case "名前":
+                    if(userService.getUserByName(userSearchInput.getSearchWords()) != null){
+                        userList = userService.getUserByName(userSearchInput.getSearchWords());
+                        break;
+                    }
+                case "役割":
+                    if (userService.getUserByRole(userSearchInput.getSearchWords()) != null){
+                        userList = userService.getUserByRole(userSearchInput.getSearchWords());
+                        break;
+                    }
+            }
+            } catch (Exception e){
+                return "redirect:manager/employeeList";
+            }
+                model.addAttribute("userList", userList);
+                return "manager/employeeList";
         }
+            userList = userService.getAllEmployeeInfo();
 
-        userList = userService.getAllEmployeeInfo();
-
-        model.addAttribute("userList", userList);
-        return "manager/employeeList";
+            model.addAttribute("userList", userList);
+            return "manager/employeeList";
 
     }
 
@@ -661,4 +684,16 @@ public class ManagerController {
 
 //    ////////// 2023/12/14 富山 END //////////
 
+
+    private static boolean isNumeric(String input) {
+        if (input == null || input.isEmpty()) {
+            return false;
+        }
+        for (char c : input.toCharArray()) {
+            if (!Character.isDigit(c)) {
+                return false;
+            }
+        }
+        return true;
+    }
 }

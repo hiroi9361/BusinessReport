@@ -136,6 +136,10 @@
                     <div class="col-12">
                         <button type="submit" class="w-100 btn btn-lg btn-success">更新</button>
                     </div>
+<!--                    前の画面（詳細）に戻る-->
+                    <div class="text-center">
+                        <a class="w-100 btn btn-lg btn-secondary" onclick="goBack()">戻る</a>
+                    </div>
                 </form>
             </div>
         </div>
@@ -183,6 +187,10 @@
         }
 </style>
 <script layout:fragment="script" th:inline="javascript">
+    function goBack() {
+        window.history.back();
+    }
+
     const elem = document.getElementById("add-todo");
 const todoField = document.getElementById("todo-field");
 let taskIndex = /*[[${taskLogs.size()}]]*/;

@@ -177,3 +177,30 @@ padding:12px;
 margin-top:12px;
 min-height:290px;
 }
+
+.pagetop {
+  cursor: pointer;
+  position: fixed;
+  right: 30px;
+  bottom: 30px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  transition: .3s;
+  color: white;
+  background: #02990E;
+
+  opacity: 0;
+}
+.pagetop:hover {
+    box-shadow: 0 0 10px #007C0A;
+}
+
+.main-box {
+border:6px solid #02990E;
+background:#02990E;
+margin:6px;
+}

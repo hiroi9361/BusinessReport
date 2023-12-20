@@ -282,9 +282,9 @@ public class MemberController {
         int employeeCode = Integer.parseInt(authentication.getName());
 
         Report report = reportService.getReportById(reportId);
-        if (report.getEmployeeCode() != employeeCode) {
-            return "redirect:/member/report/create";
-        }
+//        if (report.getEmployeeCode() != employeeCode) {
+//            return "redirect:/member/report/create";
+//        }
 
         Feedback feedback = feedbackService.getFeedbackById(reportId);
         //Assignment assignment = assignmentService.getAssignmentByEmployeeCode(employeeCode);
@@ -502,7 +502,7 @@ public class MemberController {
 
         if (two != null){
             for(Report rp : two){
-                if (rp.getDate() != todaysDate){
+                if (rp.getDate().isBefore(todaysDate)){
                     lastReport = rp;
                     break;
                 }

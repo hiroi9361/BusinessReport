@@ -31,7 +31,7 @@
                     <option value="名前">名前</option>
                     <option value="役割">役割</option>
                 </select>
-                <input type="text" th:field="*{searchWords}" placeholder="検索キーワード" style="width: 500px ;margin-right: 10px;">
+                <input type="text" th:field="*{searchWords}" placeholder="検索キーワード" style="width: 300px ;margin-right: 10px;">
                 <input type="submit" class="btn btn-secondary" value="検索">
             </form>
         </div>
@@ -43,7 +43,6 @@
             <tr>
                 <th>社員番号</th>
                 <th>名前</th>
-                <th>パスワード</th>
                 <th>役割</th>
                 <th>アイコン</th>
                 <th>編集</th>
@@ -84,7 +83,6 @@
         <tr th:each="userList : ${userList}" th:object="${userList}" class="align-middle">
             <td th:text="${userList.employeeCode}"></td>
             <td th:text="${userList.name}"></td>
-            <td th:text="'*****'"></td>
             <td th:text="${userList.role}"></td>
             <td>
                 <img th:src="'data:image/png;base64,' + ${userList.icon}" class="rounded-circle" style="max-width: 50px;"/>
@@ -96,7 +94,7 @@
                 </form>
             </td>
             <td>
-                <form th:action="@{/manager/employeeList-deleteUser}" method="post">
+                <form th:action="@{/manager/employeeList-deleteUser}" method="post"  onSubmit="return check()">
                     <button type="submit" class="btn btn-outline-danger" name="delete" value="削除">削除</button>
                     <input type="hidden" name="employeeCode" th:value="${userList.employeeCode}" />
                     <input type="hidden" name="name" th:value="${userList.name}" />

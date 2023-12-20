@@ -1,6 +1,7 @@
 package analix.DHIT.model;
 
 import jakarta.persistence.*;
+import lombok.Builder;
 
 import java.io.Serializable;
 import java.util.List;

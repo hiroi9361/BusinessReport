@@ -9,9 +9,9 @@
 <body>
 <div layout:fragment="content">
     <div class="container mt-3">
-    <h1 class="mb-4 text-center">ユーザー編集画面</h1>
+    <h1 class="mb-4 text-center">ユーザー編集</h1>
     <h2 th:text="${EncodeError}" style="color: red;"></h2>
-    <h5 class="text-center">*更新したくない値がある場合何も入力しないでください*</h5>
+    <h5 class="text-center">*更新する値のみ入力してください。*</h5>
     <div class="mb-3 mt-3">
         <p class="text-center">社員番号: <span th:text="${employeeCode}"></span></p>
     </div>
@@ -22,19 +22,19 @@
 
         <!-- 名前 -->
         <div class="mb-3">
-            <label for="name" class="form-label">名前：<span class="text-danger">※</span></label>
+            <label for="name" class="form-label">名前：<span class="text-danger"></span></label>
             <input type="text" id="name" th:field="*{name}" class="form-control" pattern="[A-Za-zぁ-んァ-ン一-龯]+" title="アルファベット、ひらがな、漢字のみが許可されています">
         </div>
 
         <!-- パスワード -->
         <div class="mb-3">
-            <label for="password" class="form-label">パスワード：<span class="text-danger">※</span></label>
+            <label for="password" class="form-label">パスワード：<span class="text-danger"></span></label>
             <input type="password" id="password" th:field="*{password}" class="form-control">
         </div>
 
         <!-- 役割 -->
         <div class="mb-3">
-            <label for="role" class="form-label">D-HIT上のユーザーの種類：<span class="text-danger">※</span></label>
+            <label for="role" class="form-label">D-HIT上のユーザーの種類：<span class="text-danger"></span></label>
             <select id="role" name="role" th:field="*{role}" class="form-select">
                 <option value="USER">User</option>
                 <option value="ADMIN">Admin</option>

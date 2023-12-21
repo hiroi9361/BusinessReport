@@ -41,7 +41,7 @@
                     </div>
 
                     <div th:if="${settingInput.employment == true}">
-                        <label class="text-nowrap" th:text="${reason}"></label>
+                        <label class="text-nowrap" th:text="${reason}" style="color: red;"></label>
                         <label for="text_latenessReason"></label>
                         <input name="latenessReason" class="form-control" id="text_latenessReason" rows="3" maxlength="100"
                                th:field="${report.latenessReason}" required>
@@ -214,57 +214,6 @@ function removeTask(button) {
    button.parentNode.parentNode.remove();
 }
 /*]]>*/
-<!--編集：report-createと同じ----------------------------------------------->
-function checkInput() {
-    var check_LeftEarly = document.getElementById("check_LeftEarly");//早退のチェックボックスの要素を取得
-    var check_Lateness = document.getElementById("check_Lateness");//遅刻のチェックボックスの要素を取得
-    var text_latenessReason = document.getElementById("text_latenessReason");//テキストボックスの要素を取得
-    //早退か遅刻がチェックされているか判定
-    if(check_Lateness.checked || check_LeftEarly .checked) {
-        if (text_latenessReason.value.trim() === "") {
-            text_latenessReason.setCustomValidity("チェックした理由を記入してください");
-        }else {
-            text_latenessReason.setCustomValidity("");
-        }
-    }
-}
-
-// 遅刻のcheckbokにvalidationをチェックします。
-document.addEventListener('DOMContentLoaded', function() {
-    var isLeftEarly = document.getElementById("check_LeftEarly");//早退のチェックボックスの要素を取得
-    var isLateness = document.getElementById('check_Lateness');//遅刻のチェックボックスの要素を取得
-    var text_latenessReason = document.getElementById('text_latenessReason');//テキストボックスの要素を取得
-    //遅刻のチェックボックスの状態を監視
-    isLateness.addEventListener('change', function() {
-        if (this.checked) {
-            validateInput();
-        } else {
-            text_latenessReason.setCustomValidity("");
-        }
-    });
-    //早退のチェックボックスの状態を監視
-    isLeftEarly.addEventListener('change', function() {
-        if (this.checked) {
-            validateInput();
-        } else {
-            text_latenessReason.setCustomValidity("");
-        }
-    });
-    //テキストボックスの状態を監視
-    text_latenessReason.addEventListener('input', function() {
-        if (isLateness.checked || isLeftEarly.checked) {
-            validateInput();
-        }
-    });
-    //テキストボックスの中身を判定
-    function validateInput() {
-        if (text_latenessReason.value.trim() === '') {
-            text_latenessReason.setCustomValidity("チェックした理由を記入してください");
-        } else {
-            text_latenessReason.setCustomValidity("");
-        }
-    }
-});
 
 //体調コメント文字数制限５０文字
 const textCondition = document.getElementById('text_condition');

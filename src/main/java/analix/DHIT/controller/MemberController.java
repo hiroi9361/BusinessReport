@@ -64,7 +64,12 @@ public class MemberController {
 
         String title = "報告作成";
         model.addAttribute("title", title);
-
+        //規定の終業時間を取得し、セット
+        Setting setting = settingService.getSettingTime();
+        settingInput.setStartTime(setting.getStartTime());
+        settingInput.setEndTime(setting.getEndTime());
+        settingInput.setEmployment(false);
+        model.addAttribute("settingInput",settingInput);
         if (latestReportId == null) {
             model.addAttribute("reportCreateInput", reportCreateInput);
             return "member/report-create";
@@ -77,12 +82,7 @@ public class MemberController {
         reportCreateInput.setEndTime(report.getEndTime());
         //report_idを参照してtask_Logの値を取得しset
         reportCreateInput.setTaskLogs(taskLogService.getIncompleteTaskLogsByReportId(Integer.parseInt(latestReportId)));
-        //規定の終業時間を取得し、セット
-        Setting setting = settingService.getSettingTime();
-        settingInput.setStartTime(setting.getStartTime());
-        settingInput.setEndTime(setting.getEndTime());
-        settingInput.setEmployment(false);
-        model.addAttribute("settingInput",settingInput);
+
 
         model.addAttribute("reportCreateInput", reportCreateInput);
         return "member/report-create";

@@ -204,3 +204,10 @@ border:6px solid #02990E;
 background:#02990E;
 margin:6px;
 }
+
+.icon-box img{
+height:60px;
+width:60px;
+object-fit: cover;
+border-radius: 50%;
+}

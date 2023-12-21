@@ -21,6 +21,7 @@
         <thead>
         <tr>
             <th>名前</th>
+            <th>アイコン</th>
             <th>削除</th>
         </tr>
         </thead>
@@ -28,6 +29,12 @@
         <tr th:each="mgr : ${managers}">
             <td th:text="${mgr.name}" style="width:50%;"></td>
             <td>
+                <div class="icon-box">
+                    <img th:src="'data:image/png;base64,' + ${mgr.icon}"
+                         class="rounded-circle"/>
+                </div>
+            </td>
+            <td style="width:62px;">
                 <form th:action="@{'/manager/assignment/' + ${team.teamId} + '/' + ${mgr.employeeCode} +'/delete'}" method="post" onSubmit="return check()">
                     <input type="hidden" name="teamId" th:value="${team.teamId}" />
                     <input type="hidden" name="employeeCode" th:value="${mgr.employeeCode}" />
@@ -52,6 +59,7 @@
         <thead>
         <tr>
             <th>名前</th>
+            <th>アイコン</th>
             <th>削除</th>
         </tr>
         </thead>
@@ -59,6 +67,12 @@
         <tr th:each="mem : ${members} ">
             <td th:text="${mem.name}" style="width:50%;"></td>
             <td>
+                <div class="icon-box">
+                <img th:src="'data:image/png;base64,' + ${mem.icon}"
+                     class="rounded-circle"/>
+            </div>
+            </td>
+            <td style="width:62px;">
                 <form th:action="@{'/manager/assignment/' + ${team.teamId} + '/' + ${mem.employeeCode} +'/delete'}" method="post" onSubmit="return check()">
                     <input type="hidden" name="teamId" th:value="${team.teamId}" />
                     <input type="hidden" name="employeeCode" th:value="${mem.employeeCode}" />

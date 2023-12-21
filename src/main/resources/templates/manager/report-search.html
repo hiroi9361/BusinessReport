@@ -97,7 +97,7 @@
                                     <span th:text="${#strings.abbreviate(report.tomorrowSchedule, 30)}"></span>
                                 </div>
                             </td>
-                            <td>
+                            <td style="width:62px;">
                                 <!--Detailへのリンクボタン-->
                                 <a th:href="@{'/manager/reports/' + ${report.Id}}" class="btn btn-outline-secondary">詳細</a>
                             </td>

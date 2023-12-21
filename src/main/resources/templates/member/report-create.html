@@ -268,7 +268,8 @@
         const textLate = document.getElementById('text_latenessReason');
         const charCountLat = document.getElementById('charCountLt');
 
-        textLate.addEventListener('input', function () {
+        if (textLate) {
+            textLate.addEventListener('input', function () {
             const remainingCharsLat = 100 - this.value.length;
             charCountLat.textContent = '残り文字数: ' + remainingCharsLat;
 
@@ -277,7 +278,8 @@
                 this.value = this.value.slice(0, 100);
                 charCountLat.textContent = '残り文字数: 0';
             }
-        });
+            });
+        }
 
 </script>
 </body>

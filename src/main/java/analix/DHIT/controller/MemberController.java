@@ -276,7 +276,7 @@ public class MemberController {
     }
 
     @GetMapping("/reports/{reportId}")
-    public String displayReportDetail(@PathVariable("reportId") int reportId, Model model) {
+    public String displayReportDetail(@PathVariable("reportId") int reportId, FeedbackUpdateInput feedbackUpdateInput, Model model,Boolean del) {
 
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         int employeeCode = Integer.parseInt(authentication.getName());
@@ -286,7 +286,7 @@ public class MemberController {
 //            return "redirect:/member/report/create";
 //        }
 
-        Feedback feedback = feedbackService.getFeedbackById(reportId);
+        //Feedback feedback = feedbackService.getFeedbackById(reportId);
         //Assignment assignment = assignmentService.getAssignmentByEmployeeCode(employeeCode);
 
         List<TaskLog> taskLogs = taskLogService.getTaskLogsByReportId(reportId);
@@ -295,7 +295,7 @@ public class MemberController {
         model.addAttribute("report", report);
         model.addAttribute("taskLogs", taskLogs);
         model.addAttribute("member", member);
-        model.addAttribute("feedback", feedback);
+        //model.addAttribute("feedback", feedback);
 
         model.addAttribute("beforeReportId", reportService.getBeforeIdById(reportId));
         model.addAttribute("afterReportId", reportService.getAfterIdById(reportId));
@@ -304,7 +304,35 @@ public class MemberController {
         model.addAttribute("date", date);
 
         //フィードバック用追記
+        //レポートが所持しているemployeeCode
+        int reportByEmployeeCode = report.getEmployeeCode();
 
+        //レポートのemployeeCodeとログインユーザーのemployeeCodeが一致ならフィードバックを閲覧する
+        //不一致なら
+        //レポート持ち主のemployeecodeで検索して、ismanager falseのアサインメントがあるかどうかチェック→assignmentがあったらTrueなければfalse
+        if(employeeCode == reportByEmployeeCode){
+            boolean isMgr = false;
+            model.addAttribute("isManager",isMgr);
+        }else {
+            boolean isMgr = assignmentService.getCountIsManager(employeeCode,reportId);
+            model.addAttribute("isManager",isMgr);
+        }
+
+        if(del != null && del){
+            feedbackService.deleteById(reportId);
+        }
+
+        if(feedbackUpdateInput.getComment() != null && !feedbackService.count(reportId)) {
+            feedbackUpdateInput.setNameByEmployeeCode(employeeCode, userService);
+            feedbackUpdateInput.setReportId(reportId);
+            feedbackService.create(feedbackUpdateInput);
+            model.addAttribute("feedback",feedbackUpdateInput);
+        } else if (feedbackService.count(reportId)) {
+            Feedback feedback = feedbackService.getFeedbackById(reportId);
+
+
+            model.addAttribute("feedback",feedback);
+        }
 
         return "member/report-detail";
     }
@@ -407,7 +435,7 @@ public class MemberController {
 
     @Transactional
     @PostMapping("/report/update")
-    public String updateReport(ReportUpdateInput reportUpdateInput, RedirectAttributes redirectAttributes) {
+    public String updateReport(ReportUpdateInput reportUpdateInput, RedirectAttributes redirectAttributes, SettingInput settingInput, Model model) {
 
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         int employeeCode = Integer.parseInt(authentication.getName());
@@ -420,13 +448,36 @@ public class MemberController {
 
         //遅刻・早退関係
         Setting setting = settingService.getSettingTime();
-        if(report.getStartTime().isAfter(setting.getStartTime()) && report.getEndTime().isBefore(setting.getEndTime())) {
+        String reason = "";
+        if(reportUpdateInput.getStartTime().isAfter(setting.getStartTime()) && reportUpdateInput.getEndTime().isBefore(setting.getEndTime())) {
             reportUpdateInput.setIsLateness(true);
             reportUpdateInput.setIsLeftEarly(true);
-        }else if(report.getStartTime().isAfter(setting.getStartTime())){
+            reason = "※遅刻 及び 早退の理由を記入してください。";
+        }else if(reportUpdateInput.getStartTime().isAfter(setting.getStartTime())){
             reportUpdateInput.setIsLateness(true);
-        }else if(report.getEndTime().isBefore(setting.getEndTime())){
+            reason = "※遅刻の理由を記入してください";
+        }else if(reportUpdateInput.getEndTime().isBefore(setting.getEndTime())){
             reportUpdateInput.setIsLeftEarly(true);
+            reason = "※早退の理由を記入してください";
+        }else {
+            reportUpdateInput.setLatenessReason(null);
+        }
+
+        if (reportUpdateInput.getIsLeftEarly() || reportUpdateInput.getIsLateness()){
+            if (reportUpdateInput.getLatenessReason() == null){
+                report.setStartTime(settingInput.getStartTime());
+                report.setEndTime(settingInput.getEndTime());
+                settingInput.setEmployment(true);
+                model.addAttribute("reason",reason);
+                model.addAttribute("reportUpdateInput", reportUpdateInput);
+                model.addAttribute("settingInput",settingInput);
+                String title = "報告編集";
+                model.addAttribute("title", title);
+                model.addAttribute("report", report);
+                List<TaskLog> taskLogs = this.taskLogService.getTaskLogsByReportId(reportUpdateInput.getReportId());
+                model.addAttribute("taskLogs", taskLogs);
+                return "member/report-edit";
+            }
         }
 
         this.reportService.update(reportUpdateInput);

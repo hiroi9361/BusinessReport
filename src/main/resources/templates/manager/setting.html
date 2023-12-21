@@ -28,7 +28,7 @@
                     <input type="time" class="form-control" name="endTime" th:value="${setting.endTime}" required/>
                 </div>
             </div>
-            <button type="submit" class="btn btn-success btn-sm">編集</button>
+            <button type="submit" class="w-100 btn btn-lg btn-success">編集</button>
         </form>
         <div th:if="${SettingInput.startTime != null}">
             <p th:text="'始業時間を『' + ${SettingInput.startTime} + '』' + '終業時間を『' + ${SettingInput.endTime} + '』' + 'で設定しました。'"></p>

@@ -4,6 +4,12 @@
       layout:decorate="~{layout/layout}">
 <head>
     <meta charset="UTF-8" th:remove="tag">
+    <style>
+        .button-column {
+            width: 6%;
+            white-space: nowrap;
+        }
+    </style>
 </head>
 
 <body>
@@ -16,9 +22,9 @@
         <thead>
         <tr>
             <th>チーム名</th>
-            <th>詳細</th>
-            <th>編集</th>
-            <th>削除</th>
+            <th class="button-column">詳細</th>
+            <th class="button-column">編集</th>
+            <th class="button-column">削除</th>
         </tr>
         </thead>
         <tbody>
@@ -35,9 +41,9 @@
                 </a>
             </td>
             <td>
-                <form th:action="@{'/manager/teams/' + ${teamList.teamId} + '/delete'}" method="post" onSubmit="return check()">
+                <form th:action="@{'/manager/teams/' + ${teamList.teamId} + '/delete'}" method="post" class="form-inline" onSubmit="return check()">
                     <input type="hidden" name="teamId" th:value="${teamList.teamId}" />
-                    <input type="submit" value="削除" class="btn btn-outline-danger" />
+                    <button type="submit" class="btn btn-outline-danger">削除</button>
                 </form>
             </td>
         </tr>

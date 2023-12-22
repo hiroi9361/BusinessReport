@@ -494,6 +494,7 @@ public class MemberController {
         }
 
         redirectAttributes.addAttribute("reportId", reportUpdateInput.getReportId());
+        redirectAttributes.addFlashAttribute("editCompleteMSG", "報告を編集しました。");
         return "redirect:/member/reports/{reportId}";
 
     }

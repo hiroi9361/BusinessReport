@@ -7,6 +7,14 @@
 </head>
 <body>
 <div layout:fragment="content">
+    <div th:if="${error}">
+        <div class="flash flash-danger alert alert-dismissible fade show" role="alert">
+            <span th:text="${error}"></span>
+            <a data-bs-dismiss="alert" aria-label="Close">
+                <i class="fas fa-times"></i>
+            </a>
+        </div>
+    </div>
     <div class="container mt-4">
         <h2 class="text-center mb-4" th:text="${member.name} + ' の報告一覧'"></h2>
 
@@ -19,9 +27,9 @@
                 <div class="mb-3 me-3">
                     <button type="submit" class="btn btn-secondary">検索</button>
                 </div>
-                <div th:if="${error != null}" class="text-center mb−4">
-                    <p style="color: red;" th:text="${error}"></p>
-                </div>
+<!--                <div th:if="${error != null}" class="text-center mb−4">-->
+<!--                    <p style="color: red;" th:text="${error}"></p>-->
+<!--                </div>-->
             </div>
             <div>
                 <input type="hidden" name="employeeCode" th:value="${member.employeeCode}"/>

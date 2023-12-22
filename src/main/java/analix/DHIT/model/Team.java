@@ -23,6 +23,8 @@ public class Team implements Serializable {
     @Column(length=30)
     private String name;
 
+    private boolean release;
+
     public Team() {
     }
 
@@ -53,4 +55,7 @@ public class Team implements Serializable {
     public void setAssignments(List<Assignment> assignments) {
         this.assignments = assignments;
     }
+
+    public boolean getRelease(){return release;}
+    public void setRelease(boolean release){this.release=release;}
 }

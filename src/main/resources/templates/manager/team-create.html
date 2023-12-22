@@ -13,11 +13,20 @@
 <form th:action="@{/manager/team-create}" th:object="${TeamCreateInput}"
       method="post">
     <div class="form-group mb-3">
-    <label>チーム名（最大30文字）</label>
-    <input name="name" class="form-control" maxlength="30" required/>
+        <label>チーム名（最大30文字）</label>
+        <input name="name" class="form-control" maxlength="30" required/>
     </div>
+<!--    ************************-->
+    <div class="form-group mb-3">
+        <label>報告書公開設定</label>
+        <select  name="release"  class="form-select">
+            <option th:value="${false}">非公開</option>
+            <option th:value="${true}">公開</option>
+        </select>
+    </div>
+<!--    ************************-->
     <div class="form-group">
-    <button type="submit" class="w-100 btn btn-lg btn-success">作成</button>
+        <button type="submit" class="w-100 btn btn-lg btn-success">作成</button>
     </div>
 </form>
     </div>

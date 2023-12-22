@@ -42,6 +42,12 @@
             <input type="submit" value="メンバー追加" class="btn btn-success" />
         </form>
     </div>
+    <div th:if="${team.release}">
+        <p>このチームは報告書をチーム全体公開しています。</p>
+    </div>
+    <div th:if="${!team.release}">
+        <p>このチームは報告書をマネージャー限定公開にしています。</p>
+    </div>
 
     <h5 class="text-center">Managers</h5>
     <table class="StripeTable">

@@ -10,12 +10,18 @@ public class TeamCreateInput {
     public String getName() {
         return name;
     }
-
     public void setName(String name) {
         this.name = name;
     }
 
-    private String name;
+    public boolean getRelase(){
+        return release;
+    }
+    public void setRelease(boolean release){
+        this.release=release;
+    }
 
+    private String name;
+    private boolean release;
 
 }

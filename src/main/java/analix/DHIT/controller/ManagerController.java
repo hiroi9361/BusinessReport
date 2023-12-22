@@ -528,7 +528,8 @@ public class ManagerController {
     public String createTeam(TeamCreateInput teamCreateInput, RedirectAttributes redirectAttributes){
 
         int newTeamId = teamService.create(
-                teamCreateInput.getName()
+                teamCreateInput.getName(),
+                teamCreateInput.getRelase()
         );
 
         Team team = teamService.getTeamById(newTeamId);

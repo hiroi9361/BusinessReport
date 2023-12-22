@@ -36,12 +36,12 @@ INSERT INTO `feedback`(`feedback_id`, `name`, `rating`, `comment`, `report_id`) 
     (3, '疋田佑', 1, 'テスト',2);
 
 --team
-INSERT INTO team (team_id, name) VALUES
-    (1, "8時間睡眠死守の会"),
-    (2, "定時帰宅部"),
-    (3, "Springboot勉強会"),
-    (4, "新作チョコレート捜索隊"),
-    (5, "アプリテストチーム");
+INSERT INTO team (team_id, name, `release`) VALUES
+    (1, "8時間睡眠死守の会", 1),
+    (2, "定時帰宅部", 0),
+    (3, "Springboot勉強会", 1),
+    (4, "新作チョコレート捜索隊", 0),
+    (5, "アプリテストチーム", 1);
 
 -- Setting
 INSERT INTO setting(setting_id, start_time, end_time) VALUES

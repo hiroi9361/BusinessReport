@@ -13,6 +13,14 @@
 <body>
 
 <div layout:fragment="content">
+<!--    <div th:if="${addCompleteMSG}">-->
+<!--        <div class="flash flash-success alert alert-dismissible fade show" role="alert">-->
+<!--            <span th:text="${addCompleteMSG}"></span>-->
+<!--            <a data-bs-dismiss="alert" aria-label="Close">-->
+<!--                <i class="fas fa-times"></i>-->
+<!--            </a>-->
+<!--        </div>-->
+<!--    </div>-->
     <h1 class="text-center mt-3">就業時間設定</h1>
     <div class="container p-3 d-flex flex-column align-items-center">
         <form class="row g-3 p-3" th:action="@{/manager/setting-time/edit}" th:object="${SettingInput}" method="post">

@@ -345,6 +345,10 @@ public class ManagerController {
             );
         }
 
+        User user = userService.getUserByEmployeeCode(userCreateInput.getEmployeeCode());
+        String name = user.getName();
+        redirectAttributes.addFlashAttribute("createCompleteMSG", name + "を作成しました。");
+
         return "redirect:/manager/employeeList";
     }
 
@@ -502,7 +506,7 @@ public class ManagerController {
 
 
     @GetMapping("/teamlist")
-    public String displayTeamList(Model model){
+    public String displayTeamList(Model model, RedirectAttributes redirectAttributes){
         List<Team> teamList = teamService.getAllTeam();
         model.addAttribute("teamList", teamList);
         String title = "チーム一覧";
@@ -526,6 +530,11 @@ public class ManagerController {
         int newTeamId = teamService.create(
                 teamCreateInput.getName()
         );
+
+        Team team = teamService.getTeamById(newTeamId);
+        String name = team.getName();
+
+        redirectAttributes.addFlashAttribute("createCompleteMSG", name + "を作成しました。");
 
         return "redirect:/manager/teamlist";
 
@@ -551,8 +560,11 @@ public class ManagerController {
 
         Team team = this.teamService.getTeamById(teamUpdateInput.getTeamId());
         this.teamService.update(teamUpdateInput);
+        String name = team.getName();
 
         redirectAttributes.addAttribute("teamId", teamUpdateInput.getTeamId());
+        redirectAttributes.addFlashAttribute("editCompleteMSG", name + "を編集しました。");
+
         return "redirect:/manager/teamlist";
     }
 
@@ -617,12 +629,14 @@ public class ManagerController {
         int teamId = assignmentCreateInput.getTeamId();
         redirectAttributes.addAttribute("teamId", teamId);
 
+        redirectAttributes.addFlashAttribute("createCompleteMSG", "メンバーをチームに追加しました。");
+
         return "redirect:/manager/teams/{teamId}/detail";
     }
 
     @Transactional
     @PostMapping("/assignment/{teamId}/{employeeCode}/delete")
-    public String deleteAst(@PathVariable int teamId, @PathVariable int employeeCode){
+    public String deleteAst(@PathVariable int teamId, @PathVariable int employeeCode, RedirectAttributes redirectAttributes){
         List<Assignment> assignments = assignmentService.getAssignmentByTeam(teamId);
         Assignment ast = new Assignment();
 
@@ -633,6 +647,7 @@ public class ManagerController {
         }
 
         assignmentService.deleteById(ast.getAssignmentId());
+        redirectAttributes.addFlashAttribute("deleteCompleteMSG", "該当のメンバーをチームから削除しました。");
 
         return "redirect:/manager/teams/{teamId}/detail";
     }
@@ -641,12 +656,14 @@ public class ManagerController {
     @PostMapping("/teams/{teamId}/delete")
     @Transactional
     public String deleteTeam(
-            @PathVariable int teamId
+            @PathVariable int teamId, RedirectAttributes redirectAttributes
     ) {
         Team team = teamService.getTeamById(teamId);
+        String name = team.getName();
 
         this.assignmentService.deleteByTeam(teamId);
         this.teamService.deleteById(teamId);
+        redirectAttributes.addFlashAttribute("deleteCompleteMSG", name + "を削除しました。");
 
         return "redirect:/manager/teamlist";
     }
@@ -678,11 +695,12 @@ public class ManagerController {
     }
     @PostMapping("/setting-time/edit")
     public String settingTimeEdit(@ModelAttribute("SettingInput") SettingInput settingInput,
-                                  Model model){
+                                  Model model, RedirectAttributes redirectAttributes){
         settingService.update(settingInput);
         Setting setting = settingService.getSettingTime();
         model.addAttribute("setting",setting);
         model.addAttribute("SettingInput",settingInput);
+//        redirectAttributes.addFlashAttribute("addCompleteMSG", "始業時間を『" + setting.getStartTime() + "』、終業時間を『" + setting.getEndTime() + "』に設定しました。");
         return "manager/setting";
     }
 

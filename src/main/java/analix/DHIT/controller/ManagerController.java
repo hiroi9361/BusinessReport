@@ -277,6 +277,19 @@ public class ManagerController {
         boolean isMgr = assignmentService.getCountIsManager(employeeCode,reportId);
         model.addAttribute("isManager",isMgr);
         //test------------------------------------
+        //フィードバック者
+        Feedback feedback = feedbackService.getFeedbackById(reportId);
+        if (feedback != null){
+            String reportName = feedback.getName();
+            //閲覧者
+            User user = userService.getUserByEmployeeCode(employeeCode);
+            String myName = user.getName();
+            boolean isFeedback = reportName.equals(myName);
+            model.addAttribute("isFeedback",isFeedback);
+        }else {
+            boolean isFeedback = false;
+            model.addAttribute("isFeedback",isFeedback);
+        }
         return "member/report-detail";
 //        return "manager/report-detail";
     }

@@ -42,11 +42,18 @@
       <div class="main-box mt-3">
         <div class="main-left">
             <h5>メンバーとして所属中のチーム</h5>
+<!--            ****************-->
             <div th:if="${memteamList}">
                 <div th:each="team : ${memteamList}">
-                    <h3 th:text="${team.name}"></h3>
+                    <div th:if="${team.release}">
+                        <a th:href="@{'/manager/home/' + ${team.teamId}}"><h3 th:text="${team.name}"></h3></a>
+                    </div>
+                    <div th:if="${!team.release}">
+                        <h3 th:text="${team.name}"></h3>
+                    </div>
                 </div>
             </div>
+<!--            ****************-->
             <div class="m-3"></div>
             <h5>報告先マネージャー</h5>
             <div th:if="${managerList}">

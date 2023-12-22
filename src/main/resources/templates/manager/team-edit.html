@@ -16,13 +16,15 @@
                 <label>チーム名（最大30文字）</label>
                 <input name="name" class="form-control" th:value="${team.name}"  maxlength="30" required/>
             </div>
+<!--    ************************-->
             <div class="form-group">
                 <label>報告書公開設定</label>
-                <select name="release" class="form-select">  <!--th:field="*{release}"-->
-                    <option value="false" >非公開</option> <!--th:selected="${team.release == false}"-->
-                    <option value="true">公開</option>  <!--th:selected="${team.release == true}"-->
+                <select name="release" class="form-select">
+                    <option th:value="false" th:selected="${team.release == false}">非公開</option>
+                    <option th:value="true" th:selected="${team.release == true}">公開</option>
                 </select>
             </div>
+<!--    ************************-->
             <div class="mb-3">
                 <input type="hidden" name="teamId" th:value="${team.teamId}"/>
             </div>

@@ -177,9 +177,14 @@
                                     </i>
                                     <p>コメント</p>
                                     <p><span th:text="${feedback.comment}"></span></p>
-                                    <form th:action="@{'/manager/reports/' + ${report.Id}}" method="post">
-                                        <button type="submit" class="btn btn-danger" name="del" value="true">削除して入力しなおす</button>
-                                    </form>
+                                    <div th:if="${isFeedback}">
+                                        <form th:action="@{'/manager/reports/' + ${report.Id}}" method="post">
+                                            <button type="submit" class="btn btn-danger" name="del" value="true">削除して入力しなおす</button>
+                                        </form>
+                                    </div>
+                                    <div th:if="${!isFeedback}">
+                                        <p class="text-center"><span th:text="${feedback.name}"></span>さんによるコメントのため編集は出来ません</p>
+                                    </div>
                                 </form>
                                 </div>
                             </div>

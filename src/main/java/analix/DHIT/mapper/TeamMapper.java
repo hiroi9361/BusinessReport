@@ -19,7 +19,7 @@ public interface TeamMapper {
     @Options(useGeneratedKeys = true, keyColumn = "team_id", keyProperty = "teamId")
     void insertTeam(Team team);
 
-    @Update("UPDATE team SET name=#{name} WHERE team_id = #{teamId}")
+    @Update("UPDATE team SET name=#{name},`release`=#{release} WHERE team_id = #{teamId}")
     void updateTeam(Team team);
 
     @Delete("DELETE FROM team WHERE team_id = #{teamId}")

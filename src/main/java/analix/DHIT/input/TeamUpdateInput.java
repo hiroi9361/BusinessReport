@@ -23,9 +23,9 @@ public class TeamUpdateInput {
         this.name = name;
     }
 
-    private boolean getRelease(){
+    public boolean getRelease(){
         return release;
     }
 
-    private void setRelease(boolean release){this.release=release;}
+    public void setRelease(boolean release){this.release=release;}
 }

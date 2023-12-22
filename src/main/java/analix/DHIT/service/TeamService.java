@@ -54,6 +54,7 @@ public class TeamService {
         Team team = this.teamMapper.SelectById(teamUpdateInput.getTeamId());
 
         team.setName(teamUpdateInput.getName());
+        team.setRelease(teamUpdateInput.getRelease());
 
         this.teamRepository.update(team);
 

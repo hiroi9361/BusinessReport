@@ -15,7 +15,7 @@ public interface TeamMapper {
     @Select("SELECT * FROM team WHERE team_id = #{teamId}")
     Team SelectById(int teamId);
 
-    @Insert("INSERT INTO team(name) " + "VALUES(#{name})")
+    @Insert("INSERT INTO team(name,`release`) " + "VALUES(#{name},#{release})")
     @Options(useGeneratedKeys = true, keyColumn = "team_id", keyProperty = "teamId")
     void insertTeam(Team team);
 

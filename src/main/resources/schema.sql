@@ -42,7 +42,8 @@ CREATE TABLE IF NOT EXISTS `task_log` (
 
 CREATE TABLE IF NOT EXISTS `team` (
     `team_id` int NOT NULL AUTO_INCREMENT PRIMARY KEY,
-    `name` varchar(50) NOT NULL
+    `name` varchar(50) NOT NULL,
+    `release` tinyint NOT NULL
 );
 
 CREATE TABLE IF NOT EXISTS `feedback` (

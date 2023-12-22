@@ -37,10 +37,12 @@ public class TeamService {
     }
 
     public int create(
-            String name
+            String name,
+            boolean release
     ) {
         Team newTeam = new Team();
         newTeam.setName(name);
+        newTeam.setRelease(release);
 
         this.teamRepository.save(newTeam);
 

@@ -5,6 +5,7 @@ public class TeamUpdateInput {
 
     private int teamId;
     private String name;
+    private boolean release;
 
     public int getTeamId() {
         return teamId;
@@ -21,4 +22,10 @@ public class TeamUpdateInput {
     public void setName(String name) {
         this.name = name;
     }
+
+    private boolean getRelease(){
+        return release;
+    }
+
+    private void setRelease(boolean release){this.release=release;}
 }

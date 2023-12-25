@@ -11,33 +11,36 @@
     <div class="container p-3">
         <div class="card">
             <div class="card-body">
-                <form class="row g-3 p-3" th:action="@{/member/report/update}" th:object="${ReportUpdateInput}"
+                <form class="row g-3 pe-3 ps-3 pb-3" th:action="@{/member/report/update}" th:object="${ReportUpdateInput}"
                       method="post">
 
                     <div>
                         <input type="hidden" name="reportId" th:value="${report.id}"/>
                     </div>
 
-                    <div id= "date_mb" class="col-md-12 d-flex flex-row align-items-center gap-3">
-                        <p class="text-center">日付</p>
+                    <div class="d-flex">
+
+                    <div id= "date_mb" class="col-md-12 d-flex flex-row align-items-center gap-3 me-3" style="width:220px;">
+                        <p class="text-center mt-3">日付</p>
                         <div class="cs-form">
                             <input type="date" class="form-control" name="date" th:value="${report.date}" required
                                    disabled/>
                         </div>
                     </div>
 
-                    <div id= "startTime_mb" class="col-md-12 d-flex flex-row align-items-center gap-3">
-                        <p class="text-center">出勤時間</p>
+                    <div id= "startTime_mb" class="col-md-12 d-flex flex-row align-items-center gap-3 me-3" style="width:200px;">
+                        <p class="text-center mt-3">出勤時間</p>
                         <div class="cs-form">
                             <input type="time" class="form-control" name="startTime" th:value="${report.startTime}"
                                    required/>
                         </div>
                     </div>
-                    <div id= "endTime_mb" class="col-md-12 d-flex flex-row align-items-center gap-3">
-                        <p class="text-center">退勤時間</p>
+                    <div id= "endTime_mb" class="col-md-12 d-flex flex-row align-items-center gap-3 me-3"  style="width:200px;">
+                        <p class="text-center mt-3">退勤時間</p>
                         <div class="cs-form">
                             <input type="time" class="form-control" name="endTime" th:value="${report.endTime}" required/>
                         </div>
+                    </div>
                     </div>
 
                     <div th:if="${settingInput.employment == true}">

@@ -24,15 +24,13 @@
     <h1 class="text-center mt-3">就業時間設定</h1>
     <div class="container p-3 d-flex flex-column align-items-center">
         <form class="row g-3 p-3" th:action="@{/manager/setting-time/edit}" th:object="${SettingInput}" method="post">
-            <div id="startTime_mb" class="col-md-12 d-flex flex-row align-items-center gap-3">
-                <p class="text-center">始業時間</p>
+            <div id="timeRange_mb" class="col-md-12 d-flex flex-row align-items-center justify-content-center gap-3">
                 <div class="cs-form">
+                    <p class="text-center">始業時間</p>
                     <input type="time" class="form-control" name="startTime" th:value="${setting.startTime}" required/>
                 </div>
-            </div>
-            <div id="endTime_mb" class="col-md-12 d-flex flex-row align-items-center gap-3">
-                <p class="text-center">終業時間</p>
                 <div class="cs-form">
+                    <p class="text-center">終業時間</p>
                     <input type="time" class="form-control" name="endTime" th:value="${setting.endTime}" required/>
                 </div>
             </div>

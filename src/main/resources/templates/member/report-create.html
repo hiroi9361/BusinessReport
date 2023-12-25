@@ -17,30 +17,34 @@
                     <div th:if="${error != null}" class="text-center mb-4">
                         <h3 style="color: red;" th:text="${error}"></h3>
                     </div>
-                    <div id="date_mb" class="col-md-12 d-flex flex-row align-items-center gap-3">
-                        <p class="text-center">日付</p>
-                        <div class="cs-form">
-                            <input type="date" class="form-control" name="date" th:value="${reportCreateInput.date}"
-                                   required
-                                   min="1900-01-01" max="2100-12-31"/>
+                    <div class="d-flex">
+                        <div id="date_mb" class="col-md-12 d-flex flex-row align-items-center gap-3 me-2" style="width:200px;">
+                            <p class="text-center mt-3">日付</p>
+                            <div class="cs-form">
+                                <input type="date" class="form-control" name="date" th:value="${reportCreateInput.date}"
+                                       required
+                                       min="1900-01-01" max="2100-12-31"/>
+                            </div>
                         </div>
-                    </div>
 
 
-                    <div id="startTime_mb" class="col-md-12 d-flex flex-row align-items-center gap-3">
-                        <p class="text-center">出勤時間</p>
-                        <div class="cs-form">
-                            <input type="time" class="form-control" name="startTime"
-                                   th:value="${settingInput.startTime}" required/>
+                        <div id="startTime_mb" class="col-md-12 d-flex flex-row align-items-center gap-3 me-2" style="width:200px;">
+                            <p class="text-center mt-3">出勤時間</p>
+                            <div class="cs-form">
+                                <input type="time" class="form-control" name="startTime"
+                                       th:value="${settingInput.startTime}" required/>
+                            </div>
                         </div>
-                    </div>
-                    <div id="endTime_mb" class="col-md-12 d-flex flex-row align-items-center gap-3">
-                        <p class="text-center">退勤時間</p>
-                        <div class="cs-form">
-                            <input type="time" class="form-control" name="endTime" th:value="${settingInput.endTime}"
-                                   required/>
+                        <div id="endTime_mb" class="col-md-12 d-flex flex-row align-items-center gap-3 me-2" style="width:200px;">
+                            <p class="text-center mt-3">退勤時間</p>
+                            <div class="cs-form">
+                                <input type="time" class="form-control" name="endTime" th:value="${settingInput.endTime}"
+                                       required/>
+                            </div>
                         </div>
+
                     </div>
+
                     <!--                    削除予定-->
                     <!--                    <div th:if="${settingInput.employment == true}">-->
                     <!--                        <p>おぽぽぽぽぽぽぽぽぽぽｐ</p>-->

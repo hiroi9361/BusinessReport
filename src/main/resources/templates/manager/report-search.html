@@ -93,16 +93,16 @@
                                         <i class="bi bi-emoji-dizzy-fill text-danger" style="font-size: 1.5rem;"></i>
                                     </i>
                             </td>
-                            <!-- 報告内容を30文字まで表示し、残りは非表示にする -->
+                            <!-- 報告内容を29文字まで表示し、残りは非表示にする -->
                             <td>
                                 <div th:attr="data-content=${report.impressions}" class="d-flex align-items-center" style="white-space: pre-line; word-wrap: break-word; overflow: hidden; text-overflow: ellipsis; text-align: left;">
-                                    <span th:text="${#strings.abbreviate(report.impressions, 30)}"></span>
+                                    <span th:text="${#strings.abbreviate(report.impressions, 29)}"></span>
                                 </div>
                             </td>
-                            <!-- 明日の予定を30文字まで表示し、残りは非表示にする -->
+                            <!-- 明日の予定を29文字まで表示し、残りは非表示にする -->
                             <td>
                                 <div th:attr="data-content=${report.tomorrowSchedule}" class="d-flex align-items-center" style="white-space: pre-line; word-wrap: break-word; overflow: hidden; text-overflow: ellipsis; text-align: left;">
-                                    <span th:text="${#strings.abbreviate(report.tomorrowSchedule, 30)}"></span>
+                                    <span th:text="${#strings.abbreviate(report.tomorrowSchedule, 29)}"></span>
                                 </div>
                             </td>
                             <td style="width:62px;">

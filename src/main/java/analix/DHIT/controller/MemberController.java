@@ -372,6 +372,7 @@ public class MemberController {
             return "redirect:/member/report/create";
         }
 
+        this.feedbackService.deleteById(reportId);
         this.taskLogService.deleteByReportId(reportId);
         this.reportService.deleteById(reportId);
 

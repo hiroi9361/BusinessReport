@@ -638,6 +638,9 @@ public class ManagerController {
             );
         }else{
             redirectAttributes.addFlashAttribute("errorAstMsg", "該当のユーザーはすでに追加されています");
+            int teamId = assignmentCreateInput.getTeamId();
+            redirectAttributes.addAttribute("teamId", teamId);
+            return "redirect:/manager/teams/{teamId}/detail";
         }
 
         int teamId = assignmentCreateInput.getTeamId();

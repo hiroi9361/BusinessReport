@@ -65,7 +65,7 @@ public class MemberController {
         String title = "報告作成";
         model.addAttribute("title", title);
         //規定の終業時間を取得し、セット
-        Setting setting = settingService.getSettingTime();
+        Setting setting = settingService.getSettingTime(employeeCode);
         settingInput.setStartTime(setting.getStartTime());
         settingInput.setEndTime(setting.getEndTime());
         settingInput.setEmployment(false);
@@ -98,7 +98,7 @@ public class MemberController {
         int employeeCode = Integer.parseInt(authentication.getName());
 
         //遅刻早退を判定
-        Setting setting = settingService.getSettingTime();
+        Setting setting = settingService.getSettingTime(employeeCode);
 
         if(!settingInput.getEmployment()){
             if(settingInput.getStartTime().isAfter(setting.getStartTime()) || settingInput.getEndTime().isBefore(setting.getEndTime())){
@@ -402,7 +402,7 @@ public class MemberController {
         }
 
         //遅刻・早退　関係
-        Setting setting = this.settingService.getSettingTime();
+        Setting setting = this.settingService.getSettingTime(employeeCode);
         SettingInput settingInput = new SettingInput();
         String reason = "";
         if(report.getStartTime().isAfter(setting.getStartTime()) && report.getEndTime().isBefore(setting.getEndTime())) {
@@ -447,7 +447,7 @@ public class MemberController {
         }
 
         //遅刻・早退関係
-        Setting setting = settingService.getSettingTime();
+        Setting setting = settingService.getSettingTime(employeeCode);
         String reason = "";
         if(reportUpdateInput.getStartTime().isAfter(setting.getStartTime()) && reportUpdateInput.getEndTime().isBefore(setting.getEndTime())) {
             reportUpdateInput.setIsLateness(true);

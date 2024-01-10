@@ -64,7 +64,8 @@ CREATE TABLE IF NOT EXISTS `assignment` (
 CREATE TABLE IF NOT EXISTS `setting` (
     `setting_id` int NOT NULL AUTO_INCREMENT PRIMARY KEY,
     `start_time` time NOT NULL,
-    `end_time`  time NOT NULL
+    `end_time`  time NOT NULL,
+    `employee_code` int NOT NULL
 );
 
 alter table assignment add constraint FKdetrh6pu9ojx5htmct8jirhof foreign key (team_id) references team (team_id);

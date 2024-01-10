@@ -16,12 +16,21 @@ public class MysqlSettingRepository implements SettingRepository {
     public MysqlSettingRepository(SettingMapper settingMapper){
         this.settingMapper=settingMapper;
     }
-    @Override
-    public Setting getSetting(){
-        return this.settingMapper.selectSettingTime();
+    @Override//就業時間を取得
+    public Setting getSetting(int employeeCode){
+        return this.settingMapper.selectSettingTime(employeeCode);
     }
-    @Override
+    @Override//終業時間を更新
     public void update(Setting setting){
         this.settingMapper.updateSetting(setting);
     }
+    @Override//新規作成
+    public void save(Setting setting){
+        this.settingMapper.insertSetting(setting);
+    }
+    @Override//削除
+    public void deleteById(int employeeCode){
+        this.settingMapper.deleteById(employeeCode);
+    }
+
 }

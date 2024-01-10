@@ -632,5 +632,14 @@ public class MemberController {
         return mav;
     }
 
+    //個別パスワード変更画面表示
+    @GetMapping("/userInfoList")
+    public String changePassWord(Model model)
+    {
+
+        model.addAttribute("userEditInput", new UserEditInput());
+
+     return "member/userDetailsList";
+    }
 
 }

@@ -632,14 +632,18 @@ public class MemberController {
         return mav;
     }
 
-    //個別パスワード変更画面表示
-    @GetMapping("/userInfoList")
-    public String changePassWord(Model model)
+    //ユーザー情報変更一覧
+    @GetMapping("/userDetailsList")
+    public String displayUserInfo()
     {
-
-        model.addAttribute("userEditInput", new UserEditInput());
-
      return "member/userDetailsList";
     }
 
+    //ユーザー情報変更画面(名前、パスワード、アイコン)
+    @GetMapping("/userDetailsList/userEdit")
+    public String userEdit(Model model)
+    {
+        model.addAttribute("userEditInput", new UserEditInput());
+        return "member/userDetailsList-userEdit";
+    }
 }

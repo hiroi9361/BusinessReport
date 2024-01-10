@@ -1,47 +1,59 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org"
-      xmlns:layout="http://www.ultraq.net.nz/web/thymeleaf/layout"
-      layout:decorate="~{layout/layout}">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Menu Interface</title>
-<style>
-    body {
-      font-family: Arial, sans-serif;
-    }
-    .header {
-      background-color: #00BFFF; /* Light blue */
-      padding: 10px;
-      text-align: center;
-      color: white;
-    }
-    .menu {
-      display: flex;
-      justify-content: space-around;
-      padding: 20px;
-      background-color: #f2f2f2; /* Light grey */
-    }
-    .menu-item {
-      text-align: center;
-    }
-    .menu-icon {
-      width: 50px; /* Fixed width, can be adjusted */
-      height: 50px; /* Fixed height, can be adjusted */
-    }
-    .menu-label {
-      display: block;
-      margin-top: 5px;
-    }
-    .search-box {
-      display: block;
-      width: 100%;
-      padding: 10px;
-      margin: 20px 0;
-      border: 1px solid #ddd
-  <head>
-      <meta charset="UTF-8">
-      <title>Title</title>
-  </head>
-  <body>
+<!--↓ナビバー表示-->
+<!--<html xmlns:th="http://www.thymeleaf.org"-->
+<!--      xmlns:layout="http://www.ultraq.net.nz/web/thymeleaf/layout"-->
+<!--      layout:decorate="~{layout/layout}">-->
 
-  </body>
-  </html>
+<head xmlns:th="http://www.w3.org/1999/xhtml" xmlns:th="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.w3.org/1999/xhtml" xmlns:th="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.w3.org/1999/xhtml" xmlns:th="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.w3.org/1999/xhtml">
+
+    <meta charset="UTF-8" th:remove="tag">
+</head>
+<style>
+    h1 {
+    background-color: #5D99FF;
+    color: white; /* オプション：テキストの色を白に設定 */
+    padding: 10px; /* オプション：テキストと周囲の余白を設定 */
+}
+    .center-text {
+  text-align: center;
+}
+/*以下枠線設定*/
+    .textBox {
+border: 2px solid #333;
+border-radius: 5px;
+padding: 30px;
+position: relative;
+}
+
+.textBox::before {
+background-color: #fff;
+color: #333;
+content: "個人情報";
+font-weight: bold;
+left: 30px;
+padding: 3px 10px;
+position: absolute;
+top: -15px;
+}
+
+</style>
+<body>
+<div layout:fragment="content">
+    <h1>個別詳細設定</h1>
+    <div class="textBox">
+        <a th:href="@{/member/userDetailsList/userEdit}"><img src="/img/ユーザー情報アイコン.png" alt="ユーザー情報"/></a>
+    <p>ユーザー情報変更</p>
+
+
+<!--            <a th:href="@{/member/userDetailsList/userEdit}"><img src="/img/就業アイコン.png" alt="ユーザー情報"/></a>-->
+<!--            <p>就業時間変更</p>-->
+<!--    </div>-->
+
+
+</div>
+</body>
+
+</html>

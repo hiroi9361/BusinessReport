@@ -58,8 +58,17 @@ INSERT INTO team (team_id, name, `release`) VALUES
     (6, "珈琲喫茶ポッポ開業プロジェクト", 1);
 
 -- Setting
-INSERT INTO setting(setting_id, start_time, end_time) VALUES
-    (1, '9:00:00', '18:00:00');
+INSERT INTO setting(setting_id, start_time, end_time, employee_code) VALUES
+    (1, '9:00:00', '18:00:00', 1),
+    (2, '9:00:00', '18:00:00', 2),
+    (3, '9:00:00', '18:00:00', 3),
+    (4, '9:00:00', '18:00:00', 4),
+    (5, '9:00:00', '18:00:00', 5),
+    (6, '9:00:00', '18:00:00', 6),
+    (7, '9:00:00', '18:00:00', 7),
+    (8, '9:00:00', '18:00:00', 8),
+    (9, '9:00:00', '18:00:00', 9),
+    (10, '9:00:00', '18:00:00', 11);
 
 --assignment
 INSERT INTO assignment (assignment_id, employee_code, team_id, is_manager) VALUES

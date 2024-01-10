@@ -43,4 +43,8 @@ public class TaskLogService {
     public void deleteByReportId(int reportId){
         this.taskLogRepository.deleteByReportId(reportId);
     }
+
+    public int maxTask() {
+        return this.taskLogRepository.maxTask();
+    }
 }

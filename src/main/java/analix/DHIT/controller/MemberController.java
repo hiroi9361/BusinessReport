@@ -162,6 +162,11 @@ public class MemberController {
             taskLogs.forEach(x -> x.setReportId(newReportId));
             for (TaskLog taskLog : taskLogs) {
                 if (taskLog != null && taskLog.getName() != null) {
+                    taskLog.setCounter(taskLog.getCounter() + 1);
+                    if(taskLog.getCounter() == 1){
+                        int maxNum = taskLogService.maxTask() + 1;
+                        taskLog.setSorting(maxNum);
+                    }
                     taskLogService.create(taskLog);
                 }
             }
@@ -497,6 +502,14 @@ public class MemberController {
         redirectAttributes.addFlashAttribute("editCompleteMSG", "報告を編集しました。");
         return "redirect:/member/reports/{reportId}";
 
+    }
+
+    @GetMapping()
+    public String taskList(Model model){
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        int myEmployeeCode = Integer.parseInt(authentication.getName());
+
+        return "";
     }
 
     @GetMapping("/user-main")

@@ -42,10 +42,10 @@ public class MemberController {
         this.userService = userService;
         this.taskLogService = taskLogService;
         this.reportService = reportService;
-        this.feedbackService=feedbackService;
-        this.assignmentService=assignmentService;
+        this.feedbackService = feedbackService;
+        this.assignmentService = assignmentService;
         this.teamService = teamService;
-        this.settingService=settingService;
+        this.settingService = settingService;
     }
 
     @GetMapping("/report/create")
@@ -69,7 +69,7 @@ public class MemberController {
         settingInput.setStartTime(setting.getStartTime());
         settingInput.setEndTime(setting.getEndTime());
         settingInput.setEmployment(false);
-        model.addAttribute("settingInput",settingInput);
+        model.addAttribute("settingInput", settingInput);
         if (latestReportId == null) {
             model.addAttribute("reportCreateInput", reportCreateInput);
             return "member/report-create";
@@ -100,28 +100,28 @@ public class MemberController {
         //遅刻早退を判定
         Setting setting = settingService.getSettingTime(employeeCode);
 
-        if(!settingInput.getEmployment()){
-            if(settingInput.getStartTime().isAfter(setting.getStartTime()) || settingInput.getEndTime().isBefore(setting.getEndTime())){
+        if (!settingInput.getEmployment()) {
+            if (settingInput.getStartTime().isAfter(setting.getStartTime()) || settingInput.getEndTime().isBefore(setting.getEndTime())) {
                 String reason = "";
-                if(settingInput.getStartTime().isAfter(setting.getStartTime()) && settingInput.getEndTime().isBefore(setting.getEndTime())) {
+                if (settingInput.getStartTime().isAfter(setting.getStartTime()) && settingInput.getEndTime().isBefore(setting.getEndTime())) {
                     reason = "※遅刻 及び 早退の理由を記入してください";
                     reportCreateInput.setIsLateness(true);
                     reportCreateInput.setIsLeftEarly(true);
-                }else if(settingInput.getStartTime().isAfter(setting.getStartTime())){
+                } else if (settingInput.getStartTime().isAfter(setting.getStartTime())) {
                     reason = "※遅刻の理由を記入してください";
                     reportCreateInput.setIsLateness(true);
-                }else if(settingInput.getEndTime().isBefore(setting.getEndTime())){
+                } else if (settingInput.getEndTime().isBefore(setting.getEndTime())) {
                     reason = "※早退の理由を記入してください";
                     reportCreateInput.setIsLeftEarly(true);
                 }
 
                 settingInput.setEmployment(true);
 
-                model.addAttribute("settingInput",settingInput);
+                model.addAttribute("settingInput", settingInput);
                 model.addAttribute("reportCreateInput", reportCreateInput);
                 String title = "報告作成";
                 model.addAttribute("title", title);
-                model.addAttribute("reason",reason);
+                model.addAttribute("reason", reason);
                 return "member/report-create";
             }
         }
@@ -132,12 +132,12 @@ public class MemberController {
         }
 
         //遅刻・早退判定
-        if(settingInput.getStartTime().isAfter(setting.getStartTime()) && settingInput.getEndTime().isBefore(setting.getEndTime())) {
+        if (settingInput.getStartTime().isAfter(setting.getStartTime()) && settingInput.getEndTime().isBefore(setting.getEndTime())) {
             reportCreateInput.setIsLateness(true);
             reportCreateInput.setIsLeftEarly(true);
-        }else if(settingInput.getStartTime().isAfter(setting.getStartTime())){
+        } else if (settingInput.getStartTime().isAfter(setting.getStartTime())) {
             reportCreateInput.setIsLateness(true);
-        }else if(settingInput.getEndTime().isBefore(setting.getEndTime())){
+        } else if (settingInput.getEndTime().isBefore(setting.getEndTime())) {
             reportCreateInput.setIsLeftEarly(true);
         }
 
@@ -193,7 +193,7 @@ public class MemberController {
         model.addAttribute("reportSearchInput", new ReportSearchInput());
         model.addAttribute("error", model.getAttribute("error"));
 
-    //追記*****************************************************
+        //追記*****************************************************
 
         //ログイン中のユーザーのemployeeCodeを取得する
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
@@ -206,7 +206,7 @@ public class MemberController {
 
         //検索機能---------------------------------------
         //既読or未読
-        for(Report report : reports){
+        for (Report report : reports) {
             boolean isFeedbackGiven = feedbackService.count(report.getId());
             report.setReadStatus(isFeedbackGiven ? "既読" : "未読");
         }
@@ -217,9 +217,9 @@ public class MemberController {
                 .map(date -> date.withDayOfMonth(1))
                 .distinct()
                 .toList();
-        model.addAttribute("dateList",dateList);
+        model.addAttribute("dateList", dateList);
         //データ格納用
-        model.addAttribute("reportSortInput",new ReportSortInput());
+        model.addAttribute("reportSortInput", new ReportSortInput());
         //追記*****************************************************
 
         return "member/report-search";
@@ -243,13 +243,13 @@ public class MemberController {
 
 //追記*****************************************************
         //日付、、
-        if(reportSortInput.getSort() == true) {
+        if (reportSortInput.getSort() == true) {
             reportSortInput.setEmployeeCode(employeeCode);
 
             //ソート用
             List<Report> reports = reportService.getSorrtReport(reportSortInput);
             User member = userService.getUserByEmployeeCode(employeeCode);
-            for(Report report : reports){
+            for (Report report : reports) {
                 boolean isFeedbackGiven = feedbackService.count(report.getId());
                 report.setReadStatus(isFeedbackGiven ? "既読" : "未読");
             }
@@ -263,9 +263,9 @@ public class MemberController {
                     .map(date -> date.withDayOfMonth(1))
                     .distinct()
                     .toList();
-            model.addAttribute("dateList",dateList);
+            model.addAttribute("dateList", dateList);
             //データ格納用
-            model.addAttribute("reportSortInput",new ReportSortInput());
+            model.addAttribute("reportSortInput", new ReportSortInput());
             return "member/report-search";
         }
 //追記*****************************************************
@@ -281,7 +281,7 @@ public class MemberController {
     }
 
     @GetMapping("/reports/{reportId}")
-    public String displayReportDetail(@PathVariable("reportId") int reportId, FeedbackUpdateInput feedbackUpdateInput, Model model,Boolean del) {
+    public String displayReportDetail(@PathVariable("reportId") int reportId, FeedbackUpdateInput feedbackUpdateInput, Model model, Boolean del) {
 
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         int employeeCode = Integer.parseInt(authentication.getName());
@@ -315,28 +315,28 @@ public class MemberController {
         //レポートのemployeeCodeとログインユーザーのemployeeCodeが一致ならフィードバックを閲覧する
         //不一致なら
         //レポート持ち主のemployeecodeで検索して、ismanager falseのアサインメントがあるかどうかチェック→assignmentがあったらTrueなければfalse
-        if(employeeCode == reportByEmployeeCode){
+        if (employeeCode == reportByEmployeeCode) {
             boolean isMgr = false;
-            model.addAttribute("isManager",isMgr);
-        }else {
-            boolean isMgr = assignmentService.getCountIsManager(employeeCode,reportId);
-            model.addAttribute("isManager",isMgr);
+            model.addAttribute("isManager", isMgr);
+        } else {
+            boolean isMgr = assignmentService.getCountIsManager(employeeCode, reportId);
+            model.addAttribute("isManager", isMgr);
         }
 
-        if(del != null && del){
+        if (del != null && del) {
             feedbackService.deleteById(reportId);
         }
 
-        if(feedbackUpdateInput.getComment() != null && !feedbackService.count(reportId)) {
+        if (feedbackUpdateInput.getComment() != null && !feedbackService.count(reportId)) {
             feedbackUpdateInput.setNameByEmployeeCode(employeeCode, userService);
             feedbackUpdateInput.setReportId(reportId);
             feedbackService.create(feedbackUpdateInput);
-            model.addAttribute("feedback",feedbackUpdateInput);
+            model.addAttribute("feedback", feedbackUpdateInput);
         } else if (feedbackService.count(reportId)) {
             Feedback feedback = feedbackService.getFeedbackById(reportId);
 
 
-            model.addAttribute("feedback",feedback);
+            model.addAttribute("feedback", feedback);
         }
 
         return "member/report-detail";
@@ -377,6 +377,7 @@ public class MemberController {
             return "redirect:/member/report/create";
         }
 
+        this.feedbackService.deleteById(reportId);
         this.taskLogService.deleteByReportId(reportId);
         this.reportService.deleteById(reportId);
 
@@ -410,22 +411,19 @@ public class MemberController {
         Setting setting = this.settingService.getSettingTime(employeeCode);
         SettingInput settingInput = new SettingInput();
         String reason = "";
-        if(report.getStartTime().isAfter(setting.getStartTime()) && report.getEndTime().isBefore(setting.getEndTime())) {
+        if (report.getStartTime().isAfter(setting.getStartTime()) && report.getEndTime().isBefore(setting.getEndTime())) {
             settingInput.setEmployment(true);
             reason = "※遅刻 及び 早退の理由を記入してください";
-        }else if(report.getStartTime().isAfter(setting.getStartTime())){
+        } else if (report.getStartTime().isAfter(setting.getStartTime())) {
             settingInput.setEmployment(true);
             reason = "※遅刻の理由を記入してください";
-        }else if(report.getEndTime().isBefore(setting.getEndTime())){
+        } else if (report.getEndTime().isBefore(setting.getEndTime())) {
             settingInput.setEmployment(true);
             reason = "※早退の理由を記入してください";
         }
 
-        model.addAttribute("reason",reason);
-        model.addAttribute("settingInput",settingInput);
-
-
-
+        model.addAttribute("reason", reason);
+        model.addAttribute("settingInput", settingInput);
 
 
         List<TaskLog> taskLogs = this.taskLogService.getTaskLogsByReportId(reportId);
@@ -454,28 +452,28 @@ public class MemberController {
         //遅刻・早退関係
         Setting setting = settingService.getSettingTime(employeeCode);
         String reason = "";
-        if(reportUpdateInput.getStartTime().isAfter(setting.getStartTime()) && reportUpdateInput.getEndTime().isBefore(setting.getEndTime())) {
+        if (reportUpdateInput.getStartTime().isAfter(setting.getStartTime()) && reportUpdateInput.getEndTime().isBefore(setting.getEndTime())) {
             reportUpdateInput.setIsLateness(true);
             reportUpdateInput.setIsLeftEarly(true);
             reason = "※遅刻 及び 早退の理由を記入してください。";
-        }else if(reportUpdateInput.getStartTime().isAfter(setting.getStartTime())){
+        } else if (reportUpdateInput.getStartTime().isAfter(setting.getStartTime())) {
             reportUpdateInput.setIsLateness(true);
             reason = "※遅刻の理由を記入してください";
-        }else if(reportUpdateInput.getEndTime().isBefore(setting.getEndTime())){
+        } else if (reportUpdateInput.getEndTime().isBefore(setting.getEndTime())) {
             reportUpdateInput.setIsLeftEarly(true);
             reason = "※早退の理由を記入してください";
-        }else {
+        } else {
             reportUpdateInput.setLatenessReason(null);
         }
 
-        if (reportUpdateInput.getIsLeftEarly() || reportUpdateInput.getIsLateness()){
-            if (reportUpdateInput.getLatenessReason() == null){
+        if (reportUpdateInput.getIsLeftEarly() || reportUpdateInput.getIsLateness()) {
+            if (reportUpdateInput.getLatenessReason() == null) {
                 report.setStartTime(settingInput.getStartTime());
                 report.setEndTime(settingInput.getEndTime());
                 settingInput.setEmployment(true);
-                model.addAttribute("reason",reason);
+                model.addAttribute("reason", reason);
                 model.addAttribute("reportUpdateInput", reportUpdateInput);
-                model.addAttribute("settingInput",settingInput);
+                model.addAttribute("settingInput", settingInput);
                 String title = "報告編集";
                 model.addAttribute("title", title);
                 model.addAttribute("report", report);
@@ -513,12 +511,14 @@ public class MemberController {
     }
 
     @GetMapping("/user-main")
-    public ModelAndView userMain (ModelAndView mav){
+    public ModelAndView userMain(ModelAndView mav) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         int employeeCode = Integer.parseInt(authentication.getName());
 
-        List<Assignment> myast= assignmentService.getAssignmentByEmployeeCode(employeeCode);
-        if (myast == null){myast = new ArrayList<>();}
+        List<Assignment> myast = assignmentService.getAssignmentByEmployeeCode(employeeCode);
+        if (myast == null) {
+            myast = new ArrayList<>();
+        }
 
         List<Assignment> allast = assignmentService.getAllAssignment();
 
@@ -533,12 +533,12 @@ public class MemberController {
         mav.addObject("title", title);
 
 //        自分がメンバーとして所属しているチーム情報を自分のassignment情報から割り出す
-        if(!myast.isEmpty()){
-            for (Team team: allteam) {
-                for(Assignment ast : myast) {
+        if (!myast.isEmpty()) {
+            for (Team team : allteam) {
+                for (Assignment ast : myast) {
                     if (team.getTeamId() == ast.getTeamId() && !ast.getIsManager()) {
                         myteammem.add(team);
-                    }else if (team.getTeamId() == ast.getTeamId() && ast.getIsManager()){
+                    } else if (team.getTeamId() == ast.getTeamId() && ast.getIsManager()) {
                         myteammgr.add(team);
                     }
                 }
@@ -546,28 +546,28 @@ public class MemberController {
         }
 
 //        自分が所属しているチームのマネージャー情報を割り出す、自分がマネージャーだったらリストには追加しない
-        for (Assignment ast : allast){
-            for (Team team : myteammem){
-             if(ast.getTeamId() == team.getTeamId()){
-              for(User user : allusers){
-                  if(ast.getEmployeeCode() == user.getEmployeeCode() && user.getEmployeeCode() != employeeCode){
-                      if(ast.getIsManager()) {
-                          managers.add(user);
-                      }
-                  }
-              }
-             }
+        for (Assignment ast : allast) {
+            for (Team team : myteammem) {
+                if (ast.getTeamId() == team.getTeamId()) {
+                    for (User user : allusers) {
+                        if (ast.getEmployeeCode() == user.getEmployeeCode() && user.getEmployeeCode() != employeeCode) {
+                            if (ast.getIsManager()) {
+                                managers.add(user);
+                            }
+                        }
+                    }
+                }
             }
         }
 
 //        直近のレポート特定と未達成タスクリストの取得
-        List <Report> two = reportService.getLastTwoByUser(employeeCode);
+        List<Report> two = reportService.getLastTwoByUser(employeeCode);
         Report lastReport = new Report();
         LocalDate todaysDate = LocalDate.now();
 
-        if (two != null){
-            for(Report rp : two){
-                if (rp.getDate().isBefore(todaysDate)){
+        if (two != null) {
+            for (Report rp : two) {
+                if (rp.getDate().isBefore(todaysDate)) {
                     lastReport = rp;
                     break;
                 }
@@ -575,7 +575,7 @@ public class MemberController {
         }
 
         List<TaskLog> taskLogs;
-        if (two != null){
+        if (two != null) {
             taskLogs = taskLogService.getIncompleteTaskLogsByReportId(lastReport.getId());
         } else {
             taskLogs = new ArrayList<>();
@@ -589,24 +589,24 @@ public class MemberController {
         mav.addObject("mgrteamList", myteammgr);
 
 //        自分がマネージャーとして所属しているチームのメンバー抽出
-        List<Assignment> asMgr =assignmentService.getAsManager(employeeCode);
+        List<Assignment> asMgr = assignmentService.getAsManager(employeeCode);
         List<User> members = new ArrayList<>();
         if (!asMgr.isEmpty()) {
-            for(Team tm : myteammgr){
-                        for(Assignment as : allast){
-                            for(User us : allusers){
-                                if(tm.getTeamId() == as.getTeamId() && !as.getIsManager() && as.getEmployeeCode() == us.getEmployeeCode()){
-                                    members.add(us);
-                                }
-                            }
+            for (Team tm : myteammgr) {
+                for (Assignment as : allast) {
+                    for (User us : allusers) {
+                        if (tm.getTeamId() == as.getTeamId() && !as.getIsManager() && as.getEmployeeCode() == us.getEmployeeCode()) {
+                            members.add(us);
                         }
                     }
                 }
+            }
+        }
 
 //        昨日の曜日を定義。昨日が日曜日か土曜日の場合は金曜日の日付を設定
         LocalDate yesterdayDate = todaysDate.minusDays(1);
         DayOfWeek dw = yesterdayDate.getDayOfWeek();
-        if (dw.getValue() == 7){
+        if (dw.getValue() == 7) {
             yesterdayDate.minusDays(3);
         } else if (dw.getValue() == 6) {
             yesterdayDate.minusDays(2);
@@ -615,10 +615,10 @@ public class MemberController {
 //        今日報告提出したメンバー抽出
         List<User> todaymem = new ArrayList<>();
 
-        if(!members.isEmpty()){
-            for(User user : members) {
+        if (!members.isEmpty()) {
+            for (User user : members) {
                 Report report = reportService.getOneByUserByDate(user.getEmployeeCode(), todaysDate);
-                if (report != null){
+                if (report != null) {
                     todaymem.add(user);
                 }
             }
@@ -626,17 +626,17 @@ public class MemberController {
 
 //        前営業日に未提出のメンバー抽出
         List<User> notsubmem = new ArrayList<>();
-        if(!members.isEmpty()){
-            for(User user : members) {
+        if (!members.isEmpty()) {
+            for (User user : members) {
                 Report report = reportService.getOneByUserByDate(user.getEmployeeCode(), yesterdayDate);
-                if (report == null){
+                if (report == null) {
                     notsubmem.add(user);
 
                 }
             }
         }
 
-        mav.addObject("todaymembers",todaymem);
+        mav.addObject("todaymembers", todaymem);
         mav.addObject("notsubmit", notsubmem);
 
         mav.setViewName("member/user-main");
@@ -644,5 +644,16 @@ public class MemberController {
         return mav;
     }
 
+    //ユーザー情報変更一覧
+    @GetMapping("/userDetailsList")
+    public String displayUserInfo() {
+        return "member/userDetailsList";
+    }
 
+    //ユーザー情報変更画面(名前、パスワード、アイコン)
+    @GetMapping("/userDetailsList/userEdit")
+    public String userEdit(Model model) {
+        model.addAttribute("userEditInput", new UserEditInput());
+        return "member/userDetailsList-userEdit";
+    }
 }

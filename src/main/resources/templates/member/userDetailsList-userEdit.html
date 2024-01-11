@@ -10,7 +10,7 @@
 <div layout:fragment="content">
 
 
-<!--    何らかの形で編集できなかった時に出るメッセージ↓-->
+    <!--    何らかの形で編集できなかった時に出るメッセージ↓-->
     <div th:if="${ErrorMSG != null}" class="text-danger mt-1" th:text="${ErrorMSG}"></div>
 
     <div class="container mt-3">
@@ -18,14 +18,15 @@
         <h2 th:text="${EncodeError}" style="color: red;"></h2>
         <!--        <h5 class="text-center">*更新する値のみ入力してください。*</h5>-->
 
-<!--        ↓値を飛ばす場所(コントローラー)と飛ばす値の設定-->
+        <!--        ↓値を飛ばす場所(コントローラー)と飛ばす値の設定-->
         <form th:action="@{/member/userDetailsList/complete}" th:object="${userEditInput}" th:method="post"
               enctype="multipart/form-data" onsubmit="return validateForm()">
-<!--             名前 -->
-                        <div class="mb-3">
-                            <label for="name" class="form-label">名前：<span class="text-danger"></span></label>
-                            <input type="text" id="name" th:field="*{name}" class="form-control" pattern="[A-Za-zぁ-んァ-ン一-龯]+" title="アルファベット、ひらがな、漢字のみが許可されています">
-                        </div>
+            <!--             名前 -->
+            <div class="mb-3">
+                <label for="name" class="form-label">名前：<span class="text-danger"></span></label>
+                <input type="text" id="name" th:field="*{name}" class="form-control" pattern="[A-Za-zぁ-んァ-ン一-龯]+"
+                       title="アルファベット、ひらがな、漢字のみが許可されています">
+            </div>
 
             <!-- パスワード -->
             <div class="mb-3">
@@ -40,7 +41,7 @@
             </div>
 
 
-             アイコン画像
+            アイコン画像
             <div class="mb-3">
                 <label for="icon" class="form-label">アイコン画像</label>
                 <!--            送信タイプをfileに、ユーザーから受け付けるファイルを画像のみに-->
@@ -73,15 +74,15 @@
         var password2 = document.getElementById('password2').value;
 
         // 必須フィールドが空でないかチェック
-        if (employeeCode.trim() === '' || name.trim() === '' || password.trim() === '') {
+     //   if (employeeCode.trim() === '' || name.trim() === '' || password.trim() === '') {
             //パスワード確認用if文
             if(password!=password2)
             {
                 alert('入力されたパスワードが一致しません');
+                 return false; // 送信をブロックする
             }
-                alert('全てのフィールドを記入してください');
-                return false; // 送信をブロックする
-        }
+                //alert('全てのフィールドを記入してください');
+       // }
         return true; // 送信を許可する
     }
 </script>

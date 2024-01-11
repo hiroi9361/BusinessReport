@@ -2,6 +2,9 @@ package analix.DHIT.controller;
 
 import analix.DHIT.input.*;
 import analix.DHIT.model.*;
+import analix.DHIT.repository.MysqlTeamRepository;
+import analix.DHIT.repository.MysqlUserRepository;
+import analix.DHIT.repository.UserRepository;
 import analix.DHIT.service.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -14,7 +17,10 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
@@ -34,6 +40,7 @@ public class ManagerController {
     private final AssignmentService assignmentService;
     private final FeedbackService feedbackService;
     private final SettingService settingService;
+    private MysqlTeamRepository mysqlTeamRepository;
 
     public ManagerController(
             UserService userservice,
@@ -363,6 +370,41 @@ public class ManagerController {
         redirectAttributes.addFlashAttribute("createCompleteMSG", name + "を作成しました。");
 
         return "redirect:/manager/employeeList";
+    }
+
+    // ユーザー一括登録画面遷移処理
+    @GetMapping("/allcreate")
+    public String NewUserAllRegistrationInformation(){
+
+        return "/manager/allcreate";
+    }
+
+    @PostMapping(path = "/upload")
+    public String upload(@RequestParam("file") MultipartFile file) {
+        try (InputStream inputStream = file.getInputStream();
+             BufferedReader br = new BufferedReader(new InputStreamReader(inputStream))) {
+
+            //読み取ったCSVの行を入れるための変数を作成
+            String line;
+            //ヘッダーレコードを飛ばすためにあらかじめ１行だけ読み取っておく（ない場合は不要）
+            line = br.readLine();
+            //行がNULL（CSVの値がなくなる）になるまで処理を繰り返す
+            while ((line = br.readLine()) != null) {
+                //Stringのsplitメソッドを使用してカンマごとに分割して配列にいれる
+                String[] csvSplit = line.split(",");
+                //分割したのをセットして登録
+                User entity = new User();
+                entity.setEmployeeCode(Integer.parseInt(csvSplit[0]));
+                entity.setName(csvSplit[1]);
+                entity.setPassword(csvSplit[2]);
+                entity.setRole(csvSplit[3]);
+                //MysqlUserRepository.save(entity);
+            }
+            br.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return "manager/upload";
     }
 
 // CSVアップロード用

@@ -2,8 +2,12 @@ package analix.DHIT.controller;
 
 import analix.DHIT.input.*;
 import analix.DHIT.model.*;
+import analix.DHIT.repository.MysqlTeamRepository;
+import analix.DHIT.repository.MysqlUserRepository;
+import analix.DHIT.repository.UserRepository;
 import analix.DHIT.service.*;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -14,7 +18,10 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
@@ -34,6 +41,7 @@ public class ManagerController {
     private final AssignmentService assignmentService;
     private final FeedbackService feedbackService;
     private final SettingService settingService;
+    private MysqlTeamRepository mysqlTeamRepository;
 
     public ManagerController(
             UserService userservice,
@@ -363,6 +371,46 @@ public class ManagerController {
         redirectAttributes.addFlashAttribute("createCompleteMSG", name + "を作成しました。");
 
         return "redirect:/manager/employeeList";
+    }
+
+    // ユーザー一括登録画面遷移処理
+    @GetMapping("/allcreate")
+    public String NewUserAllRegistrationInformation(){
+
+        return "/manager/all-create";
+    }
+
+    @PostMapping("/upload")
+    public ResponseEntity<String> uploadCsv(@RequestParam("file") MultipartFile csvFile) {
+        try {
+            // Ensure that the uploaded file is a CSV file
+            if (!csvFile.getContentType().equals("text/csv")) {
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                        .body("ファイル形式が無効です。CSVファイルをアップロードしてください");
+            }
+
+            // ファイル保存、ファイルパス取得
+            String csvFilePath = saveCsvFile(csvFile);
+
+            // データ処理
+            //csvService.saveDataFromCsv(csvFilePath);
+
+            return ResponseEntity.ok("CSVデータがデータベースに正常に保存されました");
+        } catch (Exception e) {
+            e.printStackTrace();
+            // Log the error
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body("CSV ファイルの処理に失敗しました: " + e.getMessage());
+        }
+    }
+
+    // アップロードしたCSVファイルを安全な場所に保存する方法
+    private String saveCsvFile(MultipartFile csvFile) throws IOException {
+        // Implement file saving logic, e.g., save to a designated directory
+        // Return the file path
+        // Ensure proper security considerations for file handling
+        // ...
+        return null;
     }
 
 // CSVアップロード用

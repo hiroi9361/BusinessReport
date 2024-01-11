@@ -17,12 +17,10 @@ import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.Reader;
+import java.io.*;
 import java.util.Base64;
 import java.util.Collections;
 import java.util.List;
@@ -94,7 +92,6 @@ public class UserService {
     public List<User> getAllEmployeeInfo() {
         return this.userRepository.selectAllEmployeeInfomation();
     }
-
 
     //ユーザー削除
     public void deleteById(int employeeCode) {

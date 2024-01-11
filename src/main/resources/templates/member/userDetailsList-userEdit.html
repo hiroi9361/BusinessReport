@@ -8,16 +8,19 @@
 
 <body>
 <div layout:fragment="content">
+
+
+<!--    何らかの形で編集できなかった時に出るメッセージ↓-->
+    <div th:if="${ErrorMSG != null}" class="text-danger mt-1" th:text="${ErrorMSG}"></div>
+
     <div class="container mt-3">
         <h1 class="mb-4 text-center">ユーザー編集</h1>
         <h2 th:text="${EncodeError}" style="color: red;"></h2>
         <!--        <h5 class="text-center">*更新する値のみ入力してください。*</h5>-->
 
-        <form th:action="@{/manager/editEmployeeComplete}" th:object="${userEditInput}" th:method="post"
+<!--        ↓値を飛ばす場所(コントローラー)と飛ばす値の設定-->
+        <form th:action="@{/member/userDetailsList/complete}" th:object="${userEditInput}" th:method="post"
               enctype="multipart/form-data" onsubmit="return validateForm()">
-            <!--        ↓userEditInputに入れる用-->
-            <!--            <input type="hidden" name="employeeCode" th:value="${employeeCode}">-->
-
 <!--             名前 -->
                         <div class="mb-3">
                             <label for="name" class="form-label">名前：<span class="text-danger"></span></label>

@@ -646,7 +646,7 @@ public class MemberController {
 
     //ユーザー情報変更一覧
     @GetMapping("/userDetailsList")
-    public String displayUserInfo() {
+    public String displayUserInfoList() {
         return "member/userDetailsList";
     }
 
@@ -655,5 +655,28 @@ public class MemberController {
     public String userEdit(Model model) {
         model.addAttribute("userEditInput", new UserEditInput());
         return "member/userDetailsList-userEdit";
+    }
+
+    //ユーザ情報編集情報処理
+    @PostMapping("/userDetailsList/complete")
+    public String editComplete(@ModelAttribute("userEditInput") UserEditInput userEditInput,
+                               RedirectAttributes redirectAttributes)
+    {
+        //↓ログイン中のemployeeCodeをAuthentication(認証情報)から取得
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        int employeeCode = Integer.parseInt(authentication.getName());
+
+        userEditInput.setEmployeeCode(employeeCode);
+        userEditInput.setRole("USER");
+
+        //↓userSeriviceでの処理した値が正しくDBに"入ったら"ErrorMSGがnullになる
+        Exception Error = userService.checkTest(userEditInput, employeeCode);
+
+        if (Error != null) {
+            redirectAttributes.addFlashAttribute("ErrorMSG", "更新失敗,再度お試しください");
+            return "redirect:/member/userDetailsList-userEdit";
+        }
+        redirectAttributes.addFlashAttribute("editCompleteMSG", "情報を更新しました");
+        return "redirect:/member/userDetailsList";
     }
 }

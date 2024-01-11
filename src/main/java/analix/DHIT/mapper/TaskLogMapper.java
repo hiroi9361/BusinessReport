@@ -5,6 +5,7 @@ import analix.DHIT.model.Report;
 import analix.DHIT.model.TaskLog;
 import org.apache.ibatis.annotations.*;
 
+import java.time.LocalDate;
 import java.util.List;
 
 @Mapper
@@ -41,10 +42,14 @@ public interface TaskLogMapper {
     List<TaskLog> tasklogList(int employeeCode);
 
     //タスク詳細：sortingを基にtask_logから進捗率とタスク名をreportから日付を取得する
-    @Select("select * " +
-            "from report.task_log as t " +
-            "left join report.report as r on t.report_id = r.report_id " +
-            "where t.sorting = 13 " +
+    @Select("select t.progress_rate, t.name, r.date " +
+            "from task_log as t " +
+            "left join report as r on t.report_id = r.report_id " +
+            "where t.sorting = #{sorting} " +
             "order by r.date;")
-    TaskDetailInput taskDetail(int sorting);
+    List<TaskDetailInput> taskDetail(@Param("sorting") int sorting);
+
+
+
+
 }

@@ -20,7 +20,7 @@
 
     <div class="container mt-4">
 
-        <h2 class="text-center mb-4" th:text="${member.name} + ' のタスク詳細'"></h2>
+        <h2 class="text-center mb-4" th:text="${taskDetail[0].name} + ' の詳細'"></h2>
 
         <table class="StripeTable mb-4">
             <thead>
@@ -28,15 +28,13 @@
                 <th>状態</th>
                 <th>日付</th>
                 <th>進捗</th>
-                <th>タスク名</th>
             </tr>
             </thead>
             <tbody>
-            <tr th:each="task : ${taskList}">
-                <td th:text="${task.progressRate < 100 ? '未達成' : '達成'}"></td>
-
-                <td th:text="${task.progressRate}">%</td>
-                <td th:text="${task.name}"></td>
+            <tr th:each="task : ${taskDetail}">
+                <td th:text="${task.progress < 100 ? '未達成' : '達成'}"></td>
+                <td th:text="${task.date}"></td>
+                <td th:text="${task.progress}">%</td>
             </tr>
             </tbody>
         </table>

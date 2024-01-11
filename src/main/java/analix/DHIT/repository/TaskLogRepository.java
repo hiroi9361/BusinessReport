@@ -18,6 +18,6 @@ public interface TaskLogRepository {
 
     List<TaskLog> taskList(int employeeCode);
 
-    TaskDetailInput taskDetail(int sorting);
+    List<TaskDetailInput> taskDetail(int sorting);
 }
 

@@ -1,29 +1,34 @@
 package analix.DHIT.input;
 
-import analix.DHIT.model.TaskLog;
+import jakarta.persistence.Column;
 
 import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.List;
-
 
 public class TaskDetailInput {
 
-    private List<TaskLog> taskLogs = new ArrayList<>();
-    private List<LocalDate> dates = new ArrayList<>();
+    private int progressRate;
+    private String name;
+    private LocalDate date;
 
-    public List<TaskLog> getTaskLogs() {
-        return taskLogs;
+    public int getProgress() {
+        return progressRate;
     }
-    public void setTaskLogs(List<TaskLog> taskLogs) {
-        this.taskLogs = taskLogs;
+    public void setProgress(int progressRate) {
+        this.progressRate = progressRate;
     }
 
-    public List<LocalDate> getDates() {
-        return dates;
+    public String getName() {
+        return name;
     }
-    public void setDates(List<LocalDate> dates) {
-        this.dates = dates;
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public LocalDate getDate() {
+        return date;
+    }
+    public void setDate(LocalDate date) {
+        this.date = date;
     }
 
 }

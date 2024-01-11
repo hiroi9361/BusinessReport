@@ -520,7 +520,7 @@ public class MemberController {
     @GetMapping("/taskDetail/{sorting}")
     public String displayReportDetail(@PathVariable("sorting") int sorting, Model model) {
 
-        TaskDetailInput taskDetailInput = new TaskDetailInput();
+        List<TaskDetailInput> taskDetailInput = new ArrayList<>();
         taskDetailInput = this.taskLogService.taskDetail(sorting);
         model.addAttribute("taskDetail",taskDetailInput);
         return "member/taskDetail";

@@ -376,7 +376,7 @@ public class ManagerController {
     @GetMapping("/allcreate")
     public String NewUserAllRegistrationInformation(){
 
-        return "/manager/allcreate";
+        return "/manager/all-create";
     }
 
     @PostMapping(path = "/upload")

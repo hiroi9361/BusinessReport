@@ -1,5 +1,6 @@
 package analix.DHIT.repository;
 
+import analix.DHIT.input.TaskDetailInput;
 import analix.DHIT.mapper.TaskLogMapper;
 import analix.DHIT.model.Report;
 import analix.DHIT.model.TaskLog;
@@ -43,6 +44,11 @@ public class MysqlTaskLogRepository implements TaskLogRepository {
     @Override
     public List<TaskLog> taskList(int employeeCode) {
         return this.taskLogMapper.tasklogList(employeeCode);
+    }
+
+    @Override
+    public TaskDetailInput taskDetail(int sorting) {
+        return this.taskLogMapper.taskDetail(sorting);
     }
 
 }

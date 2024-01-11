@@ -1,5 +1,6 @@
 package analix.DHIT.mapper;
 
+import analix.DHIT.input.TaskDetailInput;
 import analix.DHIT.model.Report;
 import analix.DHIT.model.TaskLog;
 import org.apache.ibatis.annotations.*;
@@ -38,4 +39,12 @@ public interface TaskLogMapper {
             "JOIN report.task_log AS t ON max_counters.sorting = t.sorting AND max_counters.max_counter = t.counter " +
             "LEFT JOIN report.report AS r ON t.report_id = r.report_id;")
     List<TaskLog> tasklogList(int employeeCode);
+
+    //タスク詳細：sortingを基にtask_logから進捗率とタスク名をreportから日付を取得する
+    @Select("select * " +
+            "from report.task_log as t " +
+            "left join report.report as r on t.report_id = r.report_id " +
+            "where t.sorting = 13 " +
+            "order by r.date;")
+    TaskDetailInput taskDetail(int sorting);
 }

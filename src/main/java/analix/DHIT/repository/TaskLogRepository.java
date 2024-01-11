@@ -1,5 +1,6 @@
 package analix.DHIT.repository;
 
+import analix.DHIT.input.TaskDetailInput;
 import analix.DHIT.model.TaskLog;
 
 import java.util.List;
@@ -16,5 +17,7 @@ public interface TaskLogRepository {
     int maxTask();
 
     List<TaskLog> taskList(int employeeCode);
+
+    TaskDetailInput taskDetail(int sorting);
 }
 

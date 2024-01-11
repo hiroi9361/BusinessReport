@@ -1,5 +1,6 @@
 package analix.DHIT.service;
 
+import analix.DHIT.input.TaskDetailInput;
 import analix.DHIT.model.TaskLog;
 import analix.DHIT.repository.TaskLogRepository;
 import org.springframework.scheduling.config.Task;
@@ -52,5 +53,10 @@ public class TaskLogService {
     {
         List<TaskLog> taskLogs = this.taskLogRepository.taskList(employeeCode);
         return taskLogs;
+    }
+
+    public TaskDetailInput taskDetail(int sorting) {
+        TaskDetailInput taskDetailInput = this.taskLogRepository.taskDetail(sorting);
+        return taskDetailInput;
     }
 }

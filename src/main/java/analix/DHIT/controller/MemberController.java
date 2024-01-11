@@ -517,6 +517,15 @@ public class MemberController {
         return "member/taskList";
     }
 
+    @GetMapping("/taskDetail/{sorting}")
+    public String displayReportDetail(@PathVariable("sorting") int sorting, Model model) {
+
+        TaskDetailInput taskDetailInput = new TaskDetailInput();
+        taskDetailInput = this.taskLogService.taskDetail(sorting);
+        model.addAttribute("taskDetail",taskDetailInput);
+        return "member/taskDetail";
+    }
+
     @GetMapping("/user-main")
     public ModelAndView userMain(ModelAndView mav) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();

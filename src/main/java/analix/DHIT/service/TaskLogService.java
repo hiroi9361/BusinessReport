@@ -55,8 +55,8 @@ public class TaskLogService {
         return taskLogs;
     }
 
-    public TaskDetailInput taskDetail(int sorting) {
-        TaskDetailInput taskDetailInput = this.taskLogRepository.taskDetail(sorting);
+    public List<TaskDetailInput> taskDetail(int sorting) {
+        List<TaskDetailInput> taskDetailInput = this.taskLogRepository.taskDetail(sorting);
         return taskDetailInput;
     }
 }

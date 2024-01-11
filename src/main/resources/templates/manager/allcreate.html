@@ -18,8 +18,6 @@
                 <input type="file" name="file"><br>
                 <button type="submit">アップロード</button>
             </form>
-                <div th:if="${EnCodeError != null}" class="text-danger mt-1" th:text="${EnCodeError}"></div>
-                </div>
             <div clasS="button-box">
                 <a th:href="@{/manager/employeeList}">ユーザー一覧に戻る</a>
             </div>

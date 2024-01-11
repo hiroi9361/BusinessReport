@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/web/thymeleaf/layout"
+      layout:decorate="~{layout/layout}">
+<head>
+    <meta charset="UTF-8" th:remove="tag">
+</head>
+
+<body>
+<div layout:fragment="content">
+
+
+<!--    何らかの形で編集できなかった時に出るメッセージ↓-->
+    <div th:if="${ErrorMSG != null}" class="text-danger mt-1" th:text="${ErrorMSG}"></div>
+
+    <div class="container mt-3">
+        <h1 class="mb-4 text-center">ユーザー編集</h1>
+        <h2 th:text="${EncodeError}" style="color: red;"></h2>
+        <!--        <h5 class="text-center">*更新する値のみ入力してください。*</h5>-->
+
+<!--        ↓値を飛ばす場所(コントローラー)と飛ばす値の設定-->
+        <form th:action="@{/member/userDetailsList/complete}" th:object="${userEditInput}" th:method="post"
+              enctype="multipart/form-data" onsubmit="return validateForm()">
+<!--             名前 -->
+                        <div class="mb-3">
+                            <label for="name" class="form-label">名前：<span class="text-danger"></span></label>
+                            <input type="text" id="name" th:field="*{name}" class="form-control" pattern="[A-Za-zぁ-んァ-ン一-龯]+" title="アルファベット、ひらがな、漢字のみが許可されています">
+                        </div>
+
+            <!-- パスワード -->
+            <div class="mb-3">
+                <label for="password" class="form-label">パスワード：<span class="text-danger"></span></label>
+                <input type="password" id="password" th:field="*{password}" class="form-control">
+            </div>
+
+            <!-- パスワード確認用 -->
+            <div class="mb-3">
+                <label for="password" class="form-label">パスワード確認用：<span class="text-danger"></span></label>
+                <input type="password" id="password2" class="form-control">
+            </div>
+
+
+             アイコン画像
+            <div class="mb-3">
+                <label for="icon" class="form-label">アイコン画像</label>
+                <!--            送信タイプをfileに、ユーザーから受け付けるファイルを画像のみに-->
+                ファイルを選択<input type="file" id="icon" th:field="*{icon}" accept="image/*" class="form-control">
+                <div th:if="${EnCodeError != null}" class="text-danger mt-1" th:text="${EnCodeError}"></div>
+
+            </div>
+
+            <!-- 登録ボタン -->
+            <div class="mb-3">
+                <button type="submit" class="w-100 btn btn-lg btn-success">登録</button>
+            </div>
+            <div class="button-box">
+                <a th:href=@{/}>ホームに戻る</a>
+            </div>
+
+        </form>
+    </div>
+</div>
+</body>
+</html>
+
+<script>
+    function validateForm() {
+        // 各フィールドの値を取得
+
+        var name = document.getElementById('name').value;
+        var password = document.getElementById('password').value;
+        //確認用パスワードの精査処理追加↓
+        var password2 = document.getElementById('password2').value;
+
+        // 必須フィールドが空でないかチェック
+        if (employeeCode.trim() === '' || name.trim() === '' || password.trim() === '') {
+            //パスワード確認用if文
+            if(password!=password2)
+            {
+                alert('入力されたパスワードが一致しません');
+            }
+                alert('全てのフィールドを記入してください');
+                return false; // 送信をブロックする
+        }
+        return true; // 送信を許可する
+    }
+</script>
+<style>
+    @media (max-width: 768px) {
+        h1.mb-4 {
+            font-size: 1.3em;
+        }
+        h5 {
+            font-size: 1em;
+        }
+    }
+</style>

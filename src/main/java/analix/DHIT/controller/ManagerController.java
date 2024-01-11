@@ -680,6 +680,9 @@ public class ManagerController {
             );
         }else{
             redirectAttributes.addFlashAttribute("errorAstMsg", "該当のユーザーはすでに追加されています");
+            int teamId = assignmentCreateInput.getTeamId();
+            redirectAttributes.addAttribute("teamId", teamId);
+            return "redirect:/manager/teams/{teamId}/detail";
         }
 
         int teamId = assignmentCreateInput.getTeamId();
@@ -742,7 +745,10 @@ public class ManagerController {
     @GetMapping("/setting-time")
     public String settingTime(Model model){
 
-        Setting setting = settingService.getSettingTime();
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        int employeeCode = Integer.parseInt(authentication.getName());
+
+        Setting setting = settingService.getSettingTime(employeeCode);
 
         model.addAttribute("setting",setting);
         model.addAttribute("SettingInput",new SettingInput());
@@ -752,8 +758,10 @@ public class ManagerController {
     @PostMapping("/setting-time/edit")
     public String settingTimeEdit(@ModelAttribute("SettingInput") SettingInput settingInput,
                                   Model model, RedirectAttributes redirectAttributes){
-        settingService.update(settingInput);
-        Setting setting = settingService.getSettingTime();
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        int employeeCode = Integer.parseInt(authentication.getName());
+        settingService.update(settingInput, employeeCode);
+        Setting setting = settingService.getSettingTime(employeeCode);
         model.addAttribute("setting",setting);
         model.addAttribute("SettingInput",settingInput);
 //        redirectAttributes.addFlashAttribute("addCompleteMSG", "始業時間を『" + setting.getStartTime() + "』、終業時間を『" + setting.getEndTime() + "』に設定しました。");

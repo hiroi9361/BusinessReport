@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<!--↓ナビバー表示-->
+<html xmlns:th="http://www.thymeleaf.org"
+      html xmlns:layout="http://www.ultraq.net.nz/web/thymeleaf/layout"
+      layout:decorate="~{layout/layout}">
+
+
+</head>
+
+<!--以下bodyにstyleタグが入っている理由は< div layout:fragment="content">より上にstyleタグがあるとcssの効果を消してしまう為です-->
+<!--僕の技術力の無さのせいなので、直せる方お願い致します-->
+<body>
+<div layout:fragment="content">
+    <style>
+        h1 {
+        background-color: #99CCFF;
+        color: white; /* オプション：テキストの色を白に設定 */
+        padding: 10px; /* オプション：テキストと周囲の余白を設定 */
+    }
+    /*
+        .center-text {
+      text-align: center;
+    }
+    */
+    /*以下枠線設定*/
+        .textBox {
+    border: 2px solid #333;
+    border-radius: 5px;
+    padding: 30px;
+    position: relative;
+    }
+
+    .textBox::before {
+    background-color: #fff;
+    color: #333;
+    content: "個人情報";
+    font-weight: bold;
+    left: 30px;
+    padding: 3px 10px;
+    position: absolute;
+    top: -15px;
+    }
+
+      ul {
+        display: flex;
+
+      }
+
+      li {
+        list-style: none;
+      }
+
+      li:nth-child(2) {
+        margin: 0 10px;
+      }
+
+            a img {
+                border: 2px solid #000; /* 縁取りの幅と色を指定 */
+                border-radius: 5px; /* 縁取りの角丸を設定（必要に応じて） */
+            }
+
+          body {
+    margin-top: 40px; /* 上方向にマージンを追加 */
+  }
+
+    h1 {
+        margin-bottom: 25px; /* h1要素の下側に20pxのマージンを追加 */
+    }
+    </style>
+
+    <h1>個別詳細設定</h1>
+
+    <!--    ↓これはユーザー情報編集完了後に出るメッセージの仕込み-->
+    <div th:if="${deleteCompleteMSG}">
+        <div class="flash flash-success alert alert-dismissible fade show" role="alert">
+            <span th:text="${deleteCompleteMSG}"></span>
+            <a data-bs-dismiss="alert" aria-label="Close">
+                <i class="fas fa-times"></i>
+            </a>
+        </div>
+    </div>
+
+    <div class="textBox">
+        <ul>
+            <li>
+                <a th:href="@{/member/userDetailsList/userEdit}">
+                    <img src="/img/ユーザー情報アイコン.png" alt="ユーザー情報" width="150" height="150">
+                    <p>ユーザー情報変更</p>
+                </a>
+
+            </li>
+
+            <li>
+                <a th:href="@{/manager/setting-time}">
+
+                    <img src="/img/就業時間アイコン.png" alt="就業時間" width="150" height="150">
+                    <p>就業時間変更</p>
+                </a>
+
+            </li>
+
+            <li>
+                <a th:href="@{/}">
+
+                    <img src="/img/backIcon.png" alt="戻る" width="150" height="150">
+                    <p>ホームへ戻る</p>
+                </a>
+
+            </li>
+        </ul>
+    </div>
+</div>
+
+</body>
+
+</html>

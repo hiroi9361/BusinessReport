@@ -18,6 +18,8 @@ public class Setting implements Serializable {
     private LocalTime startTime;
     @Column(name="end_time")
     private LocalTime endTime;
+    @Column(name="employee_code")
+    private int employeeCode;
 
     public int getSettingId(){
         return settingId;
@@ -37,6 +39,11 @@ public class Setting implements Serializable {
         this.endTime=endTime;
     }
 
-
+    public int getEmployeeCode() {
+        return employeeCode;
+    }
+    public void setEmployeeCode(int employeeCode) {
+        this.employeeCode = employeeCode;
+    }
 }
 

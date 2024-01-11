@@ -35,5 +35,8 @@ public class MysqlTaskLogRepository implements TaskLogRepository {
         this.taskLogMapper.deleteByReportId(reportId);
     }
 
-
+    @Override
+    public int maxTask(){
+        return this.taskLogMapper.maxTask();
+    }
 }

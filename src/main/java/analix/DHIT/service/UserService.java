@@ -127,6 +127,7 @@ public class UserService {
     public Exception checkTest(UserEditInput userEditInput, int employeeCode) {
         //入力されてないuserEditInputの値をuserモデルにある値を入れる
         User user = getUserByEmployeeCode(employeeCode);
+//        ↓userEditInput.getName()が空文字列だったらTrue
         if (userEditInput.getName().isEmpty()) {
             userEditInput.setName(user.getName());
         }

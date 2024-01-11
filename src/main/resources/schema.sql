@@ -37,6 +37,8 @@ CREATE TABLE IF NOT EXISTS `task_log` (
     `report_id` int NOT NULL,
     `name` varchar(100) NOT NULL,
     `progress_rate` tinyint DEFAULT 0,
+    `counter` int DEFAULT 0,
+    `sorting` int NOT NULL,
     FOREIGN KEY (`report_id`) REFERENCES report(`report_id`)
 );
 
@@ -64,7 +66,8 @@ CREATE TABLE IF NOT EXISTS `assignment` (
 CREATE TABLE IF NOT EXISTS `setting` (
     `setting_id` int NOT NULL AUTO_INCREMENT PRIMARY KEY,
     `start_time` time NOT NULL,
-    `end_time`  time NOT NULL
+    `end_time`  time NOT NULL,
+    `employee_code` int NOT NULL
 );
 
 alter table assignment add constraint FKdetrh6pu9ojx5htmct8jirhof foreign key (team_id) references team (team_id);

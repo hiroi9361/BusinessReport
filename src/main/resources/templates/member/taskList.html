@@ -22,6 +22,26 @@
 
         <h2 class="text-center mb-4" th:text="${member.name} + ' のタスク一覧'"></h2>
 
+        <form th:action="@{/member/task-list}" th:object="${TaskSearchInput}" method="post">
+            <div class="mb-3 d-flex align-items-end justify-content-center text-center">
+                <div class="mb-3 me-3">
+                    <label class="form-label" style="color: #02990E;">状態</label>
+                    <select  name="state"  class="form-select">
+                        <option th:value="${null}">選択してください</option>
+                        <option th:value="${'達成'}">達成</option>
+                        <option th:value="${'未達成'}">未達成</option>
+                    </select>
+                </div>
+                <div class="mb-3 me-3">
+                    <label class="form-label" style="color: #02990E;">進捗：以上</label>
+                    <input type="number" th:field="*{progress}" class="form-control" placeholder="進捗率" title="進捗率" min="0" max="100">
+                </div>
+                <div class="mb-3 me-3">
+                    <button type="submit" class="btn btn-secondary">検索</button>
+                </div>
+            </div>
+        </form>
+
         <table class="StripeTable mb-4">
             <thead>
             <tr>
@@ -33,7 +53,7 @@
             <tbody>
             <tr th:each="task : ${taskList}">
                 <td th:text="${task.progressRate < 100 ? '未達成' : '達成'}"></td>
-                <td th:text="${task.progressRate}">%</td>
+                <td th:text="${task.progressRate + '%'}"></td>
                 <td th:text="${task.name}"></td>
                 <td style="width:62px;"><a th:href="@{'taskDetail/' + ${task.sorting}}" class="btn btn-outline-secondary">詳細</a></td>
             </tr>

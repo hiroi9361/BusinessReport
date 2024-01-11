@@ -510,9 +510,28 @@ public class MemberController {
         List<TaskLog> taskLogs = new ArrayList<>();
         taskLogs = this.taskLogService.taskList(myEmployeeCode);
         User member = userService.getUserByEmployeeCode(myEmployeeCode);
+//test
+
+//test
+        model.addAttribute("taskList",taskLogs);
+        model.addAttribute("member",member);
+        model.addAttribute("TaskSearchInput",new TaskSearchInput());
+
+        return "member/taskList";
+    }
+
+    @PostMapping("/task-list")
+    public String taskSearchList(TaskSearchInput taskSearchInput, Model model){
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        int myEmployeeCode = Integer.parseInt(authentication.getName());
+
+        List<TaskLog> taskLogs = new ArrayList<>();
+        taskLogs = this.taskLogService.taskList(myEmployeeCode);
+        User member = userService.getUserByEmployeeCode(myEmployeeCode);
 
         model.addAttribute("taskList",taskLogs);
         model.addAttribute("member",member);
+        model.addAttribute("TaskSearchInput",new TaskSearchInput());
 
         return "member/taskList";
     }

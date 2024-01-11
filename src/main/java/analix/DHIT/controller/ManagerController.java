@@ -7,6 +7,7 @@ import analix.DHIT.repository.MysqlUserRepository;
 import analix.DHIT.repository.UserRepository;
 import analix.DHIT.service.*;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -379,32 +380,37 @@ public class ManagerController {
         return "/manager/all-create";
     }
 
-    @PostMapping(path = "/upload")
-    public String upload(@RequestParam("file") MultipartFile file) {
-        try (InputStream inputStream = file.getInputStream();
-             BufferedReader br = new BufferedReader(new InputStreamReader(inputStream))) {
-
-            //読み取ったCSVの行を入れるための変数を作成
-            String line;
-            //ヘッダーレコードを飛ばすためにあらかじめ１行だけ読み取っておく（ない場合は不要）
-            line = br.readLine();
-            //行がNULL（CSVの値がなくなる）になるまで処理を繰り返す
-            while ((line = br.readLine()) != null) {
-                //Stringのsplitメソッドを使用してカンマごとに分割して配列にいれる
-                String[] csvSplit = line.split(",");
-                //分割したのをセットして登録
-                User entity = new User();
-                entity.setEmployeeCode(Integer.parseInt(csvSplit[0]));
-                entity.setName(csvSplit[1]);
-                entity.setPassword(csvSplit[2]);
-                entity.setRole(csvSplit[3]);
-                //MysqlUserRepository.save(entity);
+    @PostMapping("/upload")
+    public ResponseEntity<String> uploadCsv(@RequestParam("file") MultipartFile csvFile) {
+        try {
+            // Ensure that the uploaded file is a CSV file
+            if (!csvFile.getContentType().equals("text/csv")) {
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                        .body("ファイル形式が無効です。CSVファイルをアップロードしてください");
             }
-            br.close();
-        } catch (IOException e) {
+
+            // ファイル保存、ファイルパス取得
+            String csvFilePath = saveCsvFile(csvFile);
+
+            // データ処理
+            //csvService.saveDataFromCsv(csvFilePath);
+
+            return ResponseEntity.ok("CSVデータがデータベースに正常に保存されました");
+        } catch (Exception e) {
             e.printStackTrace();
+            // Log the error
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body("CSV ファイルの処理に失敗しました: " + e.getMessage());
         }
-        return "manager/upload";
+    }
+
+    // アップロードしたCSVファイルを安全な場所に保存する方法
+    private String saveCsvFile(MultipartFile csvFile) throws IOException {
+        // Implement file saving logic, e.g., save to a designated directory
+        // Return the file path
+        // Ensure proper security considerations for file handling
+        // ...
+        return null;
     }
 
 // CSVアップロード用

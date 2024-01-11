@@ -4,6 +4,10 @@ package analix.DHIT.controller;
 import analix.DHIT.input.*;
 import analix.DHIT.model.*;
 import analix.DHIT.service.*;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.mail.MailSender;
+import org.springframework.mail.SimpleMailMessage;
+import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
@@ -19,6 +23,8 @@ import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
+
+
 
 @Controller
 @RequestMapping("/member")
@@ -647,8 +653,7 @@ public class MemberController {
     //ユーザ情報編集情報処理
     @PostMapping("/userDetailsList/complete")
     public String editComplete(@ModelAttribute("userEditInput") UserEditInput userEditInput,
-                               RedirectAttributes redirectAttributes)
-    {
+                               RedirectAttributes redirectAttributes) {
         //↓ログイン中のemployeeCodeをAuthentication(認証情報)から取得
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         int employeeCode = Integer.parseInt(authentication.getName());
@@ -666,4 +671,23 @@ public class MemberController {
         redirectAttributes.addFlashAttribute("editCompleteMSG", "情報を更新しました");
         return "redirect:/member/userDetailsList";
     }
+
+//以下メールを送る記述
+    @Autowired
+    private MailSender sender;
+
+    @GetMapping("/mail")
+    public String nandemoii() {
+
+        SimpleMailMessage msg = new SimpleMailMessage();
+        //↓ここに送信先のメールを記述
+        msg.setTo("hiroi9361@gmail.com");
+        msg.setSubject("テストメール");//メールタイトル
+        msg.setText("Spring Boot より本文送信"); //本文の設定
+        //メールを送る
+        this.sender.send(msg);
+
+        return "member/userDetailsList";
+    }
 }
+

@@ -12,6 +12,9 @@ import analix.DHIT.repository.UserRepository;
 //import com.opencsv.bean.CsvToBean;
 //import com.opencsv.bean.CsvToBeanBuilder;
 //import com.opencsv.bean.HeaderColumnNameMappingStrategy;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.mail.SimpleMailMessage;
+import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
@@ -173,6 +176,21 @@ public class UserService {
     public List<User> getUserByRole(String searchWords) {return this.userMapper.getUserByRole(searchWords);}
 
     public List<User> getUserByCode(int searchWords) {return this.userMapper.getUserByCode(searchWords);}
+
+
+    //メール送るメソッド
+//    @Autowired
+//    private JavaMailSender mailSender;
+//
+//    public void sendEmail(String to, String subject, String content) {
+//        SimpleMailMessage message = new SimpleMailMessage();
+//        message.setFrom("your-email@gmail.com");
+//        message.setTo(to);
+//        message.setSubject(subject);
+//        message.setText(content);
+//        mailSender.send(message);
+//    }
+
 
     //for csv upload
 //    public Integer uploadUsers(MultipartFile file) throws IOException {

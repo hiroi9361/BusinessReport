@@ -13,14 +13,39 @@
 <body>
 <div layout:fragment="content">
     <div class="container mt-3">
-        <h1>登録結果</h1>
-        <form>
-            <div>
-                <h1>完了</h1>
-            </div>
+        <h2>Upload CSV File</h2>
+
+        <form id="csvForm">
+            <input type="file" name="file" accept=".csv" required>
+            <button type="submit">Upload</button>
         </form>
-        <a th:href="@{/manager/employeeList}">ユーザー一覧に戻る</a>
     </div>
 </div>
+<script>
+    document.getElementById('csvForm').addEventListener('submit', function(event) {
+        event.preventDefault();
+
+        // FormDataオブジェクトを作成し、フォームデータを追加
+        var formData = new FormData(this);
+
+        // CSVファイルのアップロードを行うAPIエンドポイントのURL
+        var uploadUrl = '/upload-csv';
+
+        // ファイルをアップロード
+        fetch(uploadUrl, {
+            method: 'POST',
+            body: formData
+        })
+            .then(response => response.text())
+            .then(message => {
+                alert(message); // 成功時のメッセージを表示
+            })
+            .catch(error => {
+                console.error('CSV のアップロード中にエラーが発生しました', error);
+                alert('CSV ファイルのアップロードに失敗しました。もう一度やり直してください'); // エラーメッセージを表示
+            });
+    });
+</script>
+
 </body>
 </html>

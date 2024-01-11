@@ -15,4 +15,5 @@ public interface UserRepository {
     String getUserName(int employeeCode);
 
     void saveAll(Set<User> users);
+
 }

@@ -373,34 +373,38 @@ public class ManagerController {
         return "redirect:/manager/employeeList";
     }
 
-    // ユーザー一括登録画面遷移処理
+    // ユーザー一括登録画面遷移
     @GetMapping("/allcreate")
-    public String NewUserAllRegistrationInformation(){
-
+    public String showuploadform(){
         return "/manager/all-create";
     }
 
-    @PostMapping("/upload")
-    public ResponseEntity<String> uploadCsv(@RequestParam("file") MultipartFile csvFile) {
+    //
+    @PostMapping("/uploadcsv")
+    public String uploadCsv(@RequestParam("file") MultipartFile csvFile, Model model) {
         try {
-            // Ensure that the uploaded file is a CSV file
+            // 正しいCSVファイル確認
             if (!csvFile.getContentType().equals("text/csv")) {
-                return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-                        .body("ファイル形式が無効です。CSVファイルをアップロードしてください");
+                model.addAttribute("message",
+                        "ファイル形式が無効です。CSVファイルをアップロードしてください");
+                return "/manager/upload";
             }
 
             // ファイル保存、ファイルパス取得
             String csvFilePath = saveCsvFile(csvFile);
 
             // データ処理
-            //csvService.saveDataFromCsv(csvFilePath);
+            UserService.saveDataFromCsv(csvFilePath);
 
-            return ResponseEntity.ok("CSVデータがデータベースに正常に保存されました");
+            model.addAttribute("message",
+                    "CSVデータがデータベースに正常に保存されました");
+            return "/manager/upload";
         } catch (Exception e) {
             e.printStackTrace();
             // Log the error
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                    .body("CSV ファイルの処理に失敗しました: " + e.getMessage());
+            model.addAttribute("message",
+                    "CSV ファイルの処理に失敗しました");
+            return "/manager/upload";
         }
     }
 
@@ -410,7 +414,7 @@ public class ManagerController {
         // Return the file path
         // Ensure proper security considerations for file handling
         // ...
-        return null;
+        return "path/to/saved/file.csv";
     }
 
 // CSVアップロード用

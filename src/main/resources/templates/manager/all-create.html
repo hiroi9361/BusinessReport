@@ -14,12 +14,12 @@
 <div layout:fragment="content">
     <div class="container mt-3">
         <h1 style="text-align: center">ユーザー一括登録</h1>
-        <form th:action="@{/upload}" method="post" enctype="multipart/form-data">
+        <form th:action="@{/uploadcsv}" method="post" enctype="multipart/form-data">
             <input type="file" name="file"><br>
             <button type="submit">アップロード</button>
         </form>
-        <div clasS="button-box">
-            <a th:href="@{/manager/employeeList}">ユーザー一覧に戻る</a>
+        <div th:if="${message}">
+            <p th:text="${message}"></p>
         </div>
     </div>
 </div>

@@ -4,6 +4,8 @@ package analix.DHIT.controller;
 import analix.DHIT.input.*;
 import analix.DHIT.model.*;
 import analix.DHIT.service.*;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
@@ -13,12 +15,14 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import javax.mail.MessagingException;
 import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
+
 
 @Controller
 @RequestMapping("/member")
@@ -32,13 +36,15 @@ public class MemberController {
     private final TeamService teamService;
     private final SettingService settingService;
 
+    private final MailService mailService;
+//    @Autowired
     public MemberController(UserService userService,
                             TaskLogService taskLogService,
                             ReportService reportService,
                             FeedbackService feedbackService,
                             AssignmentService assignmentService,
                             TeamService teamService,
-                            SettingService settingService) {
+                            SettingService settingService, MailService mailService) {
         this.userService = userService;
         this.taskLogService = taskLogService;
         this.reportService = reportService;
@@ -46,6 +52,7 @@ public class MemberController {
         this.assignmentService = assignmentService;
         this.teamService = teamService;
         this.settingService = settingService;
+        this.mailService = mailService;
     }
 
     @GetMapping("/report/create")
@@ -695,8 +702,7 @@ public class MemberController {
     //ユーザ情報編集情報処理
     @PostMapping("/userDetailsList/complete")
     public String editComplete(@ModelAttribute("userEditInput") UserEditInput userEditInput,
-                               RedirectAttributes redirectAttributes)
-    {
+                               RedirectAttributes redirectAttributes) {
         //↓ログイン中のemployeeCodeをAuthentication(認証情報)から取得
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         int employeeCode = Integer.parseInt(authentication.getName());
@@ -714,4 +720,33 @@ public class MemberController {
         redirectAttributes.addFlashAttribute("editCompleteMSG", "情報を更新しました");
         return "redirect:/member/userDetailsList";
     }
+
+//以下メールを送る記述
+//    @Autowired
+//    private MailSender sender;
+//
+//    @GetMapping("/mail")
+//    public String nandemoii() {
+//
+//        SimpleMailMessage msg = new SimpleMailMessage();
+//        //↓ここに送信先のメールを記述
+//        msg.setTo("hiroi9361@gmail.com");
+//        msg.setSubject("テストメール");//メールタイトル
+//        msg.setText("Spring Boot より本文送信"); //本文の設定
+//        //メールを送る
+//        this.sender.send(msg);
+//
+//        return "member/userDetailsList";
+//    }
+
+
+/*以下メールを送る記述すごいやつバージョン
+    上記のコメントアウトしてるやつは文章しか送れませんが以下の記述はhtmlや添付ファイルも送れます(MailServiceクラスに記述)
+ */
+    @GetMapping("/mail")
+    public String sendMail() throws MessagingException, jakarta.mail.MessagingException {
+        mailService.sendMail();
+        return "member/userDetailsList";
+    }
 }
+

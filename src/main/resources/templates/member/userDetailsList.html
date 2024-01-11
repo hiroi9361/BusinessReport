@@ -69,6 +69,17 @@
     </style>
 
     <h1>個別詳細設定</h1>
+
+    <!--    ↓これはユーザー情報編集完了後に出るメッセージの仕込み-->
+    <div th:if="${deleteCompleteMSG}">
+        <div class="flash flash-success alert alert-dismissible fade show" role="alert">
+            <span th:text="${deleteCompleteMSG}"></span>
+            <a data-bs-dismiss="alert" aria-label="Close">
+                <i class="fas fa-times"></i>
+            </a>
+        </div>
+    </div>
+
     <div class="textBox">
         <ul>
             <li>

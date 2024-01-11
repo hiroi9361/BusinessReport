@@ -502,12 +502,19 @@ public class MemberController {
 
     }
 
-    @GetMapping()
+    @GetMapping("/task-list")
     public String taskList(Model model){
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         int myEmployeeCode = Integer.parseInt(authentication.getName());
 
-        return "";
+        List<TaskLog> taskLogs = new ArrayList<>();
+        taskLogs = this.taskLogService.taskList(myEmployeeCode);
+        User member = userService.getUserByEmployeeCode(myEmployeeCode);
+
+        model.addAttribute("taskList",taskLogs);
+        model.addAttribute("member",member);
+
+        return "member/taskList";
     }
 
     @GetMapping("/user-main")

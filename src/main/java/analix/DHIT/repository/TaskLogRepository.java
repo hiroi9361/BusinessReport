@@ -14,5 +14,7 @@ public interface TaskLogRepository {
     void deleteByReportId(int reportId);
 
     int maxTask();
+
+    List<TaskLog> taskList(int employeeCode);
 }
 

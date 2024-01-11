@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/web/thymeleaf/layout"
+      layout:decorate="~{layout/layout}">
+<head>
+    <meta charset="UTF-8" th:remove="tag">
+</head>
+<body>
+<div layout:fragment="content">
+
+    <div th:if="${error}">
+        <div class="flash flash-danger alert alert-dismissible fade show" role="alert">
+            <span th:text="${error}"></span>
+            <a data-bs-dismiss="alert" aria-label="Close">
+                <i class="fas fa-times"></i>
+            </a>
+        </div>
+    </div>
+
+
+    <div class="container mt-4">
+
+        <h2 class="text-center mb-4" th:text="${member.name} + ' のタスク一覧'"></h2>
+
+        <table class="StripeTable mb-4">
+            <thead>
+            <tr>
+                <th>状態</th>
+                <th>進捗</th>
+                <th>タスク名</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="task : ${taskList}">
+                <td th:text="${task.progressRate < 100 ? '未達成' : '達成'}"></td>
+                <td th:text="${task.progressRate}">%</td>
+                <td th:text="${task.name}"></td>
+                <td style="width:62px;"><a th:href="@{'reports/' + ${report.Id}}" class="btn btn-outline-secondary">詳細</a></td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+    <div class="mb-5"></div>
+
+</div>
+</div>
+<style layout:fragment="style">
+    .text-kidoku {
+                    color: #02990E;
+                 }
+
+    .text-midoku {
+                    color: red;
+                 }
+
+
+    .gap-2 {
+                justify-content: center;
+                width : 100%;
+            }
+            button.btn-lg {
+                float : left ;
+                text-align: center;
+                white-space: nowrap;
+                padding-left: 90px;
+                padding-right: 90px;
+            }
+            @media (max-width: 768px) {
+                h2.text-center.mb-4 {
+                    font-size: 1.3em;
+                }
+                .gap-2 {
+                    justify-content: center;
+                    width : 100%;
+                }
+                button.btn-lg {
+                    text-align: center;
+                    white-space: nowrap;
+                    padding-left: 40px;
+                    padding-right: 40px;
+                }
+            }
+</style>
+<script layout:fragment="script"></script>
+
+</body>
+</html>
+<script>
+    function goBack() {
+        // 前のページに戻る
+        window.history.back();
+    }
+
+
+    function check() {
+        if (window.confirm('このチームを削除しますか？')) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+</script>

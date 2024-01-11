@@ -39,4 +39,10 @@ public class MysqlTaskLogRepository implements TaskLogRepository {
     public int maxTask(){
         return this.taskLogMapper.maxTask();
     }
+
+    @Override
+    public List<TaskLog> taskList(int employeeCode) {
+        return this.taskLogMapper.tasklogList(employeeCode);
+    }
+
 }

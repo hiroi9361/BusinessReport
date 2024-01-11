@@ -47,4 +47,10 @@ public class TaskLogService {
     public int maxTask() {
         return this.taskLogRepository.maxTask();
     }
+
+    public List<TaskLog> taskList(int employeeCode)
+    {
+        List<TaskLog> taskLogs = this.taskLogRepository.taskList(employeeCode);
+        return taskLogs;
+    }
 }

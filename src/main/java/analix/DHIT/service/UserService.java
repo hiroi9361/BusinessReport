@@ -20,6 +20,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
 
+import javax.mail.MessagingException;
 import java.io.*;
 import java.util.Base64;
 import java.util.Collections;
@@ -174,51 +175,20 @@ public class UserService {
 
     public List<User> getUserByCode(int searchWords) {return this.userMapper.getUserByCode(searchWords);}
 
+    public String getEmail(int employeeCode)
+    {
+        return this.userMapper.getEmail(employeeCode);
+    }
 
-    //メール送るメソッド
-//    @Autowired
-//    private JavaMailSender mailSender;
-//
-//    public void sendEmail(String to, String subject, String content) {
-//        SimpleMailMessage message = new SimpleMailMessage();
-//        message.setFrom("your-email@gmail.com");
-//        message.setTo(to);
-//        message.setSubject(subject);
-//        message.setText(content);
-//        mailSender.send(message);
-//    }
+    public void mailSend(List<Integer> employeeList) throws MessagingException, jakarta.mail.MessagingException {
+        MailService mailService=new MailService();
+        for (Integer employeeCode:employeeList) {
+            if(employeeCode!=null){
+                mailService.sendMail(getEmail(employeeCode));
+            }else{
+                break;
+            }
 
-
-    //for csv upload
-//    public Integer uploadUsers(MultipartFile file) throws IOException {
-//        Set<User> users = parseCSV(file);
-//        userRepository.saveAll(users);
-//            return users.size();
-//    }
-//
-//    private Set<User> parseCSV(MultipartFile file) throws IOException{
-//        try(Reader reader = new BufferedReader(new InputStreamReader(file.getInputStream()))){
-//            HeaderColumnNameMappingStrategy<UserCsvRepresentation> strategy =
-//                    new HeaderColumnNameMappingStrategy<>();
-//            strategy.setType(UserCsvRepresentation.class);
-//            CsvToBean<UserCsvRepresentation> csvToBean=
-//            new CsvToBeanBuilder<UserCsvRepresentation>(reader)
-//                    .withMappingStrategy(strategy)
-//                    .withIgnoreEmptyLine(true)
-//                    .withIgnoreLeadingWhiteSpace(true)
-//                    .build();
-//            return csvToBean.parse()
-//                    .stream()
-//                    .map(csvLine -> User.builder()
-//                            .employeeCode(csvLine.getEmployeeCode())
-//                            .name(csvLine.getName())
-//                            .password(csvLine.getPassword())
-//                            .role(csvLine.getRole())
-//                            .build()
-//                    )
-//                    .collect(Collectors.toSet());
-//        }
-//
-//    }
-
+        }
+    };
 }

@@ -30,6 +30,15 @@
                 <div class="main-right">
                     <div th:if="${notsubmit}">
                         <h5>昨日の報告未提出メンバー</h5>
+<!--                        ↓ここに昨日未提出の人に一括メール送信ボタン-->
+<!--                        <button type="button" th:href="@{/member/mail}">催促メール一括送信！</button>-->
+
+<!--                        <form class="row g-3 p-3" th:action="@{/member/report/create}" th:object="${ReportCreateInput}"-->
+<!--                              method="post">-->
+                        <form th:action="@{'/member/mail'}" th:object="${employeeIdList}" th:method="post">
+                            <input th:type="hidden" name="parameterName">
+                            <button th:type="submit">催促メール一括送信！</button>
+                        </form>
                         <div th:each="usr : ${notsubmit}">
                             <a th:href="@{'/manager/report-search?employeeCode=' + ${usr.employeeCode}}"><p
                                     th:text="${usr.name}"></p></a>

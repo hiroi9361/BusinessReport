@@ -534,7 +534,7 @@ public class MemberController {
     }
 
     @GetMapping("/user-main")
-    public ModelAndView userMain(ModelAndView mav) {
+    public ModelAndView userMain(ModelAndView mav,Model model) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         int employeeCode = Integer.parseInt(authentication.getName());
 
@@ -649,18 +649,30 @@ public class MemberController {
 
 //        前営業日に未提出のメンバー抽出
         List<User> notsubmem = new ArrayList<>();
+
+        //mail送るためのemployeeCodeください↓
+        List<Integer> employeeIdList = new ArrayList<>();
+
         if (!members.isEmpty()) {
             for (User user : members) {
                 Report report = reportService.getOneByUserByDate(user.getEmployeeCode(), yesterdayDate);
                 if (report == null) {
-                    notsubmem.add(user);
+                    //↓メアド取得に必要なemployeeIdを取得
+                    employeeIdList.add(user.getEmployeeCode());
 
+                    //↓メールを飛ばすために未提出の人のメアドを取得！
+                    //user.setMail(userService.getEmail(user.getEmployeeCode()));
+                    notsubmem.add(user);
                 }
             }
         }
+        User userEmployee = new User();
+        userEmployee.setMyIntegers(employeeIdList);
 
         mav.addObject("todaymembers", todaymem);
         mav.addObject("notsubmit", notsubmem);
+
+        mav.addObject("employeeIdList", userEmployee);
 
         mav.setViewName("member/user-main");
 
@@ -724,10 +736,13 @@ public class MemberController {
 /*以下メールを送る記述すごいやつバージョン
     上記のコメントアウトしてるやつは文章しか送れませんが以下の記述はhtmlや添付ファイルも送れます(MailServiceクラスに記述)
  */
-    @GetMapping("/mail")
-    public String sendMail() throws MessagingException, jakarta.mail.MessagingException {
-        mailService.sendMail();
-        return "member/userDetailsList";
+
+    @PostMapping("/mail")
+    public String sendMail(@ModelAttribute("employeeIdList")User employeeIdList) throws MessagingException, jakarta.mail.MessagingException {
+
+        userService.mailSend(employeeIdList.getMyIntegers());
+        //↓処理が完了確認のための暫定タイトルへ(あとで好きな場所なりリダイレクトでメッセージ送るなりの処理をお願いします)
+        return "/";
     }
 }
 

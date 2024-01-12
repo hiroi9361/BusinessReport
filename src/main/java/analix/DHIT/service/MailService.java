@@ -16,7 +16,7 @@ public class MailService {
     JavaMailSender mailSender;
 
 
-    public void sendMail() throws MessagingException, jakarta.mail.MessagingException {
+    public void sendMail(String mailAddress) throws MessagingException, jakarta.mail.MessagingException {
 
         // メールに添付する「C:\text.txt」にあるファイルのオブジェクトを生成
 //        String fileName = "text.txt";
@@ -34,7 +34,7 @@ public class MailService {
         */
 
         // 送信先アドレスをセット
-        helper.setTo("hiroi9361@gmail.com");
+        helper.setTo(mailAddress);
 
         // 表題をセット
         helper.setSubject("メールタイトル");

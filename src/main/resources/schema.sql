@@ -1,19 +1,27 @@
+-- 外部キー制約を一時的に無効化
 SET FOREIGN_KEY_CHECKS = 0;
-DROP TABLE IF EXISTS `task_log` CASCADE;
-DROP TABLE IF EXISTS `report` CASCADE;
-DROP TABLE IF EXISTS `user` CASCADE;
-DROP TABLE IF EXISTS `team` CASCADE;
-DROP TABLE IF EXISTS `feedback` CASCADE;
-DROP TABLE IF EXISTS `assignment` CASCADE;
-DROP TABLE IF EXISTS `setting` CASCADE;
+
+-- テーブル削除
+DROP TABLE IF EXISTS `task_log`;
+DROP TABLE IF EXISTS `feedback`;
+DROP TABLE IF EXISTS `assignment`;
+DROP TABLE IF EXISTS `setting`;
+DROP TABLE IF EXISTS `mail_setting`;
+DROP TABLE IF EXISTS `report`;
+DROP TABLE IF EXISTS `user`;
+DROP TABLE IF EXISTS `team`;
+
+-- 外部キー制約を再度有効化
 SET FOREIGN_KEY_CHECKS = 1;
+
 
 CREATE TABLE IF NOT EXISTS `user` (
     `employee_code` int NOT NULL PRIMARY KEY,
     `name` varchar(50) NOT NULL,
     `password` char(64) NOT NULL,
     `role` varchar(255) NOT NULL,
-    `icon` mediumblob
+    `icon` mediumblob,
+    `mail` varchar(255)NOT NULL
 );
 
 CREATE TABLE IF NOT EXISTS `report` (
@@ -68,6 +76,14 @@ CREATE TABLE IF NOT EXISTS `setting` (
     `start_time` time NOT NULL,
     `end_time`  time NOT NULL,
     `employee_code` int NOT NULL
+);
+
+CREATE TABLE IF NOT EXISTS `mail_setting` (
+        `mail_setting_id` INT AUTO_INCREMENT PRIMARY KEY,
+        `employee_code`int NOT NULL,
+        `mail_title` varchar(50),
+        `mail_content` varchar(500),
+        FOREIGN KEY (`employee_code`) REFERENCES user(`employee_code`)
 );
 
 alter table assignment add constraint FKdetrh6pu9ojx5htmct8jirhof foreign key (team_id) references team (team_id);

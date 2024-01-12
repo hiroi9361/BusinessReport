@@ -1,7 +1,6 @@
 package analix.DHIT.model;
 
 import jakarta.persistence.*;
-import lombok.Builder;
 
 import java.io.Serializable;
 import java.util.List;
@@ -19,6 +18,11 @@ public class User implements Serializable {
     private String password;
     private String role;
     private String icon;
+
+    private String mail;
+
+    private List<Integer> myIntegers;
+
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
     private List<Report> reports;
@@ -70,8 +74,21 @@ public class User implements Serializable {
         this.icon = icon;
     }
 
+
+    public String getMail(){return mail;}
+
+    public void setMail(String mail){this.mail= mail;}
+
     public List<String> roleList() {
         return List.of(getRole());
+    }
+
+    public List<Integer> getMyIntegers() {
+        return myIntegers;
+    }
+
+    public void setMyIntegers(List<Integer> myIntegers) {
+        this.myIntegers = myIntegers;
     }
 }
 

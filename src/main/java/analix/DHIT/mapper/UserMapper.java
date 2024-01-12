@@ -50,19 +50,6 @@ public interface UserMapper {
     @Select("SELECT * FROM user WHERE employee_code LIKE CONCAT(#{searchWords}, '%')")
     List<User> getUserByCode(@Param("searchWords")int searchWords);
 
-//    //user情報を取ってくる
-//    @Select("SELECT * FROM user WHERE employeeCode=#{employeeCode}")
-//    User getuser(int employeeCode);
-
-    //name取得
-    //@Select("SELECT name FROM user WHERE employee_code = #{employeeCode}")
-    //String getUserName(int employeeCode);
-// /////////// 2023/12/08 START 富山 //////////
-
-    //roleでの従業員の絞り込み
-//    @Select("select * from user where employeeRole = #{role}")
-//    List<User> selectEmployeeRole(@Param("role") String role);
-
     @Select({
             "select * from user where 1=1",
             "<choose>",
@@ -80,6 +67,6 @@ public interface UserMapper {
     List<User> searchEmployeeInfo();
 
 
-// /////////// 2023/12/08 END 富山 //////////
-
+    @Select("SELECT mail FROM user WHERE employee_Code = #{employeeCode};")
+    String getEmail(int employeeCode);
 }

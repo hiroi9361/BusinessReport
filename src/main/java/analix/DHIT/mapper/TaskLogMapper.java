@@ -1,6 +1,7 @@
 package analix.DHIT.mapper;
 
 import analix.DHIT.input.TaskDetailInput;
+import analix.DHIT.input.TaskSearchInput;
 import analix.DHIT.model.Report;
 import analix.DHIT.model.TaskLog;
 import org.apache.ibatis.annotations.*;
@@ -48,6 +49,22 @@ public interface TaskLogMapper {
             "where t.sorting = #{sorting} " +
             "order by r.date;")
     List<TaskDetailInput> taskDetail(@Param("sorting") int sorting);
+
+    //タスク一覧フィルター用
+    @Select("SELECT * " +
+            "FROM task_log as t " +
+            "LEFT JOIN report AS r ON t.report_id = r.report_id " +
+            "WHERE " +
+            "  (#{taskSearchInput.state} = '達成' AND t.progress_rate = 100 AND r.employee_code = #{taskSearchInput.employeeCode}) " +
+            "  OR " +
+            "  ((#{taskSearchInput.state} = '' OR #{taskSearchInput.state} = '未達成') AND " +
+            "   (#{taskSearchInput.progressRateAbove} = 0 OR t.progress_rate >= #{taskSearchInput.progressRateAbove}) AND " +
+            "   (#{taskSearchInput.progressRateBelow} = 0 OR t.progress_rate <= #{taskSearchInput.progressRateBelow}) AND " +
+            "   (r.employee_code = #{taskSearchInput.employeeCode}));")
+    List<TaskLog> taskLogFilter(@Param("taskSearchInput") TaskSearchInput taskSearchInput);
+
+
+
 
 
 

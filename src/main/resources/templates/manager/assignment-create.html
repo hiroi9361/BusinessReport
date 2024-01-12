@@ -8,15 +8,22 @@
 <body>
 <div layout:fragment="content">
     <div class="container mt-3">
-    <h1 class="text-center">メンバー追加</h1>
+    <h1 class="text-center">メンバー編集</h1>
     <h1 th:text="${team.name}" class="text-center"></h1>
     <div class="container-form">
         <form th:action="@{/manager/assignment/create}" th:object="${assignmentCreateInput}" method="post">
             <input type="hidden" name="teamId" th:value="${team.teamId}"/>
-            <div class="form-group mb-3">
-                <label>ユーザー</label>
-                <select th:field="${assignmentCreateInput.employeeCode}" class="form-select">
-                    <option th:each="user : ${users}" th:text="${user.name}" name="employeeCode" th:value="${user.employeeCode}"></option>
+            <label>Manager</label>
+            <div class="form-group mb-3 d-flex">
+                <select id="managerList" class="form-select" name="employeeCode" multiple>
+                    <option th:each="manager : ${managers}" th:text="${manager.name}" th:value="${manager.employeeCode}"></option>
+                </select>
+                <div>
+                    <button onclick="addManager()" class="btn btn-success">←追加</button>
+<!--                    <input id="removeManager" class="btn btn-success" type="button" value="→ 削除">-->
+                </div>
+                <select id="userList" class="form-select" name="employeeCode" multiple>
+                    <option th:each="user : ${users}" th:text="${user.name}" th:value="${user.employeeCode}"></option>
                 </select>
             </div>
             <div class="form-group mb-3">
@@ -36,5 +43,19 @@
         </div>
     </div>
 </div>
+<script>
+    function addManager() {
+        var userSelect = document.getElementById("userList");
+        var userText = userSelect.options[userSelect.selectedIndex].text;
+        var userValue = userSelect.options[userSelect.selectedIndex].value;
+
+        var managerAdd = document.createElement("option");
+        managerAdd.text = userText;
+        managerAdd.value = userValue;
+
+        var managerList = document.getElementById("managerList");
+        managerList.add(managerAdd);
+    }
+</script>
 </body>
 </html>

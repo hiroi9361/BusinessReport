@@ -5,67 +5,86 @@
       layout:decorate="~{layout/layout}">
 
 
-</head>
-
 <!--以下bodyにstyleタグが入っている理由は< div layout:fragment="content">より上にstyleタグがあるとcssの効果を消してしまう為です-->
 <!--僕の技術力の無さのせいなので、直せる方お願い致します-->
 <body>
 <div layout:fragment="content">
     <style>
-        h1 {
-        background-color: #99CCFF;
-        color: white; /* オプション：テキストの色を白に設定 */
-        padding: 10px; /* オプション：テキストと周囲の余白を設定 */
-    }
-    /*
-        .center-text {
-      text-align: center;
-    }
-    */
-    /*以下枠線設定*/
-        .textBox {
-    border: 2px solid #333;
-    border-radius: 5px;
-    padding: 30px;
-    position: relative;
+        .liDesign li{
+padding-right: 60px; /* li要素の右側にスペースを追加 */
     }
 
-    .textBox::before {
-    background-color: #fff;
-    color: #333;
-    content: "個人情報";
-    font-weight: bold;
-    left: 30px;
-    padding: 3px 10px;
-    position: absolute;
-    top: -15px;
-    }
-
-      ul {
-        display: flex;
-
-      }
-
-      li {
-        list-style: none;
-      }
-
-      li:nth-child(2) {
-        margin: 0 10px;
-      }
-
-            a img {
-                border: 2px solid #000; /* 縁取りの幅と色を指定 */
-                border-radius: 5px; /* 縁取りの角丸を設定（必要に応じて） */
-            }
-
-          body {
-    margin-top: 40px; /* 上方向にマージンを追加 */
-  }
 
     h1 {
-        margin-bottom: 25px; /* h1要素の下側に20pxのマージンを追加 */
-    }
+    background-color: #99CCFF;
+    color: white; /* オプション：テキストの色を白に設定 */
+    padding: 10px; /* オプション：テキストと周囲の余白を設定 */
+}
+/*
+    .center-text {
+  text-align: center;
+}
+*/
+/*以下枠線設定*/
+    .textBox {
+border: 2px solid #333;
+border-radius: 5px;
+padding: 30px;
+position: relative;
+}
+
+.textBox::before {
+background-color: #fff;
+color: #333;
+content: "個人情報";
+font-weight: bold;
+left: 30px;
+padding: 3px 10px;
+position: absolute;
+top: -15px;
+}
+
+  ul {
+    display: flex;
+
+  }
+
+  li {
+    list-style: none;
+  }
+
+  li:nth-child(2) {
+    margin: 0 10px;
+  }
+
+        a img {
+            border: 2px solid #000; /* 縁取りの幅と色を指定 */
+            border-radius: 5px; /* 縁取りの角丸を設定（必要に応じて） */
+        }
+
+      body {
+margin-top: 40px; /* 上方向にマージンを追加 */
+}
+
+h1 {
+    margin-bottom: 25px; /* h1要素の下側に20pxのマージンを追加 */
+}
+
+    /* メディアクエリ */
+@media (max-width: 768px) {
+.textBox {
+    padding: 15px; /* モバイルデバイス用のパディング設定 */
+}
+
+ul {
+    flex-direction: column; /* リスト項目を縦に並べる */
+}
+
+li {
+    text-align: center; /* リスト項目の中央寄せ */
+    margin-bottom: 10px; /* リスト項目間のマージン */
+
+}
     </style>
 
     <h1>個別詳細設定</h1>
@@ -81,33 +100,35 @@
     </div>
 
     <div class="textBox">
-        <ul>
-            <li>
-                <a th:href="@{/member/userDetailsList/userEdit}">
-                    <img src="/img/ユーザー情報アイコン.png" alt="ユーザー情報" width="150" height="150">
-                    <p>ユーザー情報変更</p>
-                </a>
+        <div class="liDesign">
+            <ul>
+                <li>
+                    <a th:href="@{/member/userDetailsList/userEdit}">
+                        <img src="/img/ユーザー情報アイコン.png" alt="ユーザー情報" width="150" height="150">
+                        <p>ユーザー情報変更</p>
+                    </a>
 
-            </li>
+                </li>
 
-            <li>
-                <a th:href="@{/manager/setting-time}">
+                <li>
+                    <a th:href="@{/manager/setting-time}">
 
-                    <img src="/img/就業時間アイコン.png" alt="就業時間" width="150" height="150">
-                    <p>就業時間変更</p>
-                </a>
+                        <img src="/img/就業時間アイコン.png" alt="就業時間" width="150" height="150">
+                        <p>就業時間変更</p>
+                    </a>
 
-            </li>
+                </li>
 
-            <li>
-                <a th:href="@{/}">
+                <li>
+                    <a th:href="@{/}">
 
-                    <img src="/img/backIcon.png" alt="戻る" width="150" height="150">
-                    <p>ホームへ戻る</p>
-                </a>
+                        <img src="/img/backIcon.png" alt="戻る" width="150" height="150">
+                        <p>ホームへ戻る</p>
+                    </a>
 
-            </li>
-        </ul>
+                </li>
+            </ul>
+        </div>
     </div>
 </div>
 

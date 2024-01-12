@@ -136,6 +136,12 @@
                                 <input type="number" class="form-control" placeholder="進捗率" aria-label=""
                                        th:name="${'taskLogs[' + taskLogStatus.index + '].progressRate'}"
                                        th:value="${taskLog.progressRate}" min="0" max="100" required>
+                                <input type="hidden" class="form-control" placeholder="カウント" aria-label=""
+                                       th:name="${'taskLogs[' + taskLogStatus.index + '].counter'}"
+                                       th:value="${taskLog.counter}" required>
+                                <input type="hidden" class="form-control" placeholder="カウント" aria-label=""
+                                       th:name="${'taskLogs[' + taskLogStatus.index + '].sorting'}"
+                                       th:value="${taskLog.sorting}" required>
                                 <button type="button" class="btn btn-danger" onclick="removeTask(this)">削除</button>
                             </div>
                         </div>

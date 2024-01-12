@@ -1,5 +1,6 @@
 package analix.DHIT.service;
 
+import analix.DHIT.input.TaskDetailInput;
 import analix.DHIT.model.TaskLog;
 import analix.DHIT.repository.TaskLogRepository;
 import org.springframework.scheduling.config.Task;
@@ -42,5 +43,20 @@ public class TaskLogService {
     //これ task_log 全消しメソッド
     public void deleteByReportId(int reportId){
         this.taskLogRepository.deleteByReportId(reportId);
+    }
+
+    public int maxTask() {
+        return this.taskLogRepository.maxTask();
+    }
+
+    public List<TaskLog> taskList(int employeeCode)
+    {
+        List<TaskLog> taskLogs = this.taskLogRepository.taskList(employeeCode);
+        return taskLogs;
+    }
+
+    public List<TaskDetailInput> taskDetail(int sorting) {
+        List<TaskDetailInput> taskDetailInput = this.taskLogRepository.taskDetail(sorting);
+        return taskDetailInput;
     }
 }

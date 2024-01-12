@@ -53,12 +53,15 @@
             <!-- 2023/12/07 富山 END -->
 
             <h1>ユーザー一覧</h1>
-            <a class="btn btn-success" th:href=@{/manager/create}>ユーザー作成</a>
+            <a class="btn btn-success" th:href="@{/manager/create}">ユーザー作成</a>
 
 <!--            <h2 th:text="${errorEmployeeMsg}"></h2>-->
 <!--            <h2 th:text="${deleteCompleteMSG}"></h2>-->
 <!--            <h2 th:text="${editCompleteMSG}"></h2>-->
 <!--            <h2 th:text="${searchError}" class="text-danger"></h2>-->
+
+            <!-- ユーザー一括登録 -->
+            <a class="btn btn-success" th:href="@{/manager/allcreate}">ユーザー一括登録</a>
 
             <!-- 2023/12/07 富山 START -->
             <!--  検索窓  -->

@@ -4,15 +4,24 @@ import java.time.LocalDate;
 
 public class TaskSearchInput {
 
-    private int progressRate;
+    private int progressRateAbove;
+    private int progressRateBelow;
     private LocalDate date;
     private String state;
+    private int employeeCode;
 
-    public int getProgress() {
-        return progressRate;
+    public int getProgressRateAbove() {
+        return progressRateAbove;
     }
-    public void setProgress(int progressRate) {
-        this.progressRate = progressRate;
+    public void setProgressRateAbove(int progressRateAbove) {
+        this.progressRateAbove = progressRateAbove;
+    }
+
+    public int getProgressRateBelow() {
+        return progressRateBelow;
+    }
+    public void setProgressRateBelow(int progressRateBelow) {
+        this.progressRateBelow = progressRateBelow;
     }
 
     public LocalDate getDate() {
@@ -27,5 +36,12 @@ public class TaskSearchInput {
     }
     public void setState(String state) {
         this.state = state;
+    }
+
+    public int getEmployeeCode() {
+        return employeeCode;
+    }
+    public void setEmployeeCode(int employeeCode) {
+        this.employeeCode = employeeCode;
     }
 }

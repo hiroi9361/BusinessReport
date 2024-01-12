@@ -517,13 +517,11 @@ public class MemberController {
         List<TaskLog> taskLogs = new ArrayList<>();
         taskLogs = this.taskLogService.taskList(myEmployeeCode);
         User member = userService.getUserByEmployeeCode(myEmployeeCode);
-//test
-
-//test
+        boolean Search = false;
         model.addAttribute("taskList",taskLogs);
         model.addAttribute("member",member);
         model.addAttribute("TaskSearchInput",new TaskSearchInput());
-
+        model.addAttribute("Search",Search);
         return "member/taskList";
     }
 
@@ -531,14 +529,22 @@ public class MemberController {
     public String taskSearchList(TaskSearchInput taskSearchInput, Model model){
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         int myEmployeeCode = Integer.parseInt(authentication.getName());
-
+        taskSearchInput.setEmployeeCode(myEmployeeCode);
+//        myEmployeeCodeで取得していたものをフィルター条件で取得する為に
+//        ここをフィルターの条件でDBから持ってくる処理に変える
         List<TaskLog> taskLogs = new ArrayList<>();
-        taskLogs = this.taskLogService.taskList(myEmployeeCode);
-        User member = userService.getUserByEmployeeCode(myEmployeeCode);
-
+        if(taskSearchInput.getState().isEmpty() && taskSearchInput.getProgressRateAbove()==0 && taskSearchInput.getProgressRateBelow()==0) {
+            taskLogs = this.taskLogService.taskList(myEmployeeCode);
+        }else{
+            taskLogs = this.taskLogService.taskFilter(taskSearchInput);
+        }
         model.addAttribute("taskList",taskLogs);
+//        ここをフィルターの条件でDBから持ってくる処理に変える
+        boolean Search = true;
+        User member = userService.getUserByEmployeeCode(myEmployeeCode);
         model.addAttribute("member",member);
         model.addAttribute("TaskSearchInput",new TaskSearchInput());
+        model.addAttribute("Search",Search);
 
         return "member/taskList";
     }

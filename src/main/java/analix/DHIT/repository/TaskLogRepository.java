@@ -1,6 +1,7 @@
 package analix.DHIT.repository;
 
 import analix.DHIT.input.TaskDetailInput;
+import analix.DHIT.input.TaskSearchInput;
 import analix.DHIT.model.TaskLog;
 
 import java.util.List;
@@ -19,5 +20,7 @@ public interface TaskLogRepository {
     List<TaskLog> taskList(int employeeCode);
 
     List<TaskDetailInput> taskDetail(int sorting);
+
+    List<TaskLog>taskFilter(TaskSearchInput taskSearchInput);
 }
 

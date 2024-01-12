@@ -7,10 +7,8 @@ import analix.DHIT.logic.IconConvertToBase64;
 import analix.DHIT.logic.EncodePasswordSha256;
 import analix.DHIT.mapper.UserMapper;
 import analix.DHIT.model.User;
+import analix.DHIT.repository.MysqlUserRepository;
 import analix.DHIT.repository.UserRepository;
-//import com.opencsv.bean.CsvToBean;
-//import com.opencsv.bean.CsvToBeanBuilder;
-//import com.opencsv.bean.HeaderColumnNameMappingStrategy;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
@@ -23,7 +21,7 @@ import java.util.List;
 @Service
 @Transactional(rollbackFor = Exception.class)
 public class UserService {
-    private UserRepository userRepository;
+    private final UserRepository userRepository;
     private final UserMapper userMapper;
     private final EncodePasswordSha256 encodePasswordSha256;
     private final IconConvertToBase64 iconConvertToBase64;
@@ -94,19 +92,18 @@ public class UserService {
                 entity.setName(columns[1].trim());
                 entity.setPassword(columns[2].trim());
                 entity.setRole(columns[3].trim());
+                entity.setIcon(columns[4].trim());
                 // Set other columns as needed
 
                 userRepository.save(entity);
             }
         } catch (IOException e) {
             e.printStackTrace();
-            // Handle the exception as needed
-            throw new RuntimeException("Failed to read CSV file: " + e.getMessage());
+            // 例外処理
+            throw new RuntimeException("CSVファイルの読み取りに失敗しました:" + e.getMessage());
         }
     }
 
-    public static void saveDataFromCsv(String csvFilePath) {
-    }
 
     //従業員情報一覧を表示させるのに必要な情報を取得
     public List<User> getAllEmployeeInfo() {

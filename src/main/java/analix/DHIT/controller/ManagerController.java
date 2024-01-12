@@ -374,47 +374,44 @@ public class ManagerController {
     }
 
     // ユーザー一括登録画面遷移
-    @GetMapping("/allcreate")
+    @GetMapping("/upload")
     public String showuploadform(){
-        return "/manager/all-create";
+        return "/manager/upload";
     }
 
-    //
-    @PostMapping("/uploadcsv")
+    @PostMapping("/upload")
     public String uploadCsv(@RequestParam("file") MultipartFile csvFile, Model model) {
         try {
             // 正しいCSVファイル確認
             if (!csvFile.getContentType().equals("text/csv")) {
                 model.addAttribute("message",
                         "ファイル形式が無効です。CSVファイルをアップロードしてください");
-                return "/manager/upload";
+                return "redirect:/manager/upload";
             }
 
             // ファイル保存、ファイルパス取得
             String csvFilePath = saveCsvFile(csvFile);
 
             // データ処理
-            UserService.saveDataFromCsv(csvFilePath);
+            userService.saveDataFromCsv(csvFile);
 
             model.addAttribute("message",
                     "CSVデータがデータベースに正常に保存されました");
-            return "/manager/upload";
+            return "redirect:/manager/upload";
         } catch (Exception e) {
             e.printStackTrace();
             // Log the error
             model.addAttribute("message",
                     "CSV ファイルの処理に失敗しました");
-            return "/manager/upload";
+            return "redirect:/manager/upload";
         }
+
     }
 
     // アップロードしたCSVファイルを安全な場所に保存する方法
     private String saveCsvFile(MultipartFile csvFile) throws IOException {
-        // Implement file saving logic, e.g., save to a designated directory
-        // Return the file path
-        // Ensure proper security considerations for file handling
-        // ...
-        return "path/to/saved/file.csv";
+        userService.createEmployeeInformation((UserCreateInput) csvFile);
+        return "/manager/upload";
     }
 
 // CSVアップロード用

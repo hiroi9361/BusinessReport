@@ -13,12 +13,15 @@
 <body>
 <div layout:fragment="content">
     <div class="container mt-3">
-        <h2>Upload CSV File</h2>
-
-        <form id="csvForm">
+        <h2 style="text-align: center">ユーザー一括登録画面</h2>
+        <form id="upload-csv">
             <input type="file" name="file" accept=".csv" required>
-            <button type="submit">Upload</button>
+            <button type="submit">アップロード</button>
         </form>
+
+        <div clasS="button-box">
+            <a th:href="@{/manager/employeeList}">ユーザー一覧に戻る</a>
+        </div>
     </div>
 </div>
 <script>
@@ -29,7 +32,7 @@
         var formData = new FormData(this);
 
         // CSVファイルのアップロードを行うAPIエンドポイントのURL
-        var uploadUrl = '/upload-csv';
+        var uploadUrl = '/upload';
 
         // ファイルをアップロード
         fetch(uploadUrl, {

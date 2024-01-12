@@ -19,18 +19,24 @@
                     <option th:each="manager : ${managers}" th:text="${manager.name}" th:value="${manager.employeeCode}"></option>
                 </select>
                 <div>
-                    <button onclick="addManager()" class="btn btn-success">←追加</button>
-<!--                    <input id="removeManager" class="btn btn-success" type="button" value="→ 削除">-->
+                    <button type="button" onclick="addManager()" class="btn btn-success">←追加</button>
+                    <button type="button" onclick="removeManager()" class="btn btn-success">→削除</button>
                 </div>
-                <select id="userList" class="form-select" name="employeeCode" multiple>
+                <select id="userList" class="form-select" multiple>
                     <option th:each="user : ${users}" th:text="${user.name}" th:value="${user.employeeCode}"></option>
                 </select>
             </div>
-            <div class="form-group mb-3">
-                <label>役割</label>
-                <select name="isManager" class="form-select">
-                    <option value="false">Member</option>
-                    <option value="true">Manager</option>
+            <label>Member</label>
+            <div class="form-group mb-3 d-flex">
+                <select id="memberList" class="form-select" name="employeeCode" multiple>
+                    <option th:each="member : ${members}" th:text="${member.name}" th:value="${member.employeeCode}"></option>
+                </select>
+                <div>
+                    <button type="button" onclick="addMember()" class="btn btn-success">←追加</button>
+                    <button type="button" onclick="removeMember()" class="btn btn-success">→削除</button>
+                </div>
+                <select id="usersList" class="form-select" multiple>
+                    <option th:each="user : ${users}" th:text="${user.name}" th:value="${user.employeeCode}"></option>
                 </select>
             </div>
             <div class="form-group mb-3">
@@ -43,18 +49,69 @@
         </div>
     </div>
 </div>
-<script>
+<script layout:fragment="script">
     function addManager() {
         var userSelect = document.getElementById("userList");
-        var userText = userSelect.options[userSelect.selectedIndex].text;
-        var userValue = userSelect.options[userSelect.selectedIndex].value;
-
-        var managerAdd = document.createElement("option");
-        managerAdd.text = userText;
-        managerAdd.value = userValue;
-
         var managerList = document.getElementById("managerList");
-        managerList.add(managerAdd);
+
+        // Loop through all selected options
+        for (var i = 0; i < userSelect.selectedOptions.length; i++) {
+            var userOption = userSelect.selectedOptions[i];
+
+            // Create a new option element for the managerList
+            var managerAdd = document.createElement("option");
+            managerAdd.text = userOption.text;
+            managerAdd.value = userOption.value;
+
+            // Add the new option to the managerList
+            managerList.add(managerAdd);
+        }
+    }
+    function removeManager() {
+        var managerList = document.getElementById("managerList");
+        var selectedIndexes = [];
+        // Get the selected indexes in reverse order
+        for (var i = managerList.options.length - 1; i >= 0; i--) {
+            if (managerList.options[i].selected) {
+                selectedIndexes.push(i);
+            }
+        }
+        // Remove the selected options
+        selectedIndexes.forEach(function (index) {
+            managerList.remove(index);
+        });
+    }
+
+    function addMember() {
+        var userSelect = document.getElementById("usersList");
+        var memberList = document.getElementById("memberList");
+
+        // Loop through all selected options
+        for (var i = 0; i < userSelect.selectedOptions.length; i++) {
+            var userOption = userSelect.selectedOptions[i];
+
+            // Create a new option element for the memberList
+            var memberAdd = document.createElement("option");
+            memberAdd.text = userOption.text;
+            memberAdd.value = userOption.value;
+
+            // Add the new option to the memberList
+            memberList.add(memberAdd);
+        }
+    }
+    function removeMember() {
+        var memberList = document.getElementById("memberList");
+        var selectedIndexes = [];
+        // Get the selected indexes in reverse order
+        for (var i = memberList.options.length - 1; i >= 0; i--) {
+            if (memberList.options[i].selected) {
+                selectedIndexes.push(i);
+            }
+        }
+        // Remove the selected options
+        selectedIndexes.forEach(function (index) {
+            memberList.remove(index);
+        });
     }
 </script>
 </body>

@@ -20,8 +20,10 @@ import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Locale;
+import java.util.stream.Collectors;
 
 
 @Controller
@@ -660,8 +662,6 @@ public class MemberController {
                     //↓メアド取得に必要なemployeeIdを取得
                     employeeIdList.add(user.getEmployeeCode());
 
-                    //↓メールを飛ばすために未提出の人のメアドを取得！
-                    //user.setMail(userService.getEmail(user.getEmployeeCode()));
                     notsubmem.add(user);
                 }
             }
@@ -738,11 +738,14 @@ public class MemberController {
  */
 
     @PostMapping("/mail")
-    public String sendMail(@ModelAttribute("employeeIdList")User employeeIdList) throws MessagingException, jakarta.mail.MessagingException {
+    public String sendMail(@RequestParam("employeeIdList")int[] numbers) throws MessagingException, jakarta.mail.MessagingException {
 
-        userService.mailSend(employeeIdList.getMyIntegers());
+//        List<Integer> emList= Arrays.stream(numbers) // IntStreamを作成
+//                .boxed() // ボクシングしてIntegerのストリームに変換
+//                .toList(); // リストに変換
+        userService.mailSend(numbers);
         //↓処理が完了確認のための暫定タイトルへ(あとで好きな場所なりリダイレクトでメッセージ送るなりの処理をお願いします)
-        return "/";
+        return "member/userDetailsList-userEdit";
     }
 }
 

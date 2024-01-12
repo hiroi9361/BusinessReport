@@ -9,103 +9,116 @@
 <div layout:fragment="content">
 
     <div class="container-main">
-      <div class="main-box">
-        <div th:if="${mgrteamList}">
-            <div class="main-left">
-                <h5>マネージャーとして管理中のチーム</h5>
-                <div th:each="team : ${mgrteamList}">
-                    <a th:href="@{'/manager/home/' + ${team.teamId}}"><h3 th:text="${team.name}"></h3></a>
-                </div>
-            </div>
-            <div class="container-sub">
-                <div class="main-right">
-                    <div th:if="${todaymembers}">
-                        <h5>本日の報告提出済みメンバー</h5>
-                        <div th:each="mem : ${todaymembers}">
-                            <a th:href="@{'/manager/report-search?employeeCode=' + ${mem.employeeCode}}"><p
-                                    th:text="${mem.name}"></p></a>
-                        </div>
-                    </div>
-                </div>
-                <div class="main-right">
-                    <div th:if="${notsubmit}">
-                        <h5>昨日の報告未提出メンバー</h5>
-<!--                        ↓ここに昨日未提出の人に一括メール送信ボタン-->
-<!--                        <button type="button" th:href="@{/member/mail}">催促メール一括送信！</button>-->
-
-<!--                        <form class="row g-3 p-3" th:action="@{/member/report/create}" th:object="${ReportCreateInput}"-->
-<!--                              method="post">-->
-                        <form th:action="@{'/member/mail'}" th:object="${employeeIdList}" th:method="post">
-                            <input th:type="hidden" name="parameterName">
-                            <button th:type="submit">催促メール一括送信！</button>
-                        </form>
-                        <div th:each="usr : ${notsubmit}">
-                            <a th:href="@{'/manager/report-search?employeeCode=' + ${usr.employeeCode}}"><p
-                                    th:text="${usr.name}"></p></a>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-      </div>
-      <div class="main-box mt-3">
-        <div class="main-left">
-            <h5>メンバーとして所属中のチーム</h5>
-<!--            ****************-->
-            <div th:if="${memteamList}">
-                <div th:each="team : ${memteamList}">
-                    <div th:if="${team.release}">
+        <div class="main-box">
+            <div th:if="${mgrteamList}">
+                <div class="main-left">
+                    <h5>マネージャーとして管理中のチーム</h5>
+                    <div th:each="team : ${mgrteamList}">
                         <a th:href="@{'/manager/home/' + ${team.teamId}}"><h3 th:text="${team.name}"></h3></a>
                     </div>
-                    <div th:if="${!team.release}">
-                        <h3 th:text="${team.name}"></h3>
+                </div>
+                <div class="container-sub">
+                    <div class="main-right">
+                        <div th:if="${todaymembers}">
+                            <h5>本日の報告提出済みメンバー</h5>
+                            <div th:each="mem : ${todaymembers}">
+                                <a th:href="@{'/manager/report-search?employeeCode=' + ${mem.employeeCode}}"><p
+                                        th:text="${mem.name}"></p></a>
+                            </div>
+                        </div>
                     </div>
-                </div>
-            </div>
-<!--            ****************-->
-            <div class="m-3"></div>
-            <h5>報告先マネージャー</h5>
-            <div th:if="${managerList}">
-                <div th:each="mgr : ${managerList}">
-                    <p th:text="${mgr.name}"></p>
-                </div>
-            </div>
-        </div>
-        <div class="main-right">
-            <h5>今日やること</h5>
-            <div th:if="${lastReport}">
-                <p th:text="${lastReport.tomorrowSchedule}"></p>
-            </div>
-        </div>
-        <div class="main-left">
-            <h5>未達成タスク</h5>
-            <div th:if="${taskList}">
-                <div class="row row-cols-md-2 justify-content-md-center">
-                    <div th:each="task : ${taskList}">
-                        <div class="main-right col" style="height:106px;">
-                            <div class="d-flex justify-content-center">
-                                <div class="d-flex justify-content-center me-5" style="width:230px;">
-                                  <p th:text="${task.name}"></p>
+                    <div class="main-right">
+                        <div th:if="${notsubmit}">
+                            <h5>昨日の報告未提出メンバー</h5>
+                            <!--                        ↓ここに昨日未提出の人に一括メール送信ボタン-->
+                            <!--                        <button type="button" th:href="@{/member/mail}">催促メール一括送信！</button>-->
+
+                            <!--                        <form class="row g-3 p-3" th:action="@{/member/report/create}" th:object="${ReportCreateInput}"-->
+                            <!--                              method="post">-->
+                            <form th:action="@{'/member/mail'}" th:object="${employeeIdList}" th:method="post">
+                                <p th:text="${employeeIdList.myIntegers[0]}">デフォルトのテキスト</p>
+
+                                <div th:each="employeeId:${employeeIdList.myIntegers}">
+                                    <input th:type="hidden" name="employeeIdList" th:value="${employeeId}">
                                 </div>
-                                <div class="d-flex justify-content-center">
-                                  <p>進捗：</p>
-                                  <p th:text="${task.progressRate}"></p><p> %</p>
+                                <button th:type="submit">催促メール一括送信！</button>
+                            </form>
+                                <!--                        </form>-->
+                                <!--                        <form th:action="@{'/member/mail'}" th:object="${employeeIdList}" th:method="post">-->
+                                <!--                            <input type="hidden" name="employeeIdList" th:value="${employeeIdList.myIntegers}" />-->
+                                <!--                            <button type="submit">催促メール一括送信！</button>-->
+                                <!--                        </form>-->
+
+                                <div th:each="usr : ${notsubmit}">
+                                    <a th:href="@{'/manager/report-search?employeeCode=' + ${usr.employeeCode}}"><p
+                                            th:text="${usr.name}"></p></a>
                                 </div>
-<!--                                <p class="progress-rate" th:text="${task.progressRate + '%'}"></p>-->
-<!--                                <div class="progress">-->
-<!--                                    <div class="progress-bar" role="progressbar" th:style="'width: ' + ${task.progressRate} + '%;'" aria-valuenow="25" aria-valuemin="0" aria-valuemax="100"></div>-->
-<!--                                </div>-->
-                            </div>
-                            <div class="progress">
-                                <div class="progress-bar" role="progressbar" th:style="'width: ' + ${task.progressRate} + '%;'" aria-valuenow="25" aria-valuemin="0" aria-valuemax="100"></div>
-                            </div>
-<!--                            <p class="progress-rate" th:text="${task.progressRate + '%'}"></p>-->
                         </div>
                     </div>
                 </div>
             </div>
         </div>
-      </div>
+        <div class="main-box mt-3">
+            <div class="main-left">
+                <h5>メンバーとして所属中のチーム</h5>
+                <!--            ****************-->
+                <div th:if="${memteamList}">
+                    <div th:each="team : ${memteamList}">
+                        <div th:if="${team.release}">
+                            <a th:href="@{'/manager/home/' + ${team.teamId}}"><h3 th:text="${team.name}"></h3></a>
+                        </div>
+                        <div th:if="${!team.release}">
+                            <h3 th:text="${team.name}"></h3>
+                        </div>
+                    </div>
+                </div>
+                <!--            ****************-->
+                <div class="m-3"></div>
+                <h5>報告先マネージャー</h5>
+                <div th:if="${managerList}">
+                    <div th:each="mgr : ${managerList}">
+                        <p th:text="${mgr.name}"></p>
+                    </div>
+                </div>
+            </div>
+            <div class="main-right">
+                <h5>今日やること</h5>
+                <div th:if="${lastReport}">
+                    <p th:text="${lastReport.tomorrowSchedule}"></p>
+                </div>
+            </div>
+            <div class="main-left">
+                <h5>未達成タスク</h5>
+                <div th:if="${taskList}">
+                    <div class="row row-cols-md-2 justify-content-md-center">
+                        <div th:each="task : ${taskList}">
+                            <div class="main-right col" style="height:106px;">
+                                <div class="d-flex justify-content-center">
+                                    <div class="d-flex justify-content-center me-5" style="width:230px;">
+                                        <p th:text="${task.name}"></p>
+                                    </div>
+                                    <div class="d-flex justify-content-center">
+                                        <p>進捗：</p>
+                                        <p th:text="${task.progressRate}"></p>
+                                        <p> %</p>
+                                    </div>
+                                    <!--                                <p class="progress-rate" th:text="${task.progressRate + '%'}"></p>-->
+                                    <!--                                <div class="progress">-->
+                                    <!--                                    <div class="progress-bar" role="progressbar" th:style="'width: ' + ${task.progressRate} + '%;'" aria-valuenow="25" aria-valuemin="0" aria-valuemax="100"></div>-->
+                                    <!--                                </div>-->
+                                </div>
+                                <div class="progress">
+                                    <div class="progress-bar" role="progressbar"
+                                         th:style="'width: ' + ${task.progressRate} + '%;'" aria-valuenow="25"
+                                         aria-valuemin="0" aria-valuemax="100"></div>
+                                </div>
+                                <!--                            <p class="progress-rate" th:text="${task.progressRate + '%'}"></p>-->
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
 </div>
 <style layout:fragment="style">

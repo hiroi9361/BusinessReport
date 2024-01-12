@@ -180,11 +180,22 @@ public class UserService {
         return this.userMapper.getEmail(employeeCode);
     }
 
-    public void mailSend(List<Integer> employeeList) throws MessagingException, jakarta.mail.MessagingException {
-        MailService mailService=new MailService();
+    @Autowired
+    JavaMailSender mailSender;
+
+    public void mailSend(int[] employeeList) throws MessagingException, jakarta.mail.MessagingException {
+        MailService mailService=new MailService(mailSender);
+
         for (Integer employeeCode:employeeList) {
             if(employeeCode!=null){
-                mailService.sendMail(getEmail(employeeCode));
+                String x=getEmail(employeeCode);
+                if(x!=null)
+                {
+                    mailService.sendMail(x);
+                }else{
+                    break;
+                }
+
             }else{
                 break;
             }

@@ -73,5 +73,14 @@ public class User implements Serializable {
     public List<String> roleList() {
         return List.of(getRole());
     }
+
+    private boolean readReport = true;
+    public boolean getReadReport(){
+        return readReport;
+    }
+    public void setReadReport(boolean readReport){
+        this.readReport = readReport;
+    }
+
 }
 

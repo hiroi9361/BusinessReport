@@ -36,7 +36,7 @@ public class MemberController {
     private final TeamService teamService;
     private final SettingService settingService;
 
-    private final MailService mailService;
+   // private final MailService mailService;
 //    @Autowired
     public MemberController(UserService userService,
                             TaskLogService taskLogService,
@@ -44,7 +44,7 @@ public class MemberController {
                             FeedbackService feedbackService,
                             AssignmentService assignmentService,
                             TeamService teamService,
-                            SettingService settingService, MailService mailService) {
+                            SettingService settingService) {
         this.userService = userService;
         this.taskLogService = taskLogService;
         this.reportService = reportService;
@@ -52,7 +52,7 @@ public class MemberController {
         this.assignmentService = assignmentService;
         this.teamService = teamService;
         this.settingService = settingService;
-        this.mailService = mailService;
+        //this.mailService = mailService;
     }
 
     @GetMapping("/report/create")
@@ -568,6 +568,19 @@ public class MemberController {
             myast = new ArrayList<>();
         }
 
+        LocalDate targetDate;
+        LocalDate firstDayOfLastWeek = LocalDate.now().minusWeeks(1).with(DayOfWeek.MONDAY);
+        DayOfWeek currentDayOfWeek = LocalDate.now().getDayOfWeek();
+
+        if (currentDayOfWeek.equals(DayOfWeek.MONDAY) ||
+                currentDayOfWeek.equals(DayOfWeek.SATURDAY) ||
+                currentDayOfWeek.equals(DayOfWeek.SUNDAY)) {
+            targetDate = firstDayOfLastWeek.plusDays(4);
+        } else {
+            targetDate = LocalDate.now().minusDays(1);
+        }
+        boolean hasSentReport = reportService.existsReport(employeeCode, targetDate);
+
         List<Assignment> allast = assignmentService.getAllAssignment();
 
         List<Team> allteam = teamService.getAllTeam();
@@ -686,6 +699,8 @@ public class MemberController {
 
         mav.addObject("todaymembers", todaymem);
         mav.addObject("notsubmit", notsubmem);
+        mav.addObject("targetDate", targetDate);
+        mav.addObject("hasSentReport", hasSentReport);
 
         mav.setViewName("member/user-main");
 
@@ -749,10 +764,10 @@ public class MemberController {
 /*以下メールを送る記述すごいやつバージョン
     上記のコメントアウトしてるやつは文章しか送れませんが以下の記述はhtmlや添付ファイルも送れます(MailServiceクラスに記述)
  */
-    @GetMapping("/mail")
-    public String sendMail() throws MessagingException, jakarta.mail.MessagingException {
-        mailService.sendMail();
-        return "member/userDetailsList";
-    }
+//    @GetMapping("/mail")
+//    public String sendMail() throws MessagingException, jakarta.mail.MessagingException {
+//        mailService.sendMail();
+//        return "member/userDetailsList";
+//    }
 }
 

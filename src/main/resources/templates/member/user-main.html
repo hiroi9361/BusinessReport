@@ -7,7 +7,13 @@
 </head>
 <body>
 <div layout:fragment="content">
-
+    <div th:if="${not hasSentReport}">
+        <a  th:href="@{/member/report/create}">
+            <div class="alert alert-danger">
+                <p th:text="${targetDate}+ 'に報告書の未提出。こちらにクリックして提出して下さい。'"></p>
+            </div>
+        </a>
+    </div>
     <div class="container-main">
       <div class="main-box">
         <div th:if="${mgrteamList}">
@@ -30,9 +36,27 @@
                 <div class="main-right">
                     <div th:if="${notsubmit}">
                         <h5>昨日の報告未提出メンバー</h5>
-                        <div th:each="usr : ${notsubmit}">
-                            <a th:href="@{'/manager/report-search?employeeCode=' + ${usr.employeeCode}}"><p
-                                    th:text="${usr.name}"></p></a>
+                        <div class="container">
+                        <table>
+                            <thead>
+                            <tr>
+                                <th>メンバー名前</th>
+                                <th>通知メールを送信する</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            <tr class="user-container" th:each="usr : ${notsubmit}">
+                                <td>
+                                    <a th:href="@{'/manager/report-search?employeeCode=' + ${usr.employeeCode}}">
+                                        <p class="user-name" th:text="${usr.name}"></p>
+                                    </a>
+                                </td>
+                                <td>
+                                    <button class="email-icon" onclick="sendEmail(${member.id})">&#9993;</button>
+                                </td>
+                            </tr>
+                            </tbody>
+                        </table>
                         </div>
                     </div>
                 </div>
@@ -106,6 +130,37 @@
     color:#02990E;
     font-weight:bold;
   }
+
+/* styles.css */
+.container {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+<!--    height: 100vh; /* Tùy chỉnh chiều cao của container */-->
+}
+
+table {
+    width: 80%;
+    border-collapse: collapse;
+    margin-top: 20px;
+}
+
+th, td {
+    border: 1px solid #ddd;
+    padding: 8px;
+    text-align: center;
+}
+
+.user-name {
+    margin: 0;
+}
+
+.email-icon {
+    background-color: transparent;
+    border: none;
+    cursor: pointer;
+    font-size: 20px;
+}
 
   a:hover{
     color : black;

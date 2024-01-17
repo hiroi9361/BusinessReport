@@ -88,6 +88,18 @@ public class ManagerController {
                 }
             }
         }
+
+        for (User member : members) {
+            List<Report> reports = reportService.getfindAll(member.getEmployeeCode());
+            //既読or未読
+            for(Report report : reports){
+                boolean isFeedbackGiven = feedbackService.count(report.getId());
+                report.setReadStatus(isFeedbackGiven ? "既読" : "未読");
+                if(report.getReadStatus() == "未読") {
+                    member.setReadReport(false);
+                }
+            }
+        }
         //test***********
         AssignmentCreateInput assignmentCreateInput = new AssignmentCreateInput();
 

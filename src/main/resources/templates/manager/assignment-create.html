@@ -53,10 +53,11 @@
         </div>
     </div>
 </div>
-<script layout:fragment="script" src="https://code.jquery.com/jquery-3.6.4.min.js">
+<script layout:fragment="script">
     function addManager() {
         var userSelect = document.getElementById("userList");
         var managerList = document.getElementById("managerList");
+        var memberList = document.getElementById("memberList");
 
         // Loop through all selected options
         for (var i = 0; i < userSelect.selectedOptions.length; i++) {

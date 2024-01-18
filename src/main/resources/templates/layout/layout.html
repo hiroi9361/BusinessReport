@@ -56,12 +56,8 @@
                     </li>
                 </ul>
 
-<!--                <ul class="navbar-nav flex-grow-1" th:if="${#authorization.expression('hasRole(''ADMIN'')')}">-->
-<!--                <ul class="navbar-nav flex-grow-1" th:if="${#authorization.expression('hasRole(''ADMIN'')') or assignmentCreateInput.isManager}">-->
-<!--                <ul class="navbar-nav flex-grow-1" th:if="${assignmentCreateInput != null and assignmentCreateInput.isManager}">-->
-                    <ul class="navbar-nav flex-grow-1" th:if="${#authentication.principal.isManager or #authorization.expression('hasRole(''ADMIN'')')}">
+                <ul class="navbar-nav flex-grow-1" th:if="${#authentication.principal.isManager or #authorization.expression('hasRole(''ADMIN'')')}">
 
-                    <!--                <ul class="navbar-nav flex-grow-1" th:if="${assignmentCreateInput.isManager}">-->
                     <li class="nav-item">
                         <a class="nav-link text-white" th:href="@{/manager/employeeList}">ユーザー管理</a>
                     </li>

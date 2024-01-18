@@ -59,7 +59,7 @@ public interface TeamMapper {
     @Select("SELECT COUNT(*) FROM assignment WHERE employee_code = #{employeeCode} AND team_id = #{teamId}")
     int countAssignmentByEmployeeCodeAndTeamId(int employeeCode, int teamId);
 
-    @Select("SELECT COUNT(*) FROM assignment WHERE employee_code = #{employeeCode}")
+    @Select("SELECT COUNT(*) FROM assignment WHERE employee_code = #{employeeCode} AND is_manager = 1")
     int countAssignmentByEmployeeCode(int employeeCode);
 
     //test****************************

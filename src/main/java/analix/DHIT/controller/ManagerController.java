@@ -203,7 +203,6 @@ public class ManagerController {
         );
 
 
-
         //検索結果がある場合、Detailにリダイレクト
 //        redirectAttributes.addAttribute("reportId", reportId);
 
@@ -806,29 +805,6 @@ public class ManagerController {
 //        redirectAttributes.addFlashAttribute("addCompleteMSG", "始業時間を『" + setting.getStartTime() + "』、終業時間を『" + setting.getEndTime() + "』に設定しました。");
         return "manager/setting";
     }
-
-//    ////////// 2023/12/14 富山 START //////////
-//
-//    @GetMapping("/employeeList")
-//    public String showEmployeeList(Model model) {
-//        List<User> userList = userService.getAllEmployeeInfo();
-//        model.addAttribute("userList", userList);
-//        model.addAttribute("searchForm", new SearchForm());
-//
-//        return "employeeList";
-//    }
-//
-//    @PostMapping("/employeeList")
-//    public String searchEmployeeList(@ModelAttribute("SearchForm") SearchForm searchForm, Model model) {
-//        List<User> userList = employeeService.searchEmployees(searchForm.getSearchType(), searchForm.getSearchInput());
-//        model.addAttribute("userList", userList);
-//
-//        return "employeeList";
-//    }
-
-
-//    ////////// 2023/12/14 富山 END //////////
-
 
     private static boolean isNumeric(String input) {
         if (input == null || input.isEmpty()) {

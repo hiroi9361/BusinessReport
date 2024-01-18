@@ -164,9 +164,6 @@ public class UserService {
     public String getUserName(int employeeCode){
         return userRepository.getUserName(employeeCode);
     }
-//    public List<User> selectEmployeeList(){
-//
-//    }
 
     public List<User> getUserByName(String searchWords) {return this.userMapper.getUserByName(searchWords);}
 

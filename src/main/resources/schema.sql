@@ -11,6 +11,7 @@ SET FOREIGN_KEY_CHECKS = 1;
 CREATE TABLE IF NOT EXISTS `user` (
     `employee_code` int NOT NULL PRIMARY KEY,
     `name` varchar(50) NOT NULL,
+    `email` varchar(255) NOT NULL,
     `password` char(64) NOT NULL,
     `role` varchar(255) NOT NULL,
     `icon` mediumblob
@@ -74,3 +75,4 @@ alter table assignment add constraint FKdetrh6pu9ojx5htmct8jirhof foreign key (t
 alter table assignment add constraint FKrot3v731ri6t8i0aycum0gw5p foreign key (employee_code) references user (employee_code);
 alter table feedback add constraint FK1vm3ocsdcjgqi526qcvwbqin4 foreign key (report_id) references report (report_id);
 alter table report add constraint FKob2bc600lvaudiydtnssb0c17 foreign key (employee_code) references user (employee_code);
+

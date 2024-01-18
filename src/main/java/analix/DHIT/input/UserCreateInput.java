@@ -8,6 +8,8 @@ import org.springframework.web.multipart.MultipartFile;
 public class UserCreateInput {
     private Integer employeeCode;
     private String name;
+    private String email;
+
     private String password;
     private String role;
     private MultipartFile icon;
@@ -28,6 +30,15 @@ public class UserCreateInput {
     public void setName(String name) {
         this.name = name;
     }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
+    }
+
 
     public String getPassword() {
         return password;

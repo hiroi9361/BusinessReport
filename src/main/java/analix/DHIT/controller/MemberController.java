@@ -14,6 +14,13 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+import org.springframework.http.HttpStatus;
+
 
 import javax.mail.MessagingException;
 import java.time.DayOfWeek;
@@ -22,7 +29,6 @@ import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
-
 
 @Controller
 @RequestMapping("/member")
@@ -35,8 +41,9 @@ public class MemberController {
     private final AssignmentService assignmentService;
     private final TeamService teamService;
     private final SettingService settingService;
+    public  MailService mailService;
 
-   // private final MailService mailService;
+
 //    @Autowired
     public MemberController(UserService userService,
                             TaskLogService taskLogService,
@@ -44,7 +51,8 @@ public class MemberController {
                             FeedbackService feedbackService,
                             AssignmentService assignmentService,
                             TeamService teamService,
-                            SettingService settingService) {
+                            SettingService settingService,
+                            MailService mailService) {
         this.userService = userService;
         this.taskLogService = taskLogService;
         this.reportService = reportService;
@@ -52,7 +60,7 @@ public class MemberController {
         this.assignmentService = assignmentService;
         this.teamService = teamService;
         this.settingService = settingService;
-        //this.mailService = mailService;
+        this.mailService = mailService;
     }
 
     @GetMapping("/report/create")
@@ -769,5 +777,36 @@ public class MemberController {
 //        mailService.sendMail();
 //        return "member/userDetailsList";
 //    }
+
+
+    @GetMapping("/sendReportReminder")
+    public ResponseEntity<String> sendReportReminder(@RequestParam("employeeCode") int employeeCode,
+                                                     Model model) {
+
+        User member = userService.getUserByEmployeeCode(employeeCode);
+        String memberEmail = member.getEmail();
+        String memberName = member.getName();
+
+        String subject = "【DHITシステム】報告提出の通知";
+        String body = "昨日、報告未提出があります。\n" +
+                "\n" +
+                "下記より報告を行ってください。\n" +
+                "http://localhost:8080/login\n" +
+                "※当メールは送信専用となっております。";
+
+        try {
+            if (!memberEmail.isEmpty()) {
+                mailService.sendMail(memberEmail, subject, body);
+                return ResponseEntity.ok("{\"message\":\"" + memberName + "\"}");
+            } else {
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                        .body("Member email is empty");
+            }
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(memberName + "のメール送信に失敗しました" + ". Error: " + e.getMessage());
+        }
+    }
 }
+
 

@@ -402,7 +402,7 @@ public class ManagerController {
             }
 
             // データ処理
-            userService.inputDataFromCsv(csvFile);
+            userService.saveDataFromCsv(csvFile);
 
             model.addAttribute("message",
                     "CSVデータがデータベースに正常に保存されました");

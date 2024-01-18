@@ -85,6 +85,29 @@ public class UserService {
         this.userMapper.insertEmployeeInformation(userCreateInput);
     }
 
+    @Transactional
+    public void saveDataFromCsv(MultipartFile csvFile) {
+        try (BufferedReader reader = new BufferedReader(new InputStreamReader(csvFile.getInputStream()))) {
+            String line;
+            while ((line = reader.readLine()) != null) {
+                String[] columns = line.split(",");
+
+                User entity = new User();
+                entity.setEmployeeCode(Integer.parseInt(columns[0]));
+                entity.setName(columns[1]);
+                entity.setPassword(columns[2]);
+                entity.setRole(columns[3]);
+                entity.setIcon(columns[0].trim());
+                // Set other fields as needed
+
+                userRepository.save(entity);
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+            // Handle the exception as needed
+            throw new RuntimeException("Failed to read CSV file: " + e.getMessage());
+        }
+    }
     //従業員情報一覧を表示させるのに必要な情報を取得
     public List<User> getAllEmployeeInfo() {
         return this.userRepository.selectAllEmployeeInfomation();

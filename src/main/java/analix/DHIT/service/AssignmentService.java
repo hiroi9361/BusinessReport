@@ -117,4 +117,9 @@ public class AssignmentService {
         return count > 0;
     }
 
+    public boolean getCountIsManagerByEmployeeCode(int employeeCode) {
+        int count = this.assignmentRepository.countByEmployeeCode(employeeCode);
+        return count > 0;
+    }
+
 }

@@ -59,6 +59,9 @@ public interface TeamMapper {
     @Select("SELECT COUNT(*) FROM assignment WHERE employee_code = #{employeeCode} AND team_id = #{teamId}")
     int countAssignmentByEmployeeCodeAndTeamId(int employeeCode, int teamId);
 
+    @Select("SELECT COUNT(*) FROM assignment WHERE employee_code = #{employeeCode}")
+    int countAssignmentByEmployeeCode(int employeeCode);
+
     //test****************************
     @Select("SELECT is_manager FROM assignment WHERE employee_code = #{employeeCode} AND team_id = #{teamId}")
     boolean getIsManager(int employeeCode, int teamId);

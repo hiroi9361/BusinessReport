@@ -29,25 +29,14 @@
     <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light border-bottom box-shadow mb-3 text-white fixed-top"
          style="background-color:#02990E">
         <div class="container-fluid">
-            <a class="navbar-brand" th:href=@{/}><img th:src="@{/img/logo-D-HIT-yoko.png}" class="nav-logo"
-                                                      style="height:50px;"/></a>
+            <a class="navbar-brand" th:href=@{/}><img th:src="@{/img/logo-D-HIT-yoko.png}" class="nav-logo" style="height:50px;"/></a>
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target=".navbar-collapse"
                     aria-controls="navbarSupportedContent"
                     aria-expanded="false" aria-label="Toggle navigation">
                 <span class="navbar-toggler-icon"></span>
             </button>
             <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
-                <ul class="navbar-nav flex-grow-1" th:if="${#authorization.expression('hasRole(''ADMIN'')')}">
-<!--                <ul class="navbar-nav flex-grow-1" th:if="${#authorization.expression('hasRole(''ADMIN'')')}or${is_Manager}==1">-->
-                    <li class="nav-item">
-                        <a class="nav-link text-white" th:href="@{/manager/employeeList}">ユーザー一覧</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link text-white" th:href="@{/manager/teamlist}">チーム一覧</a>
-                    </li>
 
-
-                </ul>
                 <ul class="navbar-nav flex-grow-1　" th:unless="${#authorization.expression('hasRole(''ADMIN'')')}">
                     <li class="nav-item">
                         <a class="nav-link text-white" th:href="@{/member/user-main}">メイン</a>
@@ -58,19 +47,27 @@
                     <li class="nav-item">
                         <a class="nav-link text-white" th:href="@{/member/report-search}">報告一覧</a>
                     </li>
-                  
-                  
                     <li class="nav-item">
                         <a class="nav-link text-white" th:href="@{/member/task-list}">タスク一覧</a>
                     </li>
-                  
-                  
                     <li class="nav-item">
                         <a class="nav-link text-white" th:href="@{/member/mail}">メール送る</a>
                     </li>
                 </ul>
 
+<!--                <ul class="navbar-nav flex-grow-1" th:if="${#authorization.expression('hasRole(''ADMIN'')')}">-->
+<!--                <ul class="navbar-nav flex-grow-1" th:if="${#authorization.expression('hasRole(''ADMIN'')') or assignmentCreateInput.isManager}">-->
+<!--                <ul class="navbar-nav flex-grow-1" th:if="${assignmentCreateInput != null and assignmentCreateInput.isManager}">-->
+                    <ul class="navbar-nav flex-grow-1" th:if="${#authentication.principal.isManager or #authorization.expression('hasRole(''ADMIN'')')}">
 
+                    <!--                <ul class="navbar-nav flex-grow-1" th:if="${assignmentCreateInput.isManager}">-->
+                    <li class="nav-item">
+                        <a class="nav-link text-white" th:href="@{/manager/employeeList}">ユーザー管理</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link text-white" th:href="@{/manager/teamlist}">チーム管理</a>
+                    </li>
+                </ul>
 
                     <ul class="navbar-nav text-end ">
                         <li class="nav-item">

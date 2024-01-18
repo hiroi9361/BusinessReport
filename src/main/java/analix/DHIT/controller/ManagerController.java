@@ -383,17 +383,14 @@ public class ManagerController {
     public String uploadCsv(@RequestParam("file") MultipartFile csvFile, Model model) {
         try {
             // 正しいCSVファイル確認
-            if (!csvFile.getContentType().equals("text/csv")) {
+            if (!Objects.requireNonNull(csvFile.getContentType()).equals("text/csv")) {
                 model.addAttribute("message",
                         "ファイル形式が無効です。CSVファイルをアップロードしてください");
                 return "redirect:/manager/upload";
             }
 
-            // ファイル保存、ファイルパス取得
-            String csvFilePath = saveCsvFile(csvFile);
-
             // データ処理
-            userService.saveDataFromCsv(csvFile);
+            userService.inputDataFromCsv(csvFile);
 
             model.addAttribute("message",
                     "CSVデータがデータベースに正常に保存されました");

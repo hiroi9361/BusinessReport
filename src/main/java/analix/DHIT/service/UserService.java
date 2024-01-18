@@ -80,7 +80,7 @@ public class UserService {
     }
 
     @Transactional
-    public void saveDataFromCsv(MultipartFile csvFile) {
+    public void inputDataFromCsv(MultipartFile csvFile) {
         try (BufferedReader reader = new BufferedReader(new InputStreamReader(csvFile.getInputStream()))) {
             String line;
             while ((line = reader.readLine()) != null) {

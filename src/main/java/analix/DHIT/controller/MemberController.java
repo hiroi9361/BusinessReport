@@ -4,6 +4,8 @@ package analix.DHIT.controller;
 import analix.DHIT.input.*;
 import analix.DHIT.model.*;
 import analix.DHIT.service.*;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
@@ -13,12 +15,14 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import javax.mail.MessagingException;
 import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
+
 
 @Controller
 @RequestMapping("/member")
@@ -32,6 +36,8 @@ public class MemberController {
     private final TeamService teamService;
     private final SettingService settingService;
 
+   // private final MailService mailService;
+//    @Autowired
     public MemberController(UserService userService,
                             TaskLogService taskLogService,
                             ReportService reportService,
@@ -46,6 +52,7 @@ public class MemberController {
         this.assignmentService = assignmentService;
         this.teamService = teamService;
         this.settingService = settingService;
+        //this.mailService = mailService;
     }
 
     @GetMapping("/report/create")
@@ -502,12 +509,53 @@ public class MemberController {
 
     }
 
-    @GetMapping()
+    @GetMapping("/task-list")
     public String taskList(Model model){
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         int myEmployeeCode = Integer.parseInt(authentication.getName());
 
-        return "";
+        List<TaskLog> taskLogs = new ArrayList<>();
+        taskLogs = this.taskLogService.taskList(myEmployeeCode);
+        User member = userService.getUserByEmployeeCode(myEmployeeCode);
+        boolean Search = false;
+        model.addAttribute("taskList",taskLogs);
+        model.addAttribute("member",member);
+        model.addAttribute("TaskSearchInput",new TaskSearchInput());
+        model.addAttribute("Search",Search);
+        return "member/taskList";
+    }
+
+    @PostMapping("/task-list")
+    public String taskSearchList(TaskSearchInput taskSearchInput, Model model){
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        int myEmployeeCode = Integer.parseInt(authentication.getName());
+        taskSearchInput.setEmployeeCode(myEmployeeCode);
+//        myEmployeeCodeで取得していたものをフィルター条件で取得する為に
+//        ここをフィルターの条件でDBから持ってくる処理に変える
+        List<TaskLog> taskLogs = new ArrayList<>();
+        if(taskSearchInput.getState().isEmpty() && taskSearchInput.getProgressRateAbove()==0 && taskSearchInput.getProgressRateBelow()==0) {
+            taskLogs = this.taskLogService.taskList(myEmployeeCode);
+        }else{
+            taskLogs = this.taskLogService.taskFilter(taskSearchInput);
+        }
+        model.addAttribute("taskList",taskLogs);
+//        ここをフィルターの条件でDBから持ってくる処理に変える
+        boolean Search = true;
+        User member = userService.getUserByEmployeeCode(myEmployeeCode);
+        model.addAttribute("member",member);
+        model.addAttribute("TaskSearchInput",new TaskSearchInput());
+        model.addAttribute("Search",Search);
+
+        return "member/taskList";
+    }
+
+    @GetMapping("/taskDetail/{sorting}")
+    public String displayReportDetail(@PathVariable("sorting") int sorting, Model model) {
+
+        List<TaskDetailInput> taskDetailInput = new ArrayList<>();
+        taskDetailInput = this.taskLogService.taskDetail(sorting);
+        model.addAttribute("taskDetail",taskDetailInput);
+        return "member/taskDetail";
     }
 
     @GetMapping("/user-main")
@@ -519,6 +567,19 @@ public class MemberController {
         if (myast == null) {
             myast = new ArrayList<>();
         }
+
+        LocalDate targetDate;
+        LocalDate firstDayOfLastWeek = LocalDate.now().minusWeeks(1).with(DayOfWeek.MONDAY);
+        DayOfWeek currentDayOfWeek = LocalDate.now().getDayOfWeek();
+
+        if (currentDayOfWeek.equals(DayOfWeek.MONDAY) ||
+                currentDayOfWeek.equals(DayOfWeek.SATURDAY) ||
+                currentDayOfWeek.equals(DayOfWeek.SUNDAY)) {
+            targetDate = firstDayOfLastWeek.plusDays(4);
+        } else {
+            targetDate = LocalDate.now().minusDays(1);
+        }
+        boolean hasSentReport = reportService.existsReport(employeeCode, targetDate);
 
         List<Assignment> allast = assignmentService.getAllAssignment();
 
@@ -638,6 +699,8 @@ public class MemberController {
 
         mav.addObject("todaymembers", todaymem);
         mav.addObject("notsubmit", notsubmem);
+        mav.addObject("targetDate", targetDate);
+        mav.addObject("hasSentReport", hasSentReport);
 
         mav.setViewName("member/user-main");
 
@@ -660,8 +723,7 @@ public class MemberController {
     //ユーザ情報編集情報処理
     @PostMapping("/userDetailsList/complete")
     public String editComplete(@ModelAttribute("userEditInput") UserEditInput userEditInput,
-                               RedirectAttributes redirectAttributes)
-    {
+                               RedirectAttributes redirectAttributes) {
         //↓ログイン中のemployeeCodeをAuthentication(認証情報)から取得
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         int employeeCode = Integer.parseInt(authentication.getName());
@@ -679,4 +741,33 @@ public class MemberController {
         redirectAttributes.addFlashAttribute("editCompleteMSG", "情報を更新しました");
         return "redirect:/member/userDetailsList";
     }
+
+//以下メールを送る記述
+//    @Autowired
+//    private MailSender sender;
+//
+//    @GetMapping("/mail")
+//    public String nandemoii() {
+//
+//        SimpleMailMessage msg = new SimpleMailMessage();
+//        //↓ここに送信先のメールを記述
+//        msg.setTo("hiroi9361@gmail.com");
+//        msg.setSubject("テストメール");//メールタイトル
+//        msg.setText("Spring Boot より本文送信"); //本文の設定
+//        //メールを送る
+//        this.sender.send(msg);
+//
+//        return "member/userDetailsList";
+//    }
+
+
+/*以下メールを送る記述すごいやつバージョン
+    上記のコメントアウトしてるやつは文章しか送れませんが以下の記述はhtmlや添付ファイルも送れます(MailServiceクラスに記述)
+ */
+//    @GetMapping("/mail")
+//    public String sendMail() throws MessagingException, jakarta.mail.MessagingException {
+//        mailService.sendMail();
+//        return "member/userDetailsList";
+//    }
 }
+

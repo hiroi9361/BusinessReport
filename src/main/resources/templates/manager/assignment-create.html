@@ -8,33 +8,145 @@
 <body>
 <div layout:fragment="content">
     <div class="container mt-3">
-    <h1 class="text-center">メンバー追加</h1>
-    <h1 th:text="${team.name}" class="text-center"></h1>
-    <div class="container-form">
-        <form th:action="@{/manager/assignment/create}" th:object="${assignmentCreateInput}" method="post">
-            <input type="hidden" name="teamId" th:value="${team.teamId}"/>
-            <div class="form-group mb-3">
-                <label>ユーザー</label>
-                <select th:field="${assignmentCreateInput.employeeCode}" class="form-select">
-                    <option th:each="user : ${users}" th:text="${user.name}" name="employeeCode" th:value="${user.employeeCode}"></option>
-                </select>
-            </div>
-            <div class="form-group mb-3">
-                <label>役割</label>
-                <select name="isManager" class="form-select">
-                    <option value="false">Member</option>
-                    <option value="true">Manager</option>
-                </select>
-            </div>
-            <div class="form-group mb-3">
-                <button type="submit" class="w-100 btn btn-lg btn-success">追加</button>
-            </div>
-        </form>
-    </div>
+        <h1 class="text-center">メンバー編集</h1>
+        <h1 th:text="${team.name}" class="text-center"></h1>
+        <div class="container-form">
+            <form th:action="@{/manager/assignment/create}" th:object="${assignmentCreateInput}" id="test" method="post">
+                <input type="hidden" name="teamId" th:value="${team.teamId}"/>
+                <label>Manager</label>
+                <div class="form-group mb-3 d-flex">
+                    <select id="managerList" class="form-select" name="employeeCode" multiple>
+                        <option th:each="manager : ${managers}" th:text="${manager.name}"
+                                th:value="${manager.employeeCode}"></option>
+                    </select>
+                    <div>
+                        <button type="button" onclick="addManager()" class="btn btn-success">←追加</button>
+                        <button type="button" onclick="removeManager()" class="btn btn-success">→削除</button>
+                    </div>
+                    <select id="userList" class="form-select" multiple>
+                        <option th:each="user : ${users}" th:text="${user.name}"
+                                th:value="${user.employeeCode}"></option>
+                    </select>
+                </div>
+                <label>Member</label>
+                <div class="form-group mb-3 d-flex">
+                    <select id="memberList" class="form-select" name="employeeCode" multiple>
+                        <option th:each="member : ${members}" th:text="${member.name}"
+                                th:value="${member.employeeCode}"></option>
+                    </select>
+                    <div>
+                        <button type="button" onclick="addMember()" class="btn btn-success">←追加</button>
+                        <button type="button" onclick="removeMember()" class="btn btn-success">→削除</button>
+                    </div>
+                    <select id="usersList" class="form-select" multiple>
+                        <option th:each="user : ${users}" th:text="${user.name}"
+                                th:value="${user.employeeCode}"></option>
+                    </select>
+                </div>
+                <div class="form-group mb-3">
+                    <button type="submit" class="w-100 btn btn-lg btn-success">追加</button>
+                </div>
+            </form>
+        </div>
         <div class="button-box">
-    <a th:href=@{/manager/teamlist}>チーム一覧ページに戻る</a>
+            <a th:href=@{/manager/teamlist}>チーム一覧ページに戻る</a>
         </div>
     </div>
 </div>
+<script layout:fragment="script">
+    function addManager() {
+        var userSelect = document.getElementById("userList");
+        var managerList = document.getElementById("managerList");
+        var memberList = document.getElementById("memberList");
+
+        // Loop through all selected options
+        for (var i = 0; i < userSelect.selectedOptions.length; i++) {
+            var userOption = userSelect.selectedOptions[i];
+
+            // Check if the option is not already in managerList and not in memberList
+            if (!isOptionInManagerList(userOption, managerList) && !isOptionInList(userOption, memberList)) {
+                // Create a new option element for the managerList
+                var managerAdd = document.createElement("option");
+                managerAdd.text = userOption.text;
+                managerAdd.value = userOption.value;
+
+                // Add the new option to the managerList
+                managerList.add(managerAdd);
+            }
+        }
+    }
+
+    // Helper function to check if an option is already in the managerList
+    function isOptionInManagerList(option, managerList) {
+        for (var i = 0; i < managerList.options.length; i++) {
+            if (managerList.options[i].value === option.value) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    function addMember() {
+        var userSelect = document.getElementById("usersList");
+        var memberList = document.getElementById("memberList");
+        var managerList = document.getElementById("managerList"); // Add this line
+
+        // Loop through all selected options
+        for (var i = 0; i < userSelect.selectedOptions.length; i++) {
+            var userOption = userSelect.selectedOptions[i];
+
+            // Check if the option is not already in memberList and not in managerList
+            if (!isOptionInList(userOption, memberList) && !isOptionInManagerList(userOption, managerList)) {
+                // Create a new option element for the memberList
+                var memberAdd = document.createElement("option");
+                memberAdd.text = userOption.text;
+                memberAdd.value = userOption.value;
+
+                // Add the new option to the memberList
+                memberList.add(memberAdd);
+            }
+        }
+    }
+
+    // Helper function to check if an option is already in the list
+    function isOptionInList(option, list) {
+        for (var i = 0; i < list.options.length; i++) {
+            if (list.options[i].value === option.value) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    function removeMember() {
+        var memberList = document.getElementById("memberList");
+        var selectedIndexes = [];
+        // Get the selected indexes in reverse order
+        for (var i = memberList.options.length - 1; i >= 0; i--) {
+            if (memberList.options[i].selected) {
+                selectedIndexes.push(i);
+            }
+        }
+        // Remove the selected options
+        selectedIndexes.forEach(function (index) {
+            memberList.remove(index);
+        });
+    }
+
+    function removeManager() {
+        var managerList = document.getElementById("managerList");
+        var selectedIndexes = [];
+        // Get the selected indexes in reverse order
+        for (var i = managerList.options.length - 1; i >= 0; i--) {
+            if (managerList.options[i].selected) {
+                selectedIndexes.push(i);
+            }
+        }
+        // Remove the selected options
+        selectedIndexes.forEach(function (index) {
+            managerList.remove(index);
+        });
+    }
+</script>
 </body>
 </html>

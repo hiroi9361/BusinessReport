@@ -88,6 +88,18 @@ public class ManagerController {
                 }
             }
         }
+
+        for (User member : members) {
+            List<Report> reports = reportService.getfindAll(member.getEmployeeCode());
+            //既読or未読
+            for(Report report : reports){
+                boolean isFeedbackGiven = feedbackService.count(report.getId());
+                report.setReadStatus(isFeedbackGiven ? "既読" : "未読");
+                if(report.getReadStatus() == "未読") {
+                    member.setReadReport(false);
+                }
+            }
+        }
         //test***********
         AssignmentCreateInput assignmentCreateInput = new AssignmentCreateInput();
 
@@ -662,11 +674,31 @@ public class ManagerController {
         model.addAttribute("title", title);
 
         Team team = this.teamService.getTeamById(teamId);
-        List<User> users = userService.getAllEmployeeInfo();
+        List<User> allUser = userService.getAllEmployeeInfo();
+        List<User>users=new ArrayList<>();
+        for(User user : allUser){
+            if(!user.getName().equals("SuperAdmin")){
+                users.add(userService.getUserByEmployeeCode(user.getEmployeeCode()));
+            }
+        }
 
         model.addAttribute("team", team);
         model.addAttribute("users", users);
         model.addAttribute("assignmentCreateInput", new AssignmentCreateInput());
+
+        List<Assignment> assignments = assignmentService.getAssignmentByTeam(teamId);
+
+        List<User> managers = new ArrayList<User>();
+        List<User> members = new ArrayList<User>();
+        for(Assignment ast : assignments){
+            if(ast.getIsManager()){
+                managers.add(userService.getUserByEmployeeCode(ast.getEmployeeCode()));
+            }else{
+                members.add(userService.getUserByEmployeeCode(ast.getEmployeeCode()));
+            }
+        }
+        model.addAttribute("managers", managers);
+        model.addAttribute("members", members);
 
         return "manager/assignment-create";
     }

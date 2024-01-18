@@ -6,16 +6,23 @@ import analix.DHIT.input.UserEditInput;
 import analix.DHIT.logic.IconConvertToBase64;
 import analix.DHIT.logic.EncodePasswordSha256;
 import analix.DHIT.mapper.UserMapper;
+import analix.DHIT.model.Assignment;
 import analix.DHIT.model.User;
-import analix.DHIT.repository.MysqlUserRepository;
 import analix.DHIT.repository.UserRepository;
+//import com.opencsv.bean.CsvToBean;
+//import com.opencsv.bean.CsvToBeanBuilder;
+//import com.opencsv.bean.HeaderColumnNameMappingStrategy;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.*;
 import java.util.Base64;
+import java.util.Collections;
 import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
 //DBに接続するための処理を記述するところ
 
 @Service
@@ -25,7 +32,6 @@ public class UserService {
     private final UserMapper userMapper;
     private final EncodePasswordSha256 encodePasswordSha256;
     private final IconConvertToBase64 iconConvertToBase64;
-    private UserService csvservice;
 
 
     public UserService(UserRepository userRepository, UserMapper userMapper,
@@ -78,32 +84,6 @@ public class UserService {
         //↓MapperのクエリへUserCreateInputへ
         this.userMapper.insertEmployeeInformation(userCreateInput);
     }
-
-    @Transactional
-    public void inputDataFromCsv(MultipartFile csvFile) {
-        try (BufferedReader reader = new BufferedReader(new InputStreamReader(csvFile.getInputStream()))) {
-            String line;
-            while ((line = reader.readLine()) != null) {
-                String[] columns = line.split(",");
-
-                User entity = new User();
-                // Assuming the CSV structure is like: column1, column2, column3, ...
-                entity.setEmployeeCode(Integer.parseInt(columns[0].trim()));
-                entity.setName(columns[1].trim());
-                entity.setPassword(columns[2].trim());
-                entity.setRole(columns[3].trim());
-                entity.setIcon(columns[4].trim());
-                // Set other columns as needed
-
-                userRepository.save(entity);
-            }
-        } catch (IOException e) {
-            e.printStackTrace();
-            // 例外処理
-            throw new RuntimeException("CSVファイルの読み取りに失敗しました:" + e.getMessage());
-        }
-    }
-
 
     //従業員情報一覧を表示させるのに必要な情報を取得
     public List<User> getAllEmployeeInfo() {

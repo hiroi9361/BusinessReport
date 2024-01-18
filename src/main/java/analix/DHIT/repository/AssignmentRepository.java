@@ -25,4 +25,6 @@ public interface AssignmentRepository {
     boolean getIsManager(int employeeCode, int teamId);
 
     int countIsManager(int employeeCode, int reportId);
+
+    int countByEmployeeCode(int employeeCode);
 }

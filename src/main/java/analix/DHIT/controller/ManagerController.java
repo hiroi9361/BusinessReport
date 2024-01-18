@@ -581,6 +581,7 @@ public class ManagerController {
     @GetMapping("/teamlist")
     public String displayTeamList(Model model, RedirectAttributes redirectAttributes){
         List<Team> teamList = teamService.getAllTeam();
+        List<User> allUser = userService.getAllEmployeeInfo();
         model.addAttribute("teamList", teamList);
         String title = "チーム一覧";
         model.addAttribute("title", title);

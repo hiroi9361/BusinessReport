@@ -11,11 +11,11 @@
         <h1 class="text-center">メンバー編集</h1>
         <h1 th:text="${team.name}" class="text-center"></h1>
         <div class="container-form">
-            <form th:action="@{/manager/assignment/create}" th:object="${assignmentCreateInput}" id="test" method="post">
+            <form th:action="@{/manager/assignment/create}" th:object="${assignmentCreateInput.assignments}" id="test" method="post">
                 <input type="hidden" name="teamId" th:value="${team.teamId}"/>
                 <label>Manager</label>
                 <div class="form-group mb-3 d-flex">
-                    <select id="managerList" class="form-select" name="employeeCode" multiple>
+                    <select id="managerList" class="form-select" multiple>
                         <option th:each="manager : ${managers}" th:text="${manager.name}"
                                 th:value="${manager.employeeCode}"></option>
                     </select>
@@ -28,6 +28,9 @@
                                 th:value="${user.employeeCode}"></option>
                     </select>
                 </div>
+                <button type="submit" class="w-100 btn btn-lg btn-success">追加</button>
+
+            </form>
                 <label>Member</label>
                 <div class="form-group mb-3 d-flex">
                     <select id="memberList" class="form-select" name="employeeCode" multiple>
@@ -46,7 +49,7 @@
                 <div class="form-group mb-3">
                     <button type="submit" class="w-100 btn btn-lg btn-success">追加</button>
                 </div>
-            </form>
+<!--            </form>-->
         </div>
         <div class="button-box">
             <a th:href=@{/manager/teamlist}>チーム一覧ページに戻る</a>

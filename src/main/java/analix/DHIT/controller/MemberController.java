@@ -21,6 +21,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.http.HttpStatus;
 
+import org.springframework.web.context.request.RequestContextHolder;
+import org.springframework.web.context.request.ServletRequestAttributes;
+import jakarta.servlet.http.HttpServletRequest;
 
 import javax.mail.MessagingException;
 import java.time.DayOfWeek;
@@ -41,7 +44,7 @@ public class MemberController {
     private final AssignmentService assignmentService;
     private final TeamService teamService;
     private final SettingService settingService;
-    public  MailService mailService;
+    private final   MailService mailService;
 
 
 //    @Autowired
@@ -750,38 +753,13 @@ public class MemberController {
         return "redirect:/member/userDetailsList";
     }
 
-//以下メールを送る記述
-//    @Autowired
-//    private MailSender sender;
-//
-//    @GetMapping("/mail")
-//    public String nandemoii() {
-//
-//        SimpleMailMessage msg = new SimpleMailMessage();
-//        //↓ここに送信先のメールを記述
-//        msg.setTo("hiroi9361@gmail.com");
-//        msg.setSubject("テストメール");//メールタイトル
-//        msg.setText("Spring Boot より本文送信"); //本文の設定
-//        //メールを送る
-//        this.sender.send(msg);
-//
-//        return "member/userDetailsList";
-//    }
-
-
-/*以下メールを送る記述すごいやつバージョン
-    上記のコメントアウトしてるやつは文章しか送れませんが以下の記述はhtmlや添付ファイルも送れます(MailServiceクラスに記述)
- */
-//    @GetMapping("/mail")
-//    public String sendMail() throws MessagingException, jakarta.mail.MessagingException {
-//        mailService.sendMail();
-//        return "member/userDetailsList";
-//    }
-
-
+    //報告未提出メンバーへ通知メールを送信する
     @GetMapping("/sendReportReminder")
     public ResponseEntity<String> sendReportReminder(@RequestParam("employeeCode") int employeeCode,
                                                      Model model) {
+
+        HttpServletRequest request = ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes()).getRequest();
+        String baseUrl = request.getRequestURL().toString().replace(request.getRequestURI(), "");
 
         User member = userService.getUserByEmployeeCode(employeeCode);
         String memberEmail = member.getEmail();
@@ -791,7 +769,7 @@ public class MemberController {
         String body = "昨日、報告未提出があります。\n" +
                 "\n" +
                 "下記より報告を行ってください。\n" +
-                "http://localhost:8080/login\n" +
+                baseUrl + "/login\n" +
                 "※当メールは送信専用となっております。";
 
         try {

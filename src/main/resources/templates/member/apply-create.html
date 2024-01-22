@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/web/thymeleaf/layout"
+      layout:decorate="~{layout/layout}">
+<head>
+    <meta charset="UTF-8" th:remove="tag">
+</head>
+<body>
+<div layout:fragment="content">
+    <h1 class="text-center mt-3">申請提出</h1>
+    <div class="container p-3">
+        <div class="card">
+            <div class="card-body">
+                <form class="row g-3 p-3" th:action="@{/member/apply/create}" th:object="${ApplyCreateInput}"
+                      method="post">
+                    <div class="form-group">
+                        <label class="text">申請種別：</label>
+                        <input type="radio" th:value="1" th:name="applicationType" th:text="事前申請" required checked>
+                        <input type="radio" th:value="2" th:name="applicationType" th:text="事後申請" required>
+                    </div>
+                    <div class="form-group text-left">
+                        <div class="form-row">
+                            <div class="col">
+                                <label class="text">社員番号：</label>
+                                <input name="employeeCode" class="form-control" id="employeeCode" rows="3" maxlength="50">
+                            </div>
+                            <div class="col">
+                                <label class="text">氏名：</label>
+                                <input name="employeeName" class="form-control" id="employeeName" rows="3" maxlength="50">
+                            </div>
+                        </div>
+                        <label class="text">対象日時：</label>
+                        <input type="date" class="form-control" name="date" th:value="${applyCreateInput.date}" required min="1900-01-01" max="2100-12-31"/>
+                    </div>
+                    <div class="form-group">
+                        <label class="text">勤怠内容：</label>
+                        <input type="radio" th:value="1" th:name="attendanceType" th:text="遅刻" required checked>
+                        <input type="radio" th:value="2" th:name="attendanceType" th:text="早退" required>
+                        <input type="radio" th:value="3" th:name="attendanceType" th:text="外出" required>
+                        <input type="radio" th:value="4" th:name="attendanceType" th:text="振替休日" required>
+                        <input type="radio" th:value="5" th:name="attendanceType" th:text="有給休暇" required>
+                        <input type="radio" th:value="6" th:name="attendanceType" th:text="特別休暇" required>
+                        <input type="radio" th:value="7" th:name="attendanceType" th:text="欠勤" required>
+                    </div>
+                    <div class="form-group">
+                        <label class="text">理由 / 備考：</label>
+                        <input name="reason" class="form-control" id="reason" rows="3" maxlength="100">
+                    </div>
+                    <div class="col-12">
+                        <button type="submit" class="w-100 btn btn-lg btn-primary">提出</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+<style layout:fragment="style">
+    .btn-danger {
+            /*width: 20%;*/
+            white-space: nowrap;
+            float: left;
+        }
+        @media (max-width: 768px) {
+            .overflow-x-hidden {
+                overflow-x: hidden !important;
+            }
+            .d-flex {
+                display: block !important;
+            }
+
+            #startTime_mb, #endTime_mb, #date_mb, #radio-check_mb {
+                display: flex !important;
+            }
+
+            .row .d-flex {
+                margin-top: 5px;
+                margin-bottom: 5px;
+            }
+            #form-select_mb{
+                width : 100%;
+            }
+
+            .d-flex input[type="text"] {
+                margin-top: 5px;
+                margin-bottom: 5px;
+            }
+            .d-flex input[type="number"] {
+                margin-bottom: 5px;
+                width : 50%;
+            }
+            .navbar {
+                display: flex;
+            }
+        }
+
+        @media (min-width: 769px) {
+            #form-select_mb{
+                width : 300px;
+            }
+        }
+</style>
+</body>
+</html>

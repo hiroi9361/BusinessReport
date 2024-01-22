@@ -4,8 +4,6 @@ package analix.DHIT.controller;
 import analix.DHIT.input.*;
 import analix.DHIT.model.*;
 import analix.DHIT.service.*;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
@@ -18,14 +16,12 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
 import org.springframework.http.HttpStatus;
 
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 import jakarta.servlet.http.HttpServletRequest;
 
-import javax.mail.MessagingException;
 import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
@@ -784,6 +780,141 @@ public class MemberController {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
                     .body(memberName + "のメール送信に失敗しました" + ". Error: " + e.getMessage());
         }
+    }
+
+
+    /////////////////////////////////////////////////////////////////////////
+    @GetMapping("/apply/create")
+    public String displayApplyCreate(
+            Model model
+    ) {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        //バリデーションInteger
+        int employeeCode = Integer.parseInt(authentication.getName());
+        //employeeCodeを使用し、直近のreportがあるか調べる(取得)
+        String latestReportId = reportService.getLatestIdByEmployeeCode(employeeCode);
+        ApplyCreateInput applyCreateInput = new ApplyCreateInput();
+        SettingInput settingInput = new SettingInput();
+        //java.timeパッケージから現在の時刻を取得
+        applyCreateInput.setDate(LocalDate.now());
+
+        String title = "報告作成";
+        model.addAttribute("title", title);
+        //規定の終業時間を取得し、セット
+        Setting setting = settingService.getSettingTime(employeeCode);
+        settingInput.setStartTime(setting.getStartTime());
+        settingInput.setEndTime(setting.getEndTime());
+        settingInput.setEmployment(false);
+        model.addAttribute("settingInput", settingInput);
+        if (latestReportId == null) {
+            model.addAttribute("applyCreateInput", applyCreateInput);
+            return "member/apply-create";
+        }
+        //以下reportがひとつでもあった場合の処理
+        //既存のreportidを参照にreportModelの値をすべてset
+        Report report = reportService.getReportById(Integer.parseInt(latestReportId));
+        //(前日のreport内容を引継ぎ入力欄に記入)
+        applyCreateInput.setStartTime(report.getStartTime());
+        applyCreateInput.setEndTime(report.getEndTime());
+        //report_idを参照してtask_Logの値を取得しset
+        applyCreateInput.setTaskLogs(taskLogService.getIncompleteTaskLogsByReportId(Integer.parseInt(latestReportId)));
+
+
+        model.addAttribute("applyCreateInput", applyCreateInput);
+        return "member/apply-create";
+
+    }
+
+    //↓Transactionalはトランザクション処理で一連の流れが失敗した場合ロールバックする
+    @Transactional
+    @PostMapping("/apply/create")
+    public String createApply(ApplyCreateInput applyCreateInput, RedirectAttributes redirectAttributes, SettingInput settingInput, Model model) {
+
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        int employeeCode = Integer.parseInt(authentication.getName());
+
+        //遅刻早退を判定
+        Setting setting = settingService.getSettingTime(employeeCode);
+
+        if (!settingInput.getEmployment()) {
+            if (settingInput.getStartTime().isAfter(setting.getStartTime()) || settingInput.getEndTime().isBefore(setting.getEndTime())) {
+                String reason = "";
+                if (settingInput.getStartTime().isAfter(setting.getStartTime()) && settingInput.getEndTime().isBefore(setting.getEndTime())) {
+                    reason = "※遅刻 及び 早退の理由を記入してください";
+                    applyCreateInput.setIsLateness(true);
+                    applyCreateInput.setIsLeftEarly(true);
+                } else if (settingInput.getStartTime().isAfter(setting.getStartTime())) {
+                    reason = "※遅刻の理由を記入してください";
+                    applyCreateInput.setIsLateness(true);
+                } else if (settingInput.getEndTime().isBefore(setting.getEndTime())) {
+                    reason = "※早退の理由を記入してください";
+                    applyCreateInput.setIsLeftEarly(true);
+                }
+
+                settingInput.setEmployment(true);
+
+                model.addAttribute("settingInput", settingInput);
+                model.addAttribute("applyCreateInput", applyCreateInput);
+                String title = "報告作成";
+                model.addAttribute("title", title);
+                model.addAttribute("reason", reason);
+                return "member/apply-create";
+            }
+        }
+
+        if (reportService.existsReport(employeeCode, applyCreateInput.getDate())) {
+            redirectAttributes.addFlashAttribute("error", applyCreateInput.getDate() + "は既に業務報告書が存在しています");
+            return "redirect:/member/apply/create";
+        }
+
+        //遅刻・早退判定
+        if (settingInput.getStartTime().isAfter(setting.getStartTime()) && settingInput.getEndTime().isBefore(setting.getEndTime())) {
+            applyCreateInput.setIsLateness(true);
+            applyCreateInput.setIsLeftEarly(true);
+        } else if (settingInput.getStartTime().isAfter(setting.getStartTime())) {
+            applyCreateInput.setIsLateness(true);
+        } else if (settingInput.getEndTime().isBefore(setting.getEndTime())) {
+            applyCreateInput.setIsLeftEarly(true);
+        }
+
+        //newReportIdには新たにInsertされたreportのIDが入る
+        int newReportId = reportService.create(
+                employeeCode,
+                applyCreateInput.getCondition(),
+                applyCreateInput.getImpressions(),
+                applyCreateInput.getTomorrowSchedule(),
+                applyCreateInput.getDate(),
+                applyCreateInput.getEndTime(),
+                applyCreateInput.getStartTime(),
+                applyCreateInput.getIsLateness(),
+                applyCreateInput.getLatenessReason(),
+                applyCreateInput.getIsLeftEarly(),
+                applyCreateInput.getConditionRate()
+        );
+
+        // タスクが存在するならタスクログに追加
+        if (applyCreateInput.getTaskLogs() != null) {
+            List<TaskLog> taskLogs = applyCreateInput.getTaskLogs();
+            taskLogs.forEach(x -> x.setReportId(newReportId));
+            for (TaskLog taskLog : taskLogs) {
+                if (taskLog != null && taskLog.getName() != null) {
+                    taskLog.setCounter(taskLog.getCounter() + 1);
+                    if(taskLog.getCounter() == 1){
+                        int maxNum = taskLogService.maxTask() + 1;
+                        taskLog.setSorting(maxNum);
+                    }
+                    taskLogService.create(taskLog);
+                }
+            }
+        }
+
+        return "redirect:/member/apply/create-completed";
+    }
+
+    @GetMapping("/apply/create-completed")
+    public String displayApplyCreateCompleted(
+    ) {
+        return "member/apply-create-completed";
     }
 }
 

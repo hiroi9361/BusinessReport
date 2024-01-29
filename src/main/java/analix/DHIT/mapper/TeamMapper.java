@@ -25,6 +25,11 @@ public interface TeamMapper {
     @Delete("DELETE FROM team WHERE team_id = #{teamId}")
     void deleteById(int teamId);
 
+    //csv関係
+    //一括登録時に取得したチーム名と一致するチームが存在するかどうか
+    @Select("select team_id from team where team.name = #{name}")
+    Integer selectTeamIdByName(String name);
+
 //    ここからAssignment
 
     @Select("SELECT * FROM assignment")

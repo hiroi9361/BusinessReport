@@ -50,5 +50,14 @@ public class MysqlUserRepository implements UserRepository {
 
     }
 
+    //csv関係
+    @Override
+    public int countByEmployeeCode(int employeeCode) {
+        return this.userMapper.countByEmployeeCode(employeeCode);
+    }
+    @Override
+    public int countByEmail(String email){
+        return this.userMapper.countByEmail(email);
+    }
 
 }

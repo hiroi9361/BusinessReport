@@ -9,19 +9,49 @@
             crossorigin="anonymous"></script>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css" rel="stylesheet"
           integrity="sha384-rbsA2VBKQhggwzxH7pPCaAqO46MgnOM80zW1RWuH61DGLwZJEdK2Kadq2F9CUG65" crossorigin="anonymous">
+    <style>
+        input[type="file"] {
+            display: none;
+        }
+
+        p {
+            margin: 10px 0 0 0;
+        }
+    </style>
+
 </head>
 <body>
 <div layout:fragment="content">
     <div class="container mt-3">
         <h1 style="text-align: center">ユーザー一括登録</h1>
-        <form th:action="@{/upload}" method="post" enctype="multipart/form-data">
-            <input type="file" name="file"><br>
-            <button type="submit">アップロード</button>
+        <!--ひな形ダウンロード-->
+        <form th:action="@{/manager/allCreateDownload}" method="get" style="text-align: center;">
+            <button type="submit"  class="w-100 btn btn-lg btn-success" style="margin-top: 10px; margin-bottom: 10px;">ひな形ダウンロード</button>
+        </form>
+        <!-- CSVアップロード-->
+        <form th:action="@{/manager/csvUpload}" method="post" enctype="multipart/form-data">
+            <!-- ファイル選択用の入力 入力必須-->
+            <label class="w-100 btn btn-lg btn-success" style="margin-top: 10px;">
+                <input type="file" name="file" accept=".csv" id="csvFile" onchange="updateFileName()" required/>ファイルを選択
+            </label>
+            <p id="fileMessage" style="text-align: center; margin-top: 5px; margin-bottom: 10px;">ファイルが選択されていません</p>
+            <!-- 遷移ボタン -->
+            <input type="submit" class="w-100 btn btn-lg btn-success" style="margin-top: 15px; margin-bottom: 10px;" value="アップロードファイルの確認">
         </form>
         <div clasS="button-box">
             <a th:href="@{/manager/employeeList}">ユーザー一覧に戻る</a>
         </div>
     </div>
 </div>
+<script layout:fragment="script">
+    //ファイルが選択された時に、pタグのメッセージをファイル名に変更する
+    function updateFileName(){
+        var fileInput = document.getElementById('csvFile');
+        var fileMessage = document.getElementById('fileMessage');
+        if (fileInput.files.length > 0) {
+            fileMessage.textContent = fileInput.files[0].name;
+        }
+    }
+</script>
 </body>
 </html>

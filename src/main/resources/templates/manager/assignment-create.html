@@ -11,7 +11,7 @@
         <h1 class="text-center">メンバー編集</h1>
         <h1 th:text="${team.name}" class="text-center"></h1>
         <div class="container-form">
-            <form th:action="@{/manager/assignment/create}" th:object="${assignmentCreateInput.assignments}" id="test" method="post">
+            <form th:action="@{/manager/assignment/create}" th:object="${assignmentAllCreateInput}" method="post">
                 <input type="hidden" name="teamId" th:value="${team.teamId}"/>
                 <label>Manager</label>
                 <div class="form-group mb-3 d-flex">
@@ -28,9 +28,7 @@
                                 th:value="${user.employeeCode}"></option>
                     </select>
                 </div>
-                <button type="submit" class="w-100 btn btn-lg btn-success">追加</button>
 
-            </form>
                 <label>Member</label>
                 <div class="form-group mb-3 d-flex">
                     <select id="memberList" class="form-select" name="employeeCode" multiple>
@@ -46,10 +44,11 @@
                                 th:value="${user.employeeCode}"></option>
                     </select>
                 </div>
-                <div class="form-group mb-3">
-                    <button type="submit" class="w-100 btn btn-lg btn-success">追加</button>
-                </div>
-<!--            </form>-->
+
+                <input id="managerInput" name="managerList" type="hidden">
+                <input id="memberInput" name="memberList" type="hidden">
+                <button type="submit" class="w-100 btn btn-lg btn-success"  onclick="setListValues()">追加</button>
+            </form>
         </div>
         <div class="button-box">
             <a th:href=@{/manager/teamlist}>チーム一覧ページに戻る</a>
@@ -57,6 +56,27 @@
     </div>
 </div>
 <script layout:fragment="script">
+    function setListValues() {
+        // managerの要素を取得
+        var managerListElement = document.getElementById("managerList");
+        var managerInputElement = document.getElementById("managerInput");
+
+        // memberの要素を取得
+        var memberListElement = document.getElementById("memberList");
+        var memberInputElement = document.getElementById("memberInput");
+
+        // 全てのオプションの値をmanagerInputElementのvalueに設定
+        var selectedValuesMgr = Array.from(managerListElement.options)
+                            .map(option => option.value);
+        // 全てのオプションの値をmemberInputElementのvalueに設定
+        var selectedValuesMem = Array.from(memberListElement.options)
+                            .map(option => option.value);
+        // カンマで区切る
+        managerInputElement.value = selectedValues.join(", ");
+        memberInputElement.value = selectedValues.join(", ");
+    }
+
+
     function addManager() {
         var userSelect = document.getElementById("userList");
         var managerList = document.getElementById("managerList");

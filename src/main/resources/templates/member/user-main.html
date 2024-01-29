@@ -223,7 +223,24 @@ th, td {
   a:hover{
     color : black;
   }
+@media (max-width: 768px) {
+table {
+    width: 100%;
+    border-collapse: collapse;
+    table-layout: fixed;
+}
 
+th, td {
+    border: 1px solid #ddd;
+    text-align: center;
+}
+
+@media (max-width: 600px) {
+    th, td {
+        font-size: 4vw;
+    }
+}
+}
 </style>
 
 <script layout:fragment="script">

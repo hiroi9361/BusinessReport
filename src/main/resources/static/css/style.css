@@ -4,10 +4,14 @@
   margin-top: 130px;
   text-align: center;
   animation: transscaleX 0.7s ease 0s 1 normal;
+  max-width: 95%;
+  height: auto;
 }
 
 .logo-main{
-border:10px solid #02990E;
+    border:10px solid #02990E;
+    max-width: 95%;
+    height: auto;
 }
 
 /* transscaleX */
@@ -86,7 +90,6 @@ background-color:#e4f4e5;
 .StripeTable tr td {
   border: 1px solid #C0C0C0;
 }
-
 .container-usercreate{
 margin-right:auto;
 margin-left:auto;
@@ -99,6 +102,10 @@ margin-top:12px;
 margin-bottom:12px;
 margin-right:auto;
 margin-left:auto;
+}
+.btn {
+    white-space: nowrap;
+    margin : 3px;
 }
 
 .lg-title{

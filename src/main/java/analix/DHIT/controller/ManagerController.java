@@ -11,6 +11,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.ui.Model;
@@ -838,14 +839,29 @@ public class ManagerController {
     @PostMapping("/assignment/create")
     public String creatingAssignment(AssignmentCreateInput assignmentCreateInput, RedirectAttributes redirectAttributes,@ModelAttribute("assignmentAllCreateInput")AssignmentAllCreateInput assignmentAllCreateInput){
 
-        if (assignmentCreateInput.getTeamId() != 0 && !assignmentService.existsAssignment(assignmentCreateInput.getEmployeeCode(), assignmentCreateInput.getTeamId())) {
+        //assignmentAllCreateInputで取得したmanagerとmemberのemployeeCodeを,区切りで分割する
+        String[] managerArray = assignmentAllCreateInput.getManagerList().split(",");
+        String[] memberArray = assignmentAllCreateInput.getMemberList().split(",");
+        //,区切りで分割した各要素にある空白を削除
+        for (int i = 0; i < managerArray.length; i++) {
+            managerArray[i] = managerArray[i].trim();
+        }
+        for (int i = 0; i < memberArray.length; i++) {
+            memberArray[i] = memberArray[i].trim();
+        }
 
-            int newAssignmentId = assignmentService.create(
-                    assignmentCreateInput.getEmployeeCode(),
-                    assignmentCreateInput.getIsManager(),
-                    assignmentCreateInput.getTeamId()
-            );
-        }else{
+        if (assignmentCreateInput.getTeamId() != 0 && !assignmentService.existsAssignment(assignmentCreateInput.getEmployeeCode(), assignmentCreateInput.getTeamId())) {
+            //TeamIdに紐づく全てを削除する
+            assignmentService.deleteByTeam(assignmentCreateInput.getTeamId());
+            //Managerループ
+            for (String employeeCode : managerArray) {
+                int newAssignment = assignmentService.create(Integer.parseInt(employeeCode), true, assignmentCreateInput.getTeamId());
+            }
+            //Memberループ
+            for (String employeeCode : memberArray) {
+                int newAssignment = assignmentService.create(Integer.parseInt(employeeCode),false, assignmentCreateInput.getTeamId());
+            }
+        } else {
             redirectAttributes.addFlashAttribute("errorAstMsg", "該当のユーザーはすでに追加されています");
             int teamId = assignmentCreateInput.getTeamId();
             redirectAttributes.addAttribute("teamId", teamId);
@@ -854,8 +870,7 @@ public class ManagerController {
 
         int teamId = assignmentCreateInput.getTeamId();
         redirectAttributes.addAttribute("teamId", teamId);
-
-        redirectAttributes.addFlashAttribute("createCompleteMSG", "メンバーをチームに追加しました。");
+        redirectAttributes.addFlashAttribute("createCompleteMSG", "チームのメンバー編集を行いました。");
 
         return "redirect:/manager/teams/{teamId}/detail";
     }

@@ -134,6 +134,9 @@ public class UserService {
         if (userEditInput.getName().isEmpty()) {
             userEditInput.setName(user.getName());
         }
+        if (userEditInput.getEmail().isEmpty()){
+            userEditInput.setEmail(user.getEmail());
+        }
         if (userEditInput.getPassword().isEmpty()) {
             userEditInput.setPassword(user.getPassword());
         } else {

@@ -35,7 +35,7 @@ public interface UserMapper {
     void deleteById(int employeeCode);
 
     //既存ユーザー編集
-    @Update("UPDATE user SET name=#{name}, password=#{password}, role=#{role}, icon=#{convertIcon} WHERE employee_code=#{employeeCode}")
+    @Update("UPDATE user SET name=#{name}, password=#{password}, email=#{email}, role=#{role}, icon=#{convertIcon} WHERE employee_code=#{employeeCode}")
     void editEmployeeInfomation(UserEditInput userEditInput);
 
     @Select("SELECT name FROM user WHERE employee_code = #{employeeCode}")

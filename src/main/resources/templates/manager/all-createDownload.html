@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/web/thymeleaf/layout"
+      layout:decorate="~{layout/layout}">
+<head>
+    <meta charset="UTF-8" th:remove="tag">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"
+            integrity="sha384-kenU1KFdBIe4zVF0s0G1M5b4hcpxyD9F7jL+jjXkk+Q2h455rYXK/7HAuoJl+0I4"
+            crossorigin="anonymous"></script>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css" rel="stylesheet"
+          integrity="sha384-rbsA2VBKQhggwzxH7pPCaAqO46MgnOM80zW1RWuH61DGLwZJEdK2Kadq2F9CUG65" crossorigin="anonymous">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500&display=swap" rel="stylesheet">
+
+</head>
+<body>
+<div layout:fragment="content">
+    <div class="container mt-3">
+        <h2 style="text-align: center">ひな形ダウンロードについて</h2>
+        <label style="text-align: center; width: 100%;">CSVファイルへの入力例</label>
+        <table class="StripeTable" style="margin-bottom: 20px;">
+            <thead>
+                <tr>
+                    <th>社員コード</th>
+                    <th>名前</th>
+                    <th>パスワード</th>
+                    <th>メールアドレス</th>
+                    <th>D-HIT役割</th>
+                    <th>所属チーム名</th>
+                    <th>チーム役割</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>666</td>
+                    <td>オリバー・クロムウェル</td>
+                    <td>Freemasonry</td>
+                    <td>free@masonry.com</td>
+                    <td>ADMIN</td>
+                    <td>フリーメイソン</td>
+                    <td>manager</td>
+                </tr>
+            </tbody>
+        </table>
+
+        <label style="margin-top:20px; text-align: center; width: 100%;">各カラムの説明</label>
+        <table class="StripeTable">
+            <tbody>
+                <tr>
+                    <td></td>
+                    <td>意味</td>
+                    <td>重複</td>
+                    <td>空欄</td>
+                    <td>選択肢</td>
+                </tr>
+                <tr>
+                    <td>社員コード</td>
+                    <td>各個人を識別するコード。ログイン時に使用</td>
+                    <td>×</td>
+                    <td>×</td>
+                    <td>-</td>
+                </tr>
+                <tr>
+                    <td>名前</td>
+                    <td>社員の名前。一部の漢字で文字化けの可能性が有ります。その場合は、お手数ですが、登録後に変更してください。</td>
+                    <td>〇</td>
+                    <td>×</td>
+                    <td>-</td>
+                </tr>
+                <tr>
+                    <td>パスワード</td>
+                    <td>ログイン時に使用</td>
+                    <td>〇</td>
+                    <td>×</td>
+                    <td>-</td>
+                </tr>
+                <tr>
+                    <td>メールアドレス</td>
+                    <td>リマインドに使用</td>
+                    <td>×</td>
+                    <td>×</td>
+                    <td>-</td>
+                </tr>
+                <tr>
+                    <td>D-HIT役割</td>
+                    <td>管理権原者以外は「USER」にする。<span style="color: red;">大文字で指定してください。</span></td>
+                    <td>〇</td>
+                    <td>×</td>
+                    <td>USER or ADMIN</td>
+                </tr>
+                <tr>
+                    <td>所属チーム名</td>
+                    <td>最初に設定するチームを入力する。既存のチームに追加の場合は、誤字なく入力してください。</td>
+                    <td>〇</td>
+                    <td>×</td>
+                    <td>-</td>
+                </tr>
+                <tr>
+                    <td>チーム役割</td>
+                    <td>最初に設定するチームを入力する。<span style="color: red;">小文字で指定してください。</span></td>
+                    <td>〇</td>
+                    <td>×</td>
+                    <td>manager or member</td>
+                </tr>
+            </tbody>
+        </table>
+
+        <div>
+            <label style="margin-top:20px; text-align: center; width: 100%;">
+                データを入力するときは、上記を理解し、正しく入力してください。
+            </label>
+            <br>
+<!--            出来れば、セル幅など整えたファイルをダウンロードさせるaタグの方を使いたい-->
+<!--            が、パスは合ってて、ファイルもあるのにダウンロード出来ないので、-->
+<!--            scriptで作成したものを使用⇒buttonタグ-->
+<!--            <a href="./csv/aAllCreateEmployee.csv" download="aAllCreateEmployee.csv">ダウンロード</a>-->
+            <button id="download" type="button" class="w-100 btn btn-lg btn-success">Download CSV</button>
+        </div>
+        <div clasS="button-box">
+            <a th:href="@{/manager/allcreate}">ユーザー一括登録に戻る</a>
+        </div>
+    </div>
+</div>
+<script th:inline="javascript" layout:fragment="script">
+    function downloadCSV() {
+    // ダウンロードするCSVファイル名を指定する
+    const filename = "AddEmployeeBulkRegistration.csv";
+    // CSVデータ
+    const data = "社員コード, 名前, パスワード, メールアドレス, D-HIT役割, 所属チーム名, チーム役割";
+    // 文字列をShift-JISに変換
+    const sjisData = new TextEncoder("Shift-JIS").encode(data);
+    // BOMを付与する（Excelでの文字化け対策）
+    const bom = new Uint8Array([0xef, 0xbb, 0xbf]);
+    // Shift-JISデータとBOMを結合してBlobを作成する
+    const blob = new Blob([bom, sjisData], { type: "text/csv;charset=Shift-JIS" });
+
+    // IE10/11用(download属性が機能しないためmsSaveBlobを使用）
+    if (window.navigator.msSaveBlob) {
+        window.navigator.msSaveBlob(blob, filename);
+    } else {
+        // BlobからオブジェクトURLを作成する
+        const url = (window.URL || window.webkitURL).createObjectURL(blob);
+        // ダウンロード用にリンクを作成する
+        const download = document.createElement("a");
+        // リンク先に上記で生成したURLを指定する
+        download.href = url;
+        // download属性にファイル名を指定する
+        download.download = filename;
+        // 作成したリンクをクリックしてダウンロードを実行する
+        download.click();
+        // createObjectURLで作成したオブジェクトURLを開放する
+        (window.URL || window.webkitURL).revokeObjectURL(url);
+    }
+}
+
+// ボタンを取得する
+const download = document.getElementById("download");
+// ボタンがクリックされたら「downloadCSV」を実行する
+download.addEventListener("click", downloadCSV, false);
+
+</script>
+</body>
+</html>

@@ -15,4 +15,8 @@ public interface UserRepository {
     String getUserName(int employeeCode);
 
     void saveAll(Set<User> users);
+
+    //csv関係
+    int countByEmployeeCode(int employeeCode);
+    int countByEmail(String email);
 }

@@ -15,5 +15,7 @@ public interface TeamRepository {
 
     void deleteById(int teamtId);
 
+    //csv関係
+    Integer selectTeamIdByName(String name);
 
 }

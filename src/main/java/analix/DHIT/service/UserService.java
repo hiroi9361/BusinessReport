@@ -172,50 +172,14 @@ public class UserService {
     public List<User> getUserByCode(int searchWords) {return this.userMapper.getUserByCode(searchWords);}
 
 
-    //メール送るメソッド
-//    @Autowired
-//    private JavaMailSender mailSender;
-//
-//    public void sendEmail(String to, String subject, String content) {
-//        SimpleMailMessage message = new SimpleMailMessage();
-//        message.setFrom("your-email@gmail.com");
-//        message.setTo(to);
-//        message.setSubject(subject);
-//        message.setText(content);
-//        mailSender.send(message);
-//    }
-
-
-    //for csv upload
-//    public Integer uploadUsers(MultipartFile file) throws IOException {
-//        Set<User> users = parseCSV(file);
-//        userRepository.saveAll(users);
-//            return users.size();
-//    }
-//
-//    private Set<User> parseCSV(MultipartFile file) throws IOException{
-//        try(Reader reader = new BufferedReader(new InputStreamReader(file.getInputStream()))){
-//            HeaderColumnNameMappingStrategy<UserCsvRepresentation> strategy =
-//                    new HeaderColumnNameMappingStrategy<>();
-//            strategy.setType(UserCsvRepresentation.class);
-//            CsvToBean<UserCsvRepresentation> csvToBean=
-//            new CsvToBeanBuilder<UserCsvRepresentation>(reader)
-//                    .withMappingStrategy(strategy)
-//                    .withIgnoreEmptyLine(true)
-//                    .withIgnoreLeadingWhiteSpace(true)
-//                    .build();
-//            return csvToBean.parse()
-//                    .stream()
-//                    .map(csvLine -> User.builder()
-//                            .employeeCode(csvLine.getEmployeeCode())
-//                            .name(csvLine.getName())
-//                            .password(csvLine.getPassword())
-//                            .role(csvLine.getRole())
-//                            .build()
-//                    )
-//                    .collect(Collectors.toSet());
-//        }
-//
-//    }
+    //csv関係
+    public boolean DuplicateEmployeeCodeConfirmation(int employeeCode){
+        int count = this.userRepository.countByEmployeeCode(employeeCode);
+        return count > 0;
+    }
+    public boolean DuplicateEmailConfirmation(String email){
+        int count = this.userRepository.countByEmail(email);
+        return count > 0;
+    }
 
 }

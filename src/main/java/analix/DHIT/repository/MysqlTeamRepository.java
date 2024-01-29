@@ -42,4 +42,10 @@ public class MysqlTeamRepository implements TeamRepository{
         this.teamMapper.deleteById(teamId);
     }
 
+    //csv関係
+    @Override
+    public Integer selectTeamIdByName(String name){
+        return this.teamMapper.selectTeamIdByName(name);
+    }
+
 }

@@ -50,6 +50,13 @@ public interface UserMapper {
     @Select("SELECT * FROM user WHERE employee_code LIKE CONCAT(#{searchWords}, '%')")
     List<User> getUserByCode(@Param("searchWords")int searchWords);
 
+    //employee_codeの重複確認
+    @Select("select count(*) from user where employee_code = #{employeeCode}")
+    int countByEmployeeCode(int employeeCode);
+    //emailの重複確認
+    @Select("select count(*) from user where email = #{email}")
+    int countByEmail(String email);
+
 //    //user情報を取ってくる
 //    @Select("SELECT * FROM user WHERE employeeCode=#{employeeCode}")
 //    User getuser(int employeeCode);

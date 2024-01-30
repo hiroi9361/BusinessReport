@@ -24,6 +24,7 @@ import jakarta.servlet.http.HttpServletRequest;
 
 import java.time.DayOfWeek;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
@@ -41,6 +42,7 @@ public class MemberController {
     private final TeamService teamService;
     private final SettingService settingService;
     private final   MailService mailService;
+    private final   ApplyService applyService;
 
 
 //    @Autowired
@@ -51,7 +53,8 @@ public class MemberController {
                             AssignmentService assignmentService,
                             TeamService teamService,
                             SettingService settingService,
-                            MailService mailService) {
+                            MailService mailService,
+                            ApplyService applyService) {
         this.userService = userService;
         this.taskLogService = taskLogService;
         this.reportService = reportService;
@@ -60,6 +63,7 @@ public class MemberController {
         this.teamService = teamService;
         this.settingService = settingService;
         this.mailService = mailService;
+        this.applyService = applyService;
     }
 
     @GetMapping("/report/create")
@@ -791,34 +795,23 @@ public class MemberController {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         //バリデーションInteger
         int employeeCode = Integer.parseInt(authentication.getName());
-        //employeeCodeを使用し、直近のreportがあるか調べる(取得)
-        String latestReportId = reportService.getLatestIdByEmployeeCode(employeeCode);
+
         ApplyCreateInput applyCreateInput = new ApplyCreateInput();
         SettingInput settingInput = new SettingInput();
         //java.timeパッケージから現在の時刻を取得
-        applyCreateInput.setDate(LocalDate.now());
+        applyCreateInput.setCreatedDate(LocalDateTime.now());
 
-        String title = "報告作成";
+        String title = "申請作成";
         model.addAttribute("title", title);
         //規定の終業時間を取得し、セット
         Setting setting = settingService.getSettingTime(employeeCode);
         settingInput.setStartTime(setting.getStartTime());
         settingInput.setEndTime(setting.getEndTime());
-        settingInput.setEmployment(false);
+//        settingInput.setEmployment(false);
         model.addAttribute("settingInput", settingInput);
-        if (latestReportId == null) {
-            model.addAttribute("applyCreateInput", applyCreateInput);
-            return "member/apply-create";
-        }
-        //以下reportがひとつでもあった場合の処理
-        //既存のreportidを参照にreportModelの値をすべてset
-        Report report = reportService.getReportById(Integer.parseInt(latestReportId));
-        //(前日のreport内容を引継ぎ入力欄に記入)
-        applyCreateInput.setStartTime(report.getStartTime());
-        applyCreateInput.setEndTime(report.getEndTime());
-        //report_idを参照してtask_Logの値を取得しset
-        applyCreateInput.setTaskLogs(taskLogService.getIncompleteTaskLogsByReportId(Integer.parseInt(latestReportId)));
 
+        // 提出ボタンを押した瞬間の時刻を取得し、createdDateにセット
+        applyCreateInput.setCreatedDate(LocalDateTime.now());
 
         model.addAttribute("applyCreateInput", applyCreateInput);
         return "member/apply-create";
@@ -833,82 +826,26 @@ public class MemberController {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         int employeeCode = Integer.parseInt(authentication.getName());
 
-        //遅刻早退を判定
         Setting setting = settingService.getSettingTime(employeeCode);
 
-        if (!settingInput.getEmployment()) {
-            if (settingInput.getStartTime().isAfter(setting.getStartTime()) || settingInput.getEndTime().isBefore(setting.getEndTime())) {
-                String reason = "";
-                if (settingInput.getStartTime().isAfter(setting.getStartTime()) && settingInput.getEndTime().isBefore(setting.getEndTime())) {
-                    reason = "※遅刻 及び 早退の理由を記入してください";
-                    applyCreateInput.setIsLateness(true);
-                    applyCreateInput.setIsLeftEarly(true);
-                } else if (settingInput.getStartTime().isAfter(setting.getStartTime())) {
-                    reason = "※遅刻の理由を記入してください";
-                    applyCreateInput.setIsLateness(true);
-                } else if (settingInput.getEndTime().isBefore(setting.getEndTime())) {
-                    reason = "※早退の理由を記入してください";
-                    applyCreateInput.setIsLeftEarly(true);
-                }
+        // 提出ボタンを押した瞬間の時刻を取得し、createdDateにセット
+        applyCreateInput.setCreatedDate(LocalDateTime.now());
 
-                settingInput.setEmployment(true);
-
-                model.addAttribute("settingInput", settingInput);
-                model.addAttribute("applyCreateInput", applyCreateInput);
-                String title = "報告作成";
-                model.addAttribute("title", title);
-                model.addAttribute("reason", reason);
-                return "member/apply-create";
-            }
-        }
-
-        if (reportService.existsReport(employeeCode, applyCreateInput.getDate())) {
-            redirectAttributes.addFlashAttribute("error", applyCreateInput.getDate() + "は既に業務報告書が存在しています");
-            return "redirect:/member/apply/create";
-        }
-
-        //遅刻・早退判定
-        if (settingInput.getStartTime().isAfter(setting.getStartTime()) && settingInput.getEndTime().isBefore(setting.getEndTime())) {
-            applyCreateInput.setIsLateness(true);
-            applyCreateInput.setIsLeftEarly(true);
-        } else if (settingInput.getStartTime().isAfter(setting.getStartTime())) {
-            applyCreateInput.setIsLateness(true);
-        } else if (settingInput.getEndTime().isBefore(setting.getEndTime())) {
-            applyCreateInput.setIsLeftEarly(true);
-        }
-
-        //newReportIdには新たにInsertされたreportのIDが入る
-        int newReportId = reportService.create(
+        //newApplyIdには新たにInsertされたreportのIDが入る
+        int newApplyId = applyService.create(
                 employeeCode,
-                applyCreateInput.getCondition(),
-                applyCreateInput.getImpressions(),
-                applyCreateInput.getTomorrowSchedule(),
-                applyCreateInput.getDate(),
-                applyCreateInput.getEndTime(),
+                applyCreateInput.getApplicationType(),
+                applyCreateInput.getAttendanceType(),
+                applyCreateInput.getStartDate(),
+                applyCreateInput.getEndDate(),
                 applyCreateInput.getStartTime(),
-                applyCreateInput.getIsLateness(),
-                applyCreateInput.getLatenessReason(),
-                applyCreateInput.getIsLeftEarly(),
-                applyCreateInput.getConditionRate()
+                applyCreateInput.getEndTime(),
+                applyCreateInput.getReason(),
+                applyCreateInput.getApproval(),
+                applyCreateInput.getCreatedDate()
         );
 
-        // タスクが存在するならタスクログに追加
-        if (applyCreateInput.getTaskLogs() != null) {
-            List<TaskLog> taskLogs = applyCreateInput.getTaskLogs();
-            taskLogs.forEach(x -> x.setReportId(newReportId));
-            for (TaskLog taskLog : taskLogs) {
-                if (taskLog != null && taskLog.getName() != null) {
-                    taskLog.setCounter(taskLog.getCounter() + 1);
-                    if(taskLog.getCounter() == 1){
-                        int maxNum = taskLogService.maxTask() + 1;
-                        taskLog.setSorting(maxNum);
-                    }
-                    taskLogService.create(taskLog);
-                }
-            }
-        }
-
-        return "redirect:/member/apply/create-completed";
+       return "redirect:/member/apply/create-completed";
     }
 
     @GetMapping("/apply/create-completed")

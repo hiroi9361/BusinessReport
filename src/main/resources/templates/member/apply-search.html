@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/web/thymeleaf/layout"
+      layout:decorate="~{layout/layout}">
+<head>
+    <meta charset="UTF-8" th:remove="tag">
+</head>
+<body>
+<div layout:fragment="content">
+
+    <div th:if="${error}">
+    <div class="flash flash-danger alert alert-dismissible fade show" role="alert">
+        <span th:text="${error}"></span>
+        <a data-bs-dismiss="alert" aria-label="Close">
+            <i class="fas fa-times"></i>
+        </a>
+    </div>
+    </div>
+
+
+    <div class="container mt-4">
+
+        <h2 class="text-center mb-4" th:text="${member.name} + ' の申請一覧'"></h2>
+
+        <form action="#" th:action="@{/member/search-apply}" th:object="${applySearchInput}" method="post">
+            <div class="mb-3 d-flex align-items-end justify-content-center text-center">
+                <div class="mb-3 me-3">
+                    <label for="datePicker" class="form-label" style="color: #02990E;">日付指定</label>
+                    <input type="date" class="form-control" id="datePicker" name="date">
+                </div>
+                <div class="mb-3 me-3">
+                    <button type="submit" class="btn btn-secondary">検索</button>
+                </div>
+            </div>
+            <div>
+                <input type="hidden" name="employeeCode" th:value="${member.employeeCode}"/>
+            </div>
+        </form>
+
+        <form th:action="@{/member/search-apply}" th:object="${ApplySortInput}" method="post">
+            <div>
+<!--                <div class="mb-3 d-flex align-items-end justify-content-center text-center">-->
+<!--                    <div class="mb-3 me-3">-->
+<!--                        <label class="form-label" style="color: #02990E;">チームマネージャー(TM)の確認</label>-->
+<!--                        <select  name="feedback"  class="form-select">-->
+<!--                            <option th:value="${null}">選択してください</option>-->
+<!--                            <option th:value="${true}">既読</option>-->
+<!--                            <option th:value="${false}">未読</option>-->
+<!--                        </select>-->
+<!--                    </div>-->
+<!--                    <div class="mb-3 me-3">-->
+<!--                        <label class="form-label" style="color: #02990E;">年/月</label>-->
+<!--                        <select  name="date"  class="form-select">-->
+<!--                            <option th:value="${null}">選択してください</option>-->
+<!--                            <option th:each="date : ${dateList}"-->
+<!--                                    th:value="${date}"-->
+<!--                                    th:text="${#temporals.format(date,'yyyy-MM')}">-->
+<!--                            </option>-->
+<!--                        </select>-->
+<!--                    </div>-->
+<!--                    <div class="mb-3 me-3">-->
+<!--                        <button type="submit" name="sort" th:value="${true}" class="btn btn-secondary">検索</button>-->
+<!--                    </div>-->
+<!--                </div>-->
+
+                <table class="StripeTable mb-4">
+                    <thead>
+                    <tr>
+                        <th>種別</th>
+                        <th>内容</th>
+                        <th>日時</th>
+<!--                        <th>終了日</th>-->
+<!--                        <th>開始時間</th>-->
+<!--                        <th>終了時間</th>-->
+                        <th>理由/備考</th>
+                        <th>申請日</th>
+                        <th>承認</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr th:each="apply : ${apply}">
+                        <td th:switch="${apply.applicationType}">
+                            <i th:case="'1'">
+                                <i class="text" style="font-size: 1.5rem;">事前</i>
+                            </i>
+                            <i th:case="'2'">
+                                <i class="text" style="font-size: 1.5rem;">事後</i>
+                            </i>
+                        </td>
+                        <td th:switch="${apply.attendanceType}">
+                            <i th:case="'1'">
+                                <i class="text" style="font-size: 1.5rem;">遅刻</i>
+                            </i>
+                            <i th:case="'2'">
+                                <i class="text" style="font-size: 1.5rem;">早退</i>
+                            </i>
+                            <i th:case="'3'">
+                                <i class="text" style="font-size: 1.5rem;">外出</i>
+                            </i>
+                            <i th:case="'4'">
+                                <i class="text" style="font-size: 1.5rem;">振替休日</i>
+                            </i>
+                            <i th:case="'5'">
+                                <i class="text" style="font-size: 1.5rem;">有給休暇</i>
+                            </i>
+                            <i th:case="'6'">
+                                <i class="text" style="font-size: 1.5rem;">特別休暇</i>
+                            </i>
+                            <i th:case="'7'">
+                                <i class="text" style="font-size: 1.5rem;">欠勤</i>
+                            </i>
+                        </td>
+                        <td th:text="${apply.startDate + ' ' + apply.startTime + ' - ' + apply.endDate + ' ' + apply.endTime}"></td>
+<!--                        <td th:text="${apply.startTime}"></td>-->
+<!--                        <td th:text="${apply.endDate}"></td>-->
+<!--                        <td th:text="${apply.endTime}"></td>-->
+
+                        <!-- 理由を29文字まで表示し、残りは非表示にする -->
+                        <td>
+                            <div th:attr="data-content=${apply.reason}" class="d-flex align-items-center" style="white-space: pre-line; word-wrap: break-word; overflow: hidden; text-overflow: ellipsis; text-align: left;">
+                                <span th:text="${#strings.abbreviate(apply.reason, 29)}"></span>
+                            </div>
+                        </td>
+                        <td th:text="${apply.createdDate}">
+                        <td th:switch="${apply.approval}">
+                            <i th:case="'0'">
+                                <i class="text" style="font-size: 1.5rem;">未承認</i>
+                            </i>
+                            <i th:case="'1'">
+                                <i class="text" style="font-size: 1.5rem;">承認済み</i>
+                            </i>
+                            <i th:case="'2'">
+                                <i class="text" style="font-size: 1.5rem;">差戻</i>
+                            </i>
+                        </td>
+                        <td style="width:62px;"><a th:href="@{'reports/' + ${report.Id}}" class="btn btn-outline-secondary">詳細</a></td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+        </form>
+
+        <div class="mb-5"></div>
+
+    </div>
+</div>
+<style layout:fragment="style">
+    .text-kidoku {
+                    color: #02990E;
+                 }
+
+    .text-midoku {
+                    color: red;
+                 }
+
+
+    .gap-2 {
+                justify-content: center;
+                width : 100%;
+            }
+            button.btn-lg {
+                float : left ;
+                text-align: center;
+                white-space: nowrap;
+                padding-left: 90px;
+                padding-right: 90px;
+            }
+            @media (max-width: 768px) {
+                h2.text-center.mb-4 {
+                    font-size: 1.3em;
+                }
+                .gap-2 {
+                    justify-content: center;
+                    width : 100%;
+                }
+                button.btn-lg {
+                    text-align: center;
+                    white-space: nowrap;
+                    padding-left: 40px;
+                    padding-right: 40px;
+                }
+            }
+</style>
+<script layout:fragment="script"></script>
+
+</body>
+</html>
+<script>
+    function goBack() {
+        // 前のページに戻る
+        window.history.back();
+    }
+
+
+    function check() {
+        if (window.confirm('このチームを削除しますか？')) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+</script>

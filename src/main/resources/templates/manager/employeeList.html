@@ -47,10 +47,8 @@
 
     <div class="container-usercreate">
 
-        <!-- 2023/12/07 富山 START -->
         <!--    <div class="container">-->
         <div class="container mt-3">
-            <!-- 2023/12/07 富山 END -->
 
             <h1>ユーザー一覧</h1>
             <a class="btn btn-success" th:href="@{/manager/create}">ユーザー作成</a>
@@ -63,7 +61,6 @@
             <!-- ユーザー一括登録 -->
             <a class="btn btn-success" th:href="@{/manager/allcreate}">ユーザー一括登録</a>
 
-            <!-- 2023/12/07 富山 START -->
             <!--  検索窓  -->
             <form action="" method="get" th:object="${userSearchInput}">
                 <select id="searchKeyword" name="searchKeyword" th:field="*{searchKeyword}">
@@ -76,8 +73,6 @@
                 <input type="submit" class="btn btn-secondary" value="検索">
             </form>
         </div>
-
-        <!-- 2023/12/07 富山 END -->
 
         <table class="StripeTable">
             <thead>
@@ -118,8 +113,6 @@
             <!--        </table>-->
             <!--    </div>-->
 
-            <!-- 2023/12/13 富山 START -->
-
             <tbody>
             <tr th:each="userList : ${userList}" th:object="${userList}" class="align-middle">
                 <td th:text="${userList.employeeCode}"></td>
@@ -144,8 +137,6 @@
                 </td>
             </tr>
             </tbody>
-
-            <!-- 2023/12/13 富山 END -->
         </table>
     </div>
 </div>

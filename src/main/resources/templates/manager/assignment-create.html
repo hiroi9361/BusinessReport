@@ -72,8 +72,8 @@
         var selectedValuesMem = Array.from(memberListElement.options)
                             .map(option => option.value);
         // カンマで区切る
-        managerInputElement.value = selectedValues.join(", ");
-        memberInputElement.value = selectedValues.join(", ");
+        managerInputElement.value = selectedValuesMgr.join(", ");
+        memberInputElement.value = selectedValuesMem.join(", ");
     }
 
 

@@ -28,6 +28,12 @@
                        title="アルファベット、ひらがな、漢字のみが許可されています">
             </div>
 
+            <!--             メールアドレス -->
+            <div class="mb-3">
+                <label for="email" class="form-label">メールアドレス：<span class="text-danger"></span></label>
+                <input type="text" id="email" th:field="*{email}" class="form-control">
+            </div>
+
             <!-- パスワード -->
             <div class="mb-3">
                 <label for="password" class="form-label">パスワード：<span class="text-danger"></span></label>
@@ -72,9 +78,10 @@
         var password = document.getElementById('password').value;
         //確認用パスワードの精査処理追加↓
         var password2 = document.getElementById('password2').value;
+        var email = document.getElementById('email').value;
 
         // 必須フィールドが空でないかチェック
-     //   if (employeeCode.trim() === '' || name.trim() === '' || password.trim() === '') {
+     //   if (employeeCode.trim() === '' || name.trim() === '' || password.trim() === '' || email.trim() === '') {
             //パスワード確認用if文
             if(password!=password2)
             {

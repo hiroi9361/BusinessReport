@@ -184,5 +184,10 @@ public class UserService {
         int count = this.userRepository.countByEmail(email);
         return count > 0;
     }
-
+    public User selectUserById(int employeeCode) {
+        return this.userRepository.selectUserById(employeeCode);
+    }
+    public void updateEmployee(UserCreateInput userCreateInput){
+        this.userRepository.updateEmployee(userCreateInput);
+    }
 }

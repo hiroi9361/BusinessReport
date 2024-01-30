@@ -56,10 +56,11 @@ public interface UserMapper {
     //emailの重複確認
     @Select("select count(*) from user where email = #{email}")
     int countByEmail(String email);
-
-//    //user情報を取ってくる
-//    @Select("SELECT * FROM user WHERE employeeCode=#{employeeCode}")
-//    User getuser(int employeeCode);
+    @Update("UPDATE user SET name=#{name}, password=#{password}, email=#{email}, role=#{role}, icon=#{convertIcon} WHERE employee_code=#{employeeCode}")
+    void updateEmployee(UserCreateInput userCreateInput);
+    //user情報を取ってくる
+    @Select("SELECT * FROM user WHERE employee_code=#{employeeCode}")
+    User selectUserById(int employeeCode);
 
     //name取得
     //@Select("SELECT name FROM user WHERE employee_code = #{employeeCode}")

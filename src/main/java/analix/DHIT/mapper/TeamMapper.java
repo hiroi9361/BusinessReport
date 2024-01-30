@@ -49,7 +49,7 @@ public interface TeamMapper {
     @Options(useGeneratedKeys = true, keyColumn = "assignment_id", keyProperty = "assignmentId")
     void insertAssignment(Assignment assignment);
 
-    @Update("UPDATE assignment SET is_manager=#{isManager},team_id=#{teamId} WHERE employee_code=#{employeeCode}")
+    @Update("UPDATE assignment SET is_manager=#{isManager} WHERE employee_code=#{employeeCode} AND team_id=#{teamId}")
     void updateAssignment(Assignment assignment);
 
     @Delete("DELETE FROM assignment WHERE assignment_id = #{assignmentId}")

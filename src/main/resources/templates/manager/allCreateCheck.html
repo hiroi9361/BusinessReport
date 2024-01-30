@@ -19,7 +19,7 @@
         <h1 style="text-align: center;">登録情報確認</h1>
 
         <!--申請内容に重複項目があった場合↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓-->
-        <div th:if="${csvCheck}">
+        <div th:if="${register}">
             <h3 style="text-align: center; color: red; font-weight: bold;">
                 下記の申請内容が既存の登録内容と重複しています。お手数ですが、修正して再度申請してください。</h3>
             <table  class="StripeTable">
@@ -36,7 +36,7 @@
                 </tr>
                 </thead>
                 <tbody>
-                <tr th:each="row : ${duplicationCsvData}">
+                <tr th:each="row : ${csvData}">
                     <td th:each="element : ${row}" th:text="${element}"></td>
                 </tr>
                 </tbody>
@@ -49,9 +49,15 @@
 
         <!--申請内容に重複項目が無く、登録に進める場合↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓-->
 
-        <div th:unless="${csvCheck}">
-            <h3 style="text-align: center; color: green; font-weight: bold;">
-                以下の内容で登録する場合は「登録」ボタンを押下してください</h3>
+        <div th:unless="${register}">
+            <div th:if="${msg}">
+                <h3 style="text-align: center; color: green; font-weight: bold;">
+                    以下の内容には一部<span style="color: red;">重複</span>しているものがあります。内容を確認し、問題なければ「登録」ボタンを押下してください。</h3>
+            </div>
+            <div th:unless="${msg}">
+                <h3 style="text-align: center; color: green; font-weight: bold;">
+                    以下の内容で登録する場合は「登録」ボタンを押下してください</h3>
+            </div>
             <table  class="StripeTable">
                 <thead>
                 <tr>
@@ -66,8 +72,12 @@
                 </thead>
                 <tbody>
                 <tr th:each="row : ${csvData}">
-                    <td th:each="element : ${row}" th:text="${element}"></td>
+                    <td th:each="element, elementStat : ${row}"
+                        th:style="${elementStat.index eq 7 and element ne 'OK'} ? 'color: red;' : ''"
+                        th:text="${element}">
+                    </td>
                 </tr>
+
                 </tbody>
             </table>
             <form th:action="@{/manager/allAddEmployee}" th:object="${userCreateInput}" th:method="post">

@@ -233,13 +233,22 @@ table {
 th, td {
     border: 1px solid #ddd;
     text-align: center;
+    font-size: 15px;
+    white-space: nowrap;
+    padding: 10px;
+    max-width: 100%;
+    white-space: normal;
+    overflow: visible;
+    text-overflow: unset;
 }
 
-@media (max-width: 600px) {
-    th, td {
-        font-size: 4vw;
-    }
+.container-sub {
+        display: flex;
+        flex-direction: column;
 }
+ .main-right {
+        margin-bottom: 2px;
+ }
 }
 </style>
 
@@ -273,12 +282,8 @@ th, td {
              $('#myModal').modal('hide');
         });
     }
-
 </script>
-
-
 </body>
 </html>
-
 
 

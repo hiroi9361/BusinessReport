@@ -1,5 +1,6 @@
 package analix.DHIT.repository;
 
+import analix.DHIT.input.UserCreateInput;
 import analix.DHIT.model.User;
 import org.apache.ibatis.annotations.Param;
 
@@ -15,4 +16,10 @@ public interface UserRepository {
     String getUserName(int employeeCode);
 
     void saveAll(Set<User> users);
+
+    //csv関係
+    int countByEmployeeCode(int employeeCode);
+    int countByEmail(String email);
+    User selectUserById(int employeeCode);
+    void updateEmployee(UserCreateInput userCreateInput);
 }

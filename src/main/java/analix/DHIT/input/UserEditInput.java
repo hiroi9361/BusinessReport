@@ -15,6 +15,7 @@ public class UserEditInput {
     private String role;
     private MultipartFile icon;
     private String convertIcon;
+    private String email;
 
     public int getEmployeeCode() {
         return employeeCode;
@@ -62,5 +63,13 @@ public class UserEditInput {
 
     public void setConvertIcon(String convertIcon) {
         this.convertIcon = convertIcon;
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
     }
 }

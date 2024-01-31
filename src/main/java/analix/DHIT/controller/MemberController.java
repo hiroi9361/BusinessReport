@@ -1,6 +1,7 @@
 package analix.DHIT.controller;
 
 
+import analix.DHIT.config.LoginUserDetailsService;
 import analix.DHIT.input.*;
 import analix.DHIT.model.*;
 import analix.DHIT.service.*;
@@ -8,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.ui.Model;
@@ -44,7 +46,7 @@ public class MemberController {
     private final AssignmentService assignmentService;
     private final TeamService teamService;
     private final SettingService settingService;
-    private final   MailService mailService;
+    private final MailService mailService;
 
 
 //    @Autowired
@@ -750,7 +752,8 @@ public class MemberController {
             return "redirect:/member/userDetailsList-userEdit";
         }
         redirectAttributes.addFlashAttribute("editCompleteMSG", "情報を更新しました");
-        return "redirect:/member/userDetailsList";
+        return "/common/common";
+        //return "redirect:/member/userDetailsList";
     }
 
     //報告未提出メンバーへ通知メールを送信する

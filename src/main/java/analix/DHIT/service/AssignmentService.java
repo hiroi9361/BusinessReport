@@ -100,6 +100,18 @@ public class AssignmentService {
 
     }
 
+    public void update(
+            int employeeCode,
+            boolean isManager,
+            int teamId
+    ) {
+        Assignment newAssignment = new Assignment();
+        newAssignment.setEmployeeCode(employeeCode);
+        newAssignment.setTeamId(teamId);
+        newAssignment.setIsManager(isManager);
+        this.assignmentRepository.update(newAssignment);
+    }
+
 
     public boolean existsAssignment(int employeeCode, int teamId) {
         int count = teamMapper.countAssignmentByEmployeeCodeAndTeamId(employeeCode, teamId);

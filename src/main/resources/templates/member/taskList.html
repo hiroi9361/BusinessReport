@@ -16,14 +16,12 @@
             </a>
         </div>
     </div>
-
-
     <div class="container mt-4">
 
         <h2 class="text-center mb-4" th:text="${member.name} + ' のタスク一覧'"></h2>
 
         <form th:action="@{/member/task-list}" th:object="${TaskSearchInput}" method="post">
-            <div class="mb-3 d-flex align-items-end justify-content-center text-center">
+            <div class="mb-3 d-flex align-items-end justify-content-center text-center " id="tasklist_search">
                 <div class="mb-3 me-3">
                     <label class="form-label" style="color: #02990E;">状態</label>
                     <select name="state" class="form-select">
@@ -87,34 +85,52 @@
     .text-midoku {
                     color: red;
                  }
-
+    #tasklist_search {
+        flex-wrap: wrap;
+    }
 
     .gap-2 {
-                justify-content: center;
-                width : 100%;
-            }
-            button.btn-lg {
-                float : left ;
-                text-align: center;
-                white-space: nowrap;
-                padding-left: 90px;
-                padding-right: 90px;
-            }
-            @media (max-width: 768px) {
-                h2.text-center.mb-4 {
+         justify-content: center;
+          width : 100%;
+    }
+    button.btn-lg {
+          float : left ;
+          text-align: center;
+          white-space: nowrap;
+          padding-left: 90px;
+          padding-right: 90px;
+    }
+    @media (max-width: 768px) {
+         h2.text-center.mb-4 {
                     font-size: 1.3em;
-                }
-                .gap-2 {
+         }
+         .gap-2 {
                     justify-content: center;
                     width : 100%;
-                }
-                button.btn-lg {
+         }
+          button.btn-lg {
                     text-align: center;
                     white-space: nowrap;
                     padding-left: 40px;
                     padding-right: 40px;
-                }
-            }
+          }
+          #tasklist_search  {
+                    align-items: flex-start !important;
+                    flex-direction: column;
+                    text-align: right;
+                    justify-content: flex-start;
+          }
+
+          #tasklist_search > div {
+                    display: flex;
+                    align-items: center;
+          }
+
+          .form-label {
+                    white-space: nowrap;
+                    margin-right: 13px;
+           }
+     }
 </style>
 <script layout:fragment="script"></script>
 

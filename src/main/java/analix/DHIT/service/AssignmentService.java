@@ -134,4 +134,7 @@ public class AssignmentService {
         return count > 0;
     }
 
+    public List<Assignment> selectByEmployeeCode(int employeeCode){
+        return this.assignmentRepository.selectByEmployeeCode(employeeCode);
+    }
 }

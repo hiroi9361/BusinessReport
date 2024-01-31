@@ -115,7 +115,7 @@
 
             <tbody>
             <tr th:each="userList : ${userList}" th:object="${userList}" class="align-middle">
-                <td th:text="${userList.employeeCode}"></td>
+                <td class="employeeCodeID" th:text="${userList.employeeCode}"></td>
                 <td th:text="${userList.name}"></td>
                 <td th:text="${userList.role}"></td>
                 <td>
@@ -157,6 +157,9 @@
         th, td {
             vertical-align: middle !important;
         }
+        .employeeCodeID {
+            font-weight: bold;
+        }
         @media (max-width: 768px) {
             h1 {
                 font-size: 1.3em;
@@ -187,7 +190,10 @@
                 border-bottom: 1px solid #ddd;
                 display: block;
                 font-size: 0.9em;
-                text-align: right;
+                text-align: center;
+                padding-top: 8px;
+                padding-bottom: 8px;
+                padding-right: 8px;
             }
 
             table td  input[type="submit"] {
@@ -207,7 +213,13 @@
             table td:last-child {
                 border-bottom: 0;
             }
-
+            .employeeCodeID {
+                font-weight: bold;
+            }
+            .StripeTable {
+                background-color: transparent;
+                border: none;
+            }
         }
         /* responsive table  */
 </style>

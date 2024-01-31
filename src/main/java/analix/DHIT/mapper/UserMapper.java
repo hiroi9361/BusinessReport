@@ -35,7 +35,7 @@ public interface UserMapper {
     void deleteById(int employeeCode);
 
     //既存ユーザー編集
-    @Update("UPDATE user SET name=#{name}, password=#{password}, role=#{role}, icon=#{convertIcon} WHERE employee_code=#{employeeCode}")
+    @Update("UPDATE user SET name=#{name}, password=#{password}, email=#{email}, role=#{role}, icon=#{convertIcon} WHERE employee_code=#{employeeCode}")
     void editEmployeeInfomation(UserEditInput userEditInput);
 
     @Select("SELECT name FROM user WHERE employee_code = #{employeeCode}")
@@ -50,9 +50,17 @@ public interface UserMapper {
     @Select("SELECT * FROM user WHERE employee_code LIKE CONCAT(#{searchWords}, '%')")
     List<User> getUserByCode(@Param("searchWords")int searchWords);
 
-//    //user情報を取ってくる
-//    @Select("SELECT * FROM user WHERE employeeCode=#{employeeCode}")
-//    User getuser(int employeeCode);
+    //employee_codeの重複確認
+    @Select("select count(*) from user where employee_code = #{employeeCode}")
+    int countByEmployeeCode(int employeeCode);
+    //emailの重複確認
+    @Select("select count(*) from user where email = #{email}")
+    int countByEmail(String email);
+    @Update("UPDATE user SET name=#{name}, password=#{password}, email=#{email}, role=#{role}, icon=#{convertIcon} WHERE employee_code=#{employeeCode}")
+    void updateEmployee(UserCreateInput userCreateInput);
+    //user情報を取ってくる
+    @Select("SELECT * FROM user WHERE employee_code=#{employeeCode}")
+    User selectUserById(int employeeCode);
 
     //name取得
     //@Select("SELECT name FROM user WHERE employee_code = #{employeeCode}")

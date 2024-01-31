@@ -7,6 +7,7 @@ import analix.DHIT.logic.IconConvertToBase64;
 import analix.DHIT.logic.EncodePasswordSha256;
 import analix.DHIT.mapper.UserMapper;
 import analix.DHIT.model.Assignment;
+import analix.DHIT.model.TaskLog;
 import analix.DHIT.model.User;
 import analix.DHIT.repository.UserRepository;
 //import com.opencsv.bean.CsvToBean;

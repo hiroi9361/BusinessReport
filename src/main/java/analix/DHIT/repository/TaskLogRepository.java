@@ -17,6 +17,12 @@ public interface TaskLogRepository {
 
     int maxTask();
 
+    int countByName(String name);
+
+    void setCounter(TaskLog taskLog);
+
+    List<TaskLog>taskListByName(String name);
+
     List<TaskLog> taskList(int employeeCode);
 
     List<TaskDetailInput> taskDetail(int sorting);

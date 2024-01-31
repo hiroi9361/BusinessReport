@@ -23,6 +23,11 @@ public class MysqlTeamRepository implements TeamRepository{
     }
 
     @Override
+    public Team selectByTeamId(int teamId){
+        return this.teamMapper.SelectById(teamId);
+    }
+
+    @Override
     public Team findById(int teamId) {
         return this.teamMapper.SelectById(teamId);
     }

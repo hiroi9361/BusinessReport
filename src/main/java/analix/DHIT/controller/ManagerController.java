@@ -10,6 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
@@ -27,10 +28,7 @@ import java.io.InputStreamReader;
 import java.nio.charset.StandardCharsets;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Locale;
-import java.util.Objects;
+import java.util.*;
 
 
 @Controller
@@ -739,9 +737,25 @@ public class ManagerController {
 
     @GetMapping("/teamlist")
     public String displayTeamList(Model model, RedirectAttributes redirectAttributes){
-        List<Team> teamList = teamService.getAllTeam();
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        Collection<? extends GrantedAuthority> authorities = auth.getAuthorities();
+        String myRole = authorities.iterator().next().getAuthority();
+        String myEmployeeCode = auth.getName();
+        System.out.println(myRole);
+        if (myRole.equals("ROLE_USER")){
+            List<Assignment> assignmentList = assignmentService.selectByEmployeeCode(Integer.parseInt(myEmployeeCode));
+            List<Team> teamList = new ArrayList<>();
+            for (Assignment assignment : assignmentList) {
+                Team team = teamService.selectById(assignment.getTeamId());
+                teamList.add(team);
+            }
+
+            model.addAttribute("teamList", teamList);
+        } else if(myRole.equals("ROLE_ADMIN")){
+            List<Team> teamList = teamService.getAllTeam();
+            model.addAttribute("teamList", teamList);
+        }
         List<User> allUser = userService.getAllEmployeeInfo();
-        model.addAttribute("teamList", teamList);
         String title = "チーム一覧";
         model.addAttribute("title", title);
 
@@ -885,11 +899,15 @@ public class ManagerController {
             assignmentService.deleteByTeam(assignmentCreateInput.getTeamId());
             //Managerループ
             for (String employeeCode : managerArray) {
-                int newAssignment = assignmentService.create(Integer.parseInt(employeeCode), true, assignmentCreateInput.getTeamId());
+                if(!employeeCode.isEmpty()){
+                    int newAssignment = assignmentService.create(Integer.parseInt(employeeCode), true, assignmentCreateInput.getTeamId());
+                }
             }
             //Memberループ
             for (String employeeCode : memberArray) {
-                int newAssignment = assignmentService.create(Integer.parseInt(employeeCode),false, assignmentCreateInput.getTeamId());
+                if(!employeeCode.isEmpty()) {
+                    int newAssignment = assignmentService.create(Integer.parseInt(employeeCode), false, assignmentCreateInput.getTeamId());
+                }
             }
         } else {
             redirectAttributes.addFlashAttribute("errorAstMsg", "該当のユーザーはすでに追加されています");

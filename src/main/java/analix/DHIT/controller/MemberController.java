@@ -852,10 +852,102 @@ public class MemberController {
        return "redirect:/member/apply/create-completed";
     }
 
+    // 申請提出完了画面
     @GetMapping("/apply/create-completed")
     public String displayApplyCreateCompleted(
     ) {
         return "member/apply-create-completed";
+    }
+
+    // 申請一覧
+    @GetMapping("/apply-search")
+    public String displayApplySearch(
+            Model model
+    ) {
+        String title = "申請一覧";
+        model.addAttribute("title", title);
+
+        model.addAttribute("applySearchInput", new ApplySearchInput());
+        model.addAttribute("error", model.getAttribute("error"));
+
+        //ログイン中のユーザーのemployeeCodeを取得する
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        int employeeCode = Integer.parseInt(authentication.getName());
+        User member = userService.getUserByEmployeeCode(employeeCode);
+        model.addAttribute("member", member);
+        //報告一覧表示---------------------------------
+        List<Apply> applys = applyService.getfindAll(employeeCode);
+
+        //検索機能---------------------------------------
+        //既読or未読
+//        for (Apply apply : applys) {
+//            boolean isFeedbackGiven = feedbackService.count(apply.getId());
+//            apply.setReadStatus(isFeedbackGiven ? "既読" : "未読");
+//        }
+//        model.addAttribute("applys", applys);
+//        //年月で重複しないList作成
+//        List<LocalDate> dateList = applys.stream()
+//                .map(Apply::getDate)
+//                .map(date -> date.withDayOfMonth(1))
+//                .distinct()
+//                .toList();
+//        model.addAttribute("dateList", dateList);
+//        //データ格納用
+        model.addAttribute("applySortInput", new ApplySortInput());
+
+        return "member/apply-search";
+    }
+
+    @PostMapping("/search-apply")
+    public String searchApply(
+            ApplySearchInput applySearchInput,
+            RedirectAttributes redirectAttributes,
+            ApplySortInput applySortInput,
+            Model model
+    ) {
+
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        int employeeCode = Integer.parseInt(authentication.getName());
+
+        String applyId = applyService.searchId(
+                employeeCode,
+                applySearchInput.getCreatedDate()
+        );
+
+        //日付、、
+        if (applySortInput.getSort()) {
+            applySortInput.setEmployeeCode(employeeCode);
+
+            //ソート用
+            List<Apply> applys = applyService.getSortApply(applySortInput);
+            User member = userService.getUserByEmployeeCode(employeeCode);
+//            for (Apply apply : applys) {
+//                boolean isFeedbackGiven = feedbackService.count(apply.getId());
+//                apply.setReadStatus(isFeedbackGiven ? "既読" : "未読");
+//            }
+            model.addAttribute("member", member);
+            model.addAttribute("applySearchInput", new ApplySearchInput());
+            model.addAttribute("error", model.getAttribute("error"));
+            model.addAttribute("applys", applys);
+//            年月で重複しないList作成
+//            List<LocalDateTime> dateList = applys.stream()
+//                    .map(Apply::getCreatedDate)
+//                    .map(date -> date.withDayOfMonth(1))
+//                    .distinct()
+//                    .toList();
+//            model.addAttribute("dateList", dateList);
+            //データ格納用
+            model.addAttribute("applySortInput", new ApplySortInput());
+            return "member/apply-search";
+        }
+
+//        if (applyId == null) {
+//            redirectAttributes.addFlashAttribute("error", "選択された日付に提出されたレポートはありません");
+//            return "redirect:/member/apply-search";
+//        }
+
+        redirectAttributes.addAttribute("applyId", applyId);
+        return "redirect:/member/applys/{applyId}";
     }
 }
 

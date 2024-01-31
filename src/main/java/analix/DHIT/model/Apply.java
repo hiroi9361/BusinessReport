@@ -58,7 +58,7 @@ public class Apply {
     public void setApplyId(int applyId) {
         this.id = applyId;
     }
-    public int gettApply_id() {
+    public int getApply_id() {
         return apply_id;
     }
     public void setApply_id(int apply_id) {

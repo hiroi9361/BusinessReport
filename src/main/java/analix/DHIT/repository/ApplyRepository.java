@@ -1,6 +1,6 @@
 package analix.DHIT.repository;
 
-import analix.DHIT.input.ApplyCreateInput;
+import analix.DHIT.input.ApplySortInput;
 import analix.DHIT.model.Apply;
 
 import java.util.List;
@@ -17,5 +17,5 @@ public interface ApplyRepository {
     List<Apply> findAll(int employeeCode);
 
     //ソート検索結果
-//    List<Report> sortApply(ReportSortInput reportSortInput);
+    List<Apply> sortApply(ApplySortInput applySortInput);
 }

@@ -22,20 +22,20 @@
 
         <h2 class="text-center mb-4" th:text="${member.name} + ' の申請一覧'"></h2>
 
-        <form action="#" th:action="@{/member/search-apply}" th:object="${applySearchInput}" method="post">
-            <div class="mb-3 d-flex align-items-end justify-content-center text-center">
-                <div class="mb-3 me-3">
-                    <label for="datePicker" class="form-label" style="color: #02990E;">日付指定</label>
-                    <input type="date" class="form-control" id="datePicker" name="date">
-                </div>
-                <div class="mb-3 me-3">
-                    <button type="submit" class="btn btn-secondary">検索</button>
-                </div>
-            </div>
-            <div>
-                <input type="hidden" name="employeeCode" th:value="${member.employeeCode}"/>
-            </div>
-        </form>
+<!--        <form action="#" th:action="@{/member/search-apply}" th:object="${applySearchInput}" method="post">-->
+<!--            <div class="mb-3 d-flex align-items-end justify-content-center text-center">-->
+<!--                <div class="mb-3 me-3">-->
+<!--                    <label for="datePicker" class="form-label" style="color: #02990E;">日付指定</label>-->
+<!--                    <input type="date" class="form-control" id="datePicker" name="date">-->
+<!--                </div>-->
+<!--                <div class="mb-3 me-3">-->
+<!--                    <button type="submit" class="btn btn-secondary">検索</button>-->
+<!--                </div>-->
+<!--            </div>-->
+<!--            <div>-->
+<!--                <input type="hidden" name="employeeCode" th:value="${member.employeeCode}"/>-->
+<!--            </div>-->
+<!--        </form>-->
 
         <form th:action="@{/member/search-apply}" th:object="${ApplySortInput}" method="post">
             <div>
@@ -78,7 +78,7 @@
                     </tr>
                     </thead>
                     <tbody>
-                    <tr th:each="apply : ${apply}">
+                    <tr th:each="apply : ${applys}">
                         <td th:switch="${apply.applicationType}">
                             <i th:case="'1'">
                                 <i class="text" style="font-size: 1.5rem;">事前</i>
@@ -133,7 +133,7 @@
                                 <i class="text" style="font-size: 1.5rem;">差戻</i>
                             </i>
                         </td>
-                        <td style="width:62px;"><a th:href="@{'reports/' + ${report.Id}}" class="btn btn-outline-secondary">詳細</a></td>
+                        <td style="width:62px;"><a th:href="@{'applys/' + ${apply.Id}}" class="btn btn-outline-secondary">詳細</a></td>
                     </tr>
                     </tbody>
                 </table>
@@ -145,13 +145,13 @@
     </div>
 </div>
 <style layout:fragment="style">
-    .text-kidoku {
-                    color: #02990E;
-                 }
+<!--    .text-kidoku {-->
+<!--                    color: #02990E;-->
+<!--                 }-->
 
-    .text-midoku {
-                    color: red;
-                 }
+<!--    .text-midoku {-->
+<!--                    color: red;-->
+<!--                 }-->
 
 
     .gap-2 {
@@ -185,19 +185,19 @@
 
 </body>
 </html>
-<script>
-    function goBack() {
-        // 前のページに戻る
-        window.history.back();
-    }
+<!--<script>-->
+<!--    function goBack() {-->
+<!--        // 前のページに戻る-->
+<!--        window.history.back();-->
+<!--    }-->
 
 
-    function check() {
-        if (window.confirm('このチームを削除しますか？')) {
-            return true;
-        } else {
-            return false;
-        }
-    }
+<!--    function check() {-->
+<!--        if (window.confirm('このチームを削除しますか？')) {-->
+<!--            return true;-->
+<!--        } else {-->
+<!--            return false;-->
+<!--        }-->
+<!--    }-->
 
-</script>
+<!--</script>-->

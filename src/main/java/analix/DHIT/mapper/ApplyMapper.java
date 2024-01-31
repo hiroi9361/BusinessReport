@@ -1,5 +1,7 @@
 package analix.DHIT.mapper;
 
+import analix.DHIT.input.ApplySortInput;
+import analix.DHIT.input.ReportSortInput;
 import analix.DHIT.model.Apply;
 import analix.DHIT.model.Report;
 import org.apache.ibatis.annotations.*;
@@ -24,4 +26,19 @@ public interface ApplyMapper {
     @Select("SELECT * FROM apply WHERE employee_code=#{employeeCode}")
     List<Report> selectAll(int employeeCode);
 
+    @Select("SELECT apply_id FROM report WHERE employee_code = #{employeeCode} and created_date = #{createdDate}")
+    String selectIdByEmployeeCodeAndCreatedDate(int employeeCode, LocalDateTime createdDate);
+
+    @Select("SELECT * FROM apply as a " +
+//            "LEFT OUTER JOIN feedback as f ON r.report_id=f.report_id " +
+            "WHERE " +
+            "(#{applySortInput.createdDate} IS NULL OR DATE_FORMAT(a.createdDate,'%Y-%m')=DATE_FORMAT(#{applySortInput.createdDate},'%Y-%m')) " +
+            "AND " +
+            "(a.employee_code=#{applySortInput.employeeCode}) "
+//            "AND " +
+//            "((#{applySortInput.feedback} IS NULL) " +
+//            "OR (#{reportSortInput.feedback} IS TRUE AND f.feedback_id IS NOT NULL) " +
+//            "OR (#{reportSortInput.feedback} IS FALSE AND f.feedback_id IS NULL))"
+    )
+    List<Apply> sortApply(@Param("applySortInput") ApplySortInput applySortInput);
 }

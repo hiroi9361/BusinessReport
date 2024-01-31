@@ -1,7 +1,10 @@
 package analix.DHIT.service;
 
+import analix.DHIT.input.ReportSortInput;
 import analix.DHIT.mapper.ApplyMapper;
+import analix.DHIT.input.ApplySortInput;
 import analix.DHIT.model.Apply;
+import analix.DHIT.model.Report;
 import analix.DHIT.repository.ApplyRepository;
 import org.springframework.stereotype.Service;
 
@@ -17,6 +20,8 @@ import java.util.List;
 public class ApplyService {
     private final ApplyMapper applyMapper;
     private final ApplyRepository applyRepository;
+
+
 
     public ApplyService(ApplyMapper applyMapper, ApplyRepository applyRepository) {
         this.applyMapper = applyMapper;
@@ -50,9 +55,24 @@ public class ApplyService {
         newApply.setCreatedDate(createdDate);
 
         this.applyRepository.save(newApply);
-
         return newApply.getId();
-
+    }
+    public  List<Apply> getfindAll(int employeecode){
+        List<Apply> applys = applyRepository.findAll(employeecode);
+        if(applys != null) {
+            //申請日付を軸に降順に並び替える
+            Collections.sort(applys, Comparator.comparing(Apply::getCreatedDate).reversed());
+        }
+        return  applys;
     }
 
+    public String searchId(int employeeCode, LocalDateTime createdDate) {
+        return applyMapper.selectIdByEmployeeCodeAndCreatedDate(employeeCode, createdDate);
+    }
+
+    public  List<Apply> getSortApply(ApplySortInput applySortInput) {
+        List<Apply> applys = applyRepository.sortApply(applySortInput);
+        Collections.sort(applys, Comparator.comparing(Apply::getCreatedDate).reversed());
+        return  applys;
+    }
 }

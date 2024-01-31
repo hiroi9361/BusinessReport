@@ -223,7 +223,33 @@ th, td {
   a:hover{
     color : black;
   }
+@media (max-width: 768px) {
+table {
+    width: 100%;
+    border-collapse: collapse;
+    table-layout: fixed;
+}
 
+th, td {
+    border: 1px solid #ddd;
+    text-align: center;
+    font-size: 15px;
+    white-space: nowrap;
+    padding: 10px;
+    max-width: 100%;
+    white-space: normal;
+    overflow: visible;
+    text-overflow: unset;
+}
+
+.container-sub {
+        display: flex;
+        flex-direction: column;
+}
+ .main-right {
+        margin-bottom: 2px;
+ }
+}
 </style>
 
 <script layout:fragment="script">
@@ -256,12 +282,8 @@ th, td {
              $('#myModal').modal('hide');
         });
     }
-
 </script>
-
-
 </body>
 </html>
-
 
 

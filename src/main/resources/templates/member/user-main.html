@@ -76,6 +76,15 @@
                         </div>
                     </div>
                 </div>
+                <div class="main-right">
+                    <div th:if="${todaymembers}">
+                        <h5>勤怠申請のメンバー</h5>
+                        <div th:each="mem : ${todaymembers}">
+                            <a th:href="@{'/manager/report-search?employeeCode=' + ${mem.employeeCode}}"><p
+                                    th:text="${mem.name}"></p></a>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
       </div>

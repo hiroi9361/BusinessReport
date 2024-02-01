@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/web/thymeleaf/layout"
+      layout:decorate="~{layout/layout}">
+<head>
+    <meta charset="UTF-8" th:remove="tag">
+</head>
+<body>
+<div layout:fragment="content">
+    <div th:if="${error}">
+        <div class="flash flash-danger alert alert-dismissible fade show" role="alert">
+            <span th:text="${error}"></span>
+            <a data-bs-dismiss="alert" aria-label="Close">
+                <i class="fas fa-times"></i>
+            </a>
+        </div>
+    </div>
+    <div class="container mt-4">
+        <h2 class="text-center mb-4">申請内容詳細</h2>
+    </div>
+    <table class="StripeTable mb-4" style="text-align: left;">
+        <tbody>
+            <tr>
+                <td>申請種別</td>
+                <td th:switch="${apply.applicationType}">
+                    <i th:case="'1'">
+                        <i class="text" style="">事前</i>
+                    </i>
+                    <i th:case="'2'">
+                        <i class="text" style="">事後</i>
+                    </i>
+                </td>
+            </tr>
+            <tr>
+                <td>勤怠内容</td>
+                <td th:switch="${apply.attendanceType}">
+                    <i th:case="'1'">
+                        <i class="text" style="">遅刻</i>
+                    </i>
+                    <i th:case="'2'">
+                        <i class="text" style="">早退</i>
+                    </i>
+                    <i th:case="'3'">
+                        <i class="text" style="">外出</i>
+                    </i>
+                    <i th:case="'4'">
+                        <i class="text" style="">振替休日</i>
+                    </i>
+                    <i th:case="'5'">
+                        <i class="text" style="">有給休暇</i>
+                    </i>
+                    <i th:case="'6'">
+                        <i class="text" style="">特別休暇</i>
+                    </i>
+                    <i th:case="'7'">
+                        <i class="text" style="">欠勤</i>
+                    </i>
+                </td>
+            </tr>
+            <tr>
+                <td>日時</td>
+                <td th:text="${apply.startDate + ' ' + apply.startTime + ' - ' + apply.endDate + ' ' + apply.endTime}"></td>
+            </tr>
+            <tr>
+                <td>理由/備考</td>
+                <td>
+                    <div th:attr="data-content=${apply.reason}" class="d-flex align-items-center" style="white-space: pre-line; word-wrap: break-word; overflow: hidden; text-overflow: ellipsis; text-align: left;">
+                        <span th:text="${#strings.abbreviate(apply.reason, 29)}"></span>
+                    </div>
+                </td>
+            </tr>
+            <tr>
+                <td>申請日時</td>
+                <td th:text="${apply.createdDate}">
+            </tr>
+            <tr>
+                <td>承認状況</td>
+                <td th:switch="${apply.approval}">
+                    <i th:case="'0'">
+                        <i class="text" style="">未承認</i>
+                    </i>
+                    <i th:case="'1'">
+                        <i class="text" style="">承認済み</i>
+                    </i>
+                    <i th:case="'2'">
+                        <i class="text" style="">差戻</i>
+                    </i>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+
+    <div style="text-align: center;">
+        <a th:href="@{'/member/apply/' + ${apply.id} + '/delete'}" class="btn btn-danger" onClick="return check()">申請を取り消す</a>
+    </div>
+    <div style="text-align: center;">
+        <a th:href="@{/member/apply-search}">申請一覧に戻る</a>
+    </div>
+
+</div>
+<style layout:fragment="style">
+    .gap-2 {
+                justify-content: center;
+                width : 100%;
+            }
+            button.btn-lg {
+                float : left ;
+                text-align: center;
+                white-space: nowrap;
+                padding-left: 90px;
+                padding-right: 90px;
+            }
+            @media (max-width: 768px) {
+                h2.text-center.mb-4 {
+                    font-size: 1.3em;
+                }
+                .gap-2 {
+                    justify-content: center;
+                    width : 100%;
+                }
+                button.btn-lg {
+                    text-align: center;
+                    white-space: nowrap;
+                    padding-left: 40px;
+                    padding-right: 40px;
+                }
+            }
+</style>
+<script layout:fragment="script">
+
+    function check() {
+        if (window.confirm('この報告書を削除しますか？')) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+</script>
+
+</body>
+</html>
+<!--<script>-->
+<!--    function goBack() {-->
+<!--        // 前のページに戻る-->
+<!--        window.history.back();-->
+<!--    }-->
+
+
+<!--    function check() {-->
+<!--        if (window.confirm('このチームを削除しますか？')) {-->
+<!--            return true;-->
+<!--        } else {-->
+<!--            return false;-->
+<!--        }-->
+<!--    }-->
+
+<!--</script>-->

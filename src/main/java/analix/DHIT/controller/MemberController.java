@@ -5,6 +5,7 @@ import analix.DHIT.config.LoginUserDetailsService;
 import analix.DHIT.input.*;
 import analix.DHIT.model.*;
 import analix.DHIT.service.*;
+import org.apache.ibatis.annotations.Param;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.security.core.Authentication;
@@ -1014,6 +1015,46 @@ public class MemberController {
         redirectAttributes.addAttribute("applyId", applyId);
         return "redirect:/member/applys/{applyId}";
     }
+
+    @GetMapping("/apply/{applyId}")
+    public String applyDetail(
+            @PathVariable("applyId") int applyId,
+            Model model
+    ) {
+        Apply apply = applyService.findById(applyId);
+        model.addAttribute("apply",apply);
+        return "/member/apply-detail";
+    }
+    @GetMapping("/apply/{applyId}/delete")
+    @Transactional
+    public String deleteApply(
+            @PathVariable("applyId") int applyId,
+            Model model
+    ) {
+        Apply apply = applyService.findById(applyId);
+
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        int employeeCode = Integer.parseInt(authentication.getName());
+
+        if (apply.getEmployeeCode() != employeeCode) {
+            return "redirect:/member/apply-detail";
+        }
+
+        this.applyService.deleteById(applyId);
+
+        User member = userService.getUserByEmployeeCode(employeeCode);
+        model.addAttribute("member", member);
+        List<Apply> applys = applyService.getfindAll(employeeCode);
+        model.addAttribute("applys",applys);
+        model.addAttribute("applySearchInput", new ApplySearchInput());
+        model.addAttribute("error", model.getAttribute("error"));
+        model.addAttribute("applySortInput", new ApplySortInput());
+        String title = "申請一覧";
+        model.addAttribute("title", title);
+
+        return "member/apply-search";
+    }
+
 }
 
 

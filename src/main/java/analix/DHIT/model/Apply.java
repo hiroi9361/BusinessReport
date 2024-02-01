@@ -12,7 +12,7 @@ public class Apply {
 
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
-    private int apply_id;
+    //private int apply_id;
 //    @Id
 //    @GeneratedValue(strategy = GenerationType.IDENTITY)
 //    @Column(name = "apply_id")
@@ -54,16 +54,15 @@ public class Apply {
     public int getId() {
         return id;
     }
-
     public void setApplyId(int applyId) {
         this.id = applyId;
     }
-    public int getApply_id() {
-        return apply_id;
-    }
-    public void setApply_id(int apply_id) {
-        this.id = apply_id;
-    }
+//    public int getApply_id() {
+//        return apply_id;
+//    }
+//    public void setApply_id(int apply_id) {
+//        this.id = apply_id;
+//    }
 
     public int getEmployeeCode() {
         return employeeCode;

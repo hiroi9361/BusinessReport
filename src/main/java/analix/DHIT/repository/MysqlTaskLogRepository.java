@@ -63,13 +63,18 @@ public class MysqlTaskLogRepository implements TaskLogRepository {
     }
 
     @Override
-    public List<TaskDetailInput> taskDetail(int sorting) {
-        return this.taskLogMapper.taskDetail(sorting);
+    public List<TaskDetailInput> taskDetail(int sorting, int employeeCode) {
+        return this.taskLogMapper.taskDetail(sorting, employeeCode);
     }
 
     @Override
     public List<TaskLog>taskFilter(TaskSearchInput taskSearchInput) {
         return this.taskLogMapper.taskLogFilter(taskSearchInput);
+    }
+
+    @Override
+    public List<TaskLog> selectByEmployeeCode(int employeeCode){
+        return this.taskLogMapper.selectByEmployeeCode(employeeCode);
     }
 
 }

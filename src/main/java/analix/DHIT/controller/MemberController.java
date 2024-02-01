@@ -108,9 +108,13 @@ public class MemberController {
         //(前日のreport内容を引継ぎ入力欄に記入)
         reportCreateInput.setStartTime(report.getStartTime());
         reportCreateInput.setEndTime(report.getEndTime());
-        //report_idを参照してtask_Logの値を取得しset
-        reportCreateInput.setTaskLogs(taskLogService.getIncompleteTaskLogsByReportId(Integer.parseInt(latestReportId)));
 
+    ////削除予定
+        //report_idを参照してtask_Logの値を取得しset
+        //reportCreateInput.setTaskLogs(taskLogService.getIncompleteTaskLogsByReportId(Integer.parseInt(latestReportId)));
+    ////削除予定
+        //未達成のタスクを表示する
+        reportCreateInput.setTaskLogs(taskLogService.selectByEmployeeCode(employeeCode));
 
         model.addAttribute("reportCreateInput", reportCreateInput);
         return "member/report-create";
@@ -193,6 +197,7 @@ public class MemberController {
                     List<TaskLog>taskList = this.taskLogService.taskListByName(taskLog.getName());
                     taskLog.setCounter(taskList.size() + 1);
                     taskLog.setSorting(taskList.get(0).getSorting());
+                    taskLog.setEmployeeCode(employeeCode);
                     if(taskLog.getCounter() == 1){
                         int maxNum = taskLogService.maxTask() + 1;
                         taskLog.setSorting(maxNum);
@@ -633,8 +638,11 @@ public class MemberController {
     @GetMapping("/taskDetail/{sorting}")
     public String displayReportDetail(@PathVariable("sorting") int sorting, Model model) {
 
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        int employeeCode = Integer.parseInt(authentication.getName());
+
         List<TaskDetailInput> taskDetailInput = new ArrayList<>();
-        taskDetailInput = this.taskLogService.taskDetail(sorting);
+        taskDetailInput = this.taskLogService.taskDetail(sorting, employeeCode);
         model.addAttribute("taskDetail",taskDetailInput);
         return "member/taskDetail";
     }

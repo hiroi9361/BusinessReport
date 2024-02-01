@@ -21,11 +21,13 @@ public interface TaskLogRepository {
 
     void setCounter(TaskLog taskLog);
 
+    List<TaskLog> selectByEmployeeCode(int employeeCode);
+
     List<TaskLog>taskListByName(String name);
 
     List<TaskLog> taskList(int employeeCode);
 
-    List<TaskDetailInput> taskDetail(int sorting);
+    List<TaskDetailInput> taskDetail(int sorting, int employeeCode);
 
     List<TaskLog>taskFilter(TaskSearchInput taskSearchInput);
 }

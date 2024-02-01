@@ -33,6 +33,21 @@ public class MysqlTaskLogRepository implements TaskLogRepository {
     }
 
     @Override
+    public int countByName(String name){
+        return this.taskLogMapper.countByName(name);
+    }
+
+    @Override
+    public void setCounter(TaskLog taskLog){
+        this.taskLogMapper.setCounter(taskLog);
+    }
+
+    @Override
+    public List<TaskLog>taskListByName(String name){
+        return this.taskLogMapper.taskListByName(name);
+    }
+
+    @Override
     public void deleteByReportId(int reportId) {
         this.taskLogMapper.deleteByReportId(reportId);
     }

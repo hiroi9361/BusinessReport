@@ -6,6 +6,9 @@ import jakarta.persistence.*;
 @Table(name="task_log")
 public class TaskLog {
 
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private int taskId;
     private int reportId;
     private String name;
     private int progressRate;
@@ -13,6 +16,13 @@ public class TaskLog {
     private int sorting;
 
     public TaskLog() {
+    }
+
+    public int getId() {
+        return taskId;
+    }
+    public void setId(int taskId) {
+        this.taskId = taskId;
     }
 
     public String getName() {

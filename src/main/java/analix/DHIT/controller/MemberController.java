@@ -70,7 +70,8 @@ public class MemberController {
 
     @GetMapping("/report/create")
     public String displayReportCreate(
-            Model model
+            Model model,
+            LocalDate targetDate
     ) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         //バリデーションInteger
@@ -81,7 +82,9 @@ public class MemberController {
         SettingInput settingInput = new SettingInput();
         //java.timeパッケージから現在の時刻を取得
         reportCreateInput.setDate(LocalDate.now());
-
+        if (targetDate != null){
+            reportCreateInput.setDate(targetDate);
+        }
         String title = "報告作成";
         model.addAttribute("title", title);
         //規定の終業時間を取得し、セット
@@ -182,7 +185,9 @@ public class MemberController {
             taskLogs.forEach(x -> x.setReportId(newReportId));
             for (TaskLog taskLog : taskLogs) {
                 if (taskLog != null && taskLog.getName() != null) {
-                    taskLog.setCounter(taskLog.getCounter() + 1);
+                    List<TaskLog>taskList = this.taskLogService.taskListByName(taskLog.getName());
+                    taskLog.setCounter(taskList.size() + 1);
+                    taskLog.setSorting(taskList.get(0).getSorting());
                     if(taskLog.getCounter() == 1){
                         int maxNum = taskLogService.maxTask() + 1;
                         taskLog.setSorting(maxNum);
@@ -510,8 +515,66 @@ public class MemberController {
             List<TaskLog> taskLogs = reportUpdateInput.getTaskLogs();
             taskLogs.forEach(x -> x.setReportId(reportUpdateInput.getReportId()));
             for (TaskLog taskLog : taskLogs) {
+                boolean addMiddle = false;
                 if (taskLog != null && taskLog.getName() != null) {
-                    taskLogService.create(taskLog);
+                    //taskLog.getName()でtask_logDBに検索をかける
+                    boolean existingTask = this.taskLogService.countName(taskLog.getName());
+                    //無い時
+                    if(!existingTask){
+                        taskLog.setCounter(taskLog.getCounter() + 1);
+                        if(taskLog.getCounter() == 1){
+                            int maxNum = taskLogService.maxTask() + 1;
+                            taskLog.setSorting(maxNum);
+                        }
+                    //有る時
+                    } else {
+                        //taskLog.getName()とreportUpdateInput.getDate()を参照して
+                        //時系列的に適切なcounterをセットし、以降のcounterを採番する
+                        List<TaskLog>taskList = this.taskLogService.taskListByName(taskLog.getName());
+                        LocalDate date = reportUpdateInput.getDate();
+                        boolean once = false;
+                        int count = 0;
+                        int sort = 0;
+                        int taskId =0;
+                        for(TaskLog task : taskList){
+                            Report reportDate = reportService.getReportById(task.getReportId());
+                            if (date.isBefore(reportDate.getDate())){
+                                addMiddle = true;
+                                if (!once){
+                                    count = task.getCounter();
+                                    sort = task.getSorting();
+                                    taskLog.setCounter(count);
+                                    taskLog.setSorting(sort);
+                                    count = taskLog.getCounter();
+                                    //DB更新
+                                    taskLogService.create(taskLog);
+                                    count++;
+                                    taskLog.setId(task.getId());
+                                    taskLog.setCounter(count);
+                                    taskLog.setSorting(sort);
+                                    taskLogService.setCounter(taskLog);
+                                    count++;
+                                    once = true;
+                                }else{
+                                    taskLog.setId(task.getId());
+                                    taskLog.setCounter(count);
+                                    taskLog.setSorting(sort);
+                                    count++;
+                                    //DB更新
+                                    taskLogService.setCounter(taskLog);
+                                }
+                            }
+                        }
+                        if (!once){
+                            int taskIndex = taskList.size() - 1;
+                            TaskLog newTask = taskIndex >= 0 ? taskList.get(taskIndex) : null;
+                            taskLog.setCounter(newTask.getCounter()+1);
+                            taskLog.setSorting(newTask.getSorting());
+                        }
+                    }
+                    if (!addMiddle) {
+                        taskLogService.create(taskLog);
+                    }
                 }
             }
         }

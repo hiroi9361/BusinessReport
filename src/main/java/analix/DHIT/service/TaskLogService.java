@@ -41,6 +41,19 @@ public class TaskLogService {
         this.taskLogRepository.save(taskLog);
     }
 
+    public boolean countName(String name){
+        int count = this.taskLogRepository.countByName(name);
+        return count > 0;
+    }
+
+    public void setCounter(TaskLog taskLog){
+        this.taskLogRepository.setCounter(taskLog);
+    }
+
+    public List<TaskLog>taskListByName(String name){
+        return this.taskLogRepository.taskListByName(name);
+    }
+
     //これ task_log 全消しメソッド
     public void deleteByReportId(int reportId){
         this.taskLogRepository.deleteByReportId(reportId);

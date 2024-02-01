@@ -50,6 +50,20 @@ public interface TaskLogMapper {
             "order by r.date;")
     List<TaskDetailInput> taskDetail(@Param("sorting") int sorting);
 
+    //同名タスクの存在チェック
+    @Select("select count(*) from task_log as t where t.name = #{name}")
+    int countByName(String name);
+
+    //同名タスクを全件取得
+    @Select("select * from task_log as t where t.name = #{name}")
+    List<TaskLog>taskListByName(String name);
+
+    //counterを採番
+    @Select("update task_log set counter = #{counter} where task_id = #{taskId}")
+    void setCounter(TaskLog taskLog);
+
+
+
     //タスク一覧フィルター用
     @Select("SELECT * " +
             "FROM task_log as t " +

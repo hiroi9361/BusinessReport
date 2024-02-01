@@ -741,7 +741,6 @@ public class ManagerController {
         Collection<? extends GrantedAuthority> authorities = auth.getAuthorities();
         String myRole = authorities.iterator().next().getAuthority();
         String myEmployeeCode = auth.getName();
-        System.out.println(myRole);
         if (myRole.equals("ROLE_USER")){
             List<Assignment> assignmentList = assignmentService.selectByEmployeeCode(Integer.parseInt(myEmployeeCode));
             List<Team> teamList = new ArrayList<>();

@@ -8,7 +8,7 @@
 <body>
 <div layout:fragment="content">
     <div th:if="${not hasSentReport}">
-        <a  th:href="@{/member/report/create}">
+        <a th:href="@{/member/report/create(targetDate=${targetDate})}">
             <div class="alert alert-danger">
                 <p th:text="${targetDate}+ 'に報告書の未提出。こちらにクリックして提出して下さい。'"></p>
             </div>

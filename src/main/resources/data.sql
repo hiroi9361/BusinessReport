@@ -118,3 +118,6 @@ INSERT INTO task_log (task_id, report_id, name, progress_rate, counter, sorting)
     (19, 16, "カトラリーの選定・発注", 60, 2, 15),
     (20, 16, "ティーカップの発注", 90, 2, 16);
 
+-- apply
+INSERT INTO apply (apply_id, employee_code, application_type, attendance_type, start_date, start_time, end_date, end_time, reason,approval, created_date) VALUES
+    (1, 1, 1, 1, "2024-02-01", "09:30:00", "2024-02-01", "18:00:00", "寝坊した", 0, "2024-02-01 13:34:20");

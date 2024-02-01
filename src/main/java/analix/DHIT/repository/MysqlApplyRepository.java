@@ -30,13 +30,12 @@ public class MysqlApplyRepository implements ApplyRepository {
 
     @Override
     public List<Apply> findAll(int employeeCode) {
-        return null;
+        return this.applyMapper.selectAll(employeeCode);
     }
 
     @Override
     public List<Apply> sortApply(ApplySortInput applySortInput) {
         return this.applyMapper.sortApply(applySortInput);
     }
-
 
 }

@@ -78,13 +78,15 @@
                     </tr>
                     </thead>
                     <tbody>
-                    <tr th:each="apply : ${applys}">
+                        <tr th:each="apply : ${applys}">
                         <td th:switch="${apply.applicationType}">
                             <i th:case="'1'">
-                                <i class="text" style="font-size: 1.5rem;">事前</i>
+<!--                                <i class="text" style="font-size: 1.5rem;">事前</i>-->
+                                <i class="text">事前</i>
                             </i>
                             <i th:case="'2'">
-                                <i class="text" style="font-size: 1.5rem;">事後</i>
+<!--                                <i class="text" style="font-size: 1.5rem;">事後</i>-->
+                                <i class="text">事後</i>
                             </i>
                         </td>
                         <td th:switch="${apply.attendanceType}">
@@ -110,18 +112,14 @@
                                 <i class="text" style="font-size: 1.5rem;">欠勤</i>
                             </i>
                         </td>
-                        <td th:text="${apply.startDate + ' ' + apply.startTime + ' - ' + apply.endDate + ' ' + apply.endTime}"></td>
-<!--                        <td th:text="${apply.startTime}"></td>-->
-<!--                        <td th:text="${apply.endDate}"></td>-->
-<!--                        <td th:text="${apply.endTime}"></td>-->
-
+                        <td th:text="${apply.startDate + ' ' + apply.startTime + ' ~ ' + apply.endDate + ' ' + apply.endTime}"></td>
                         <!-- 理由を29文字まで表示し、残りは非表示にする -->
                         <td>
                             <div th:attr="data-content=${apply.reason}" class="d-flex align-items-center" style="white-space: pre-line; word-wrap: break-word; overflow: hidden; text-overflow: ellipsis; text-align: left;">
                                 <span th:text="${#strings.abbreviate(apply.reason, 29)}"></span>
                             </div>
                         </td>
-                        <td th:text="${apply.createdDate}">
+                        <td th:text="${apply.createdDate}"></td>
                         <td th:switch="${apply.approval}">
                             <i th:case="'0'">
                                 <i class="text" style="font-size: 1.5rem;">未承認</i>

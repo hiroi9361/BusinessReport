@@ -24,7 +24,7 @@ public interface ApplyMapper {
 
     // 一覧表示
     @Select("SELECT * FROM apply WHERE employee_code=#{employeeCode}")
-    List<Report> selectAll(int employeeCode);
+    List<Apply> selectAll(int employeeCode);
 
     @Select("SELECT apply_id FROM report WHERE employee_code = #{employeeCode} and created_date = #{createdDate}")
     String selectIdByEmployeeCodeAndCreatedDate(int employeeCode, LocalDateTime createdDate);

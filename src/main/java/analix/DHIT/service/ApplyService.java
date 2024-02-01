@@ -57,8 +57,8 @@ public class ApplyService {
         this.applyRepository.save(newApply);
         return newApply.getId();
     }
-    public  List<Apply> getfindAll(int employeecode){
-        List<Apply> applys = applyRepository.findAll(employeecode);
+    public  List<Apply> getfindAll(int employeeCode){
+        List<Apply> applys = applyRepository.findAll(employeeCode);
         if(applys != null) {
             //申請日付を軸に降順に並び替える
             Collections.sort(applys, Comparator.comparing(Apply::getCreatedDate).reversed());
@@ -75,4 +75,9 @@ public class ApplyService {
         Collections.sort(applys, Comparator.comparing(Apply::getCreatedDate).reversed());
         return  applys;
     }
+
+//    public boolean count(int applyId){
+//        int count = applyRepository.count(applyId);
+//        return count > 0;
+//    }
 }

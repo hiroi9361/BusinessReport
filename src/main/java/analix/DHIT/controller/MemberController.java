@@ -946,10 +946,10 @@ public class MemberController {
         //検索機能---------------------------------------
         //既読or未読
 //        for (Apply apply : applys) {
-//            boolean isFeedbackGiven = feedbackService.count(apply.getId());
-//            apply.setReadStatus(isFeedbackGiven ? "既読" : "未読");
+//            boolean isApprovalGiven = applyService.count(apply.getId());
+//            apply.setStatus(isApprovalGiven ? "既読" : "未読");
 //        }
-//        model.addAttribute("applys", applys);
+        model.addAttribute("applys", applys);
 //        //年月で重複しないList作成
 //        List<LocalDate> dateList = applys.stream()
 //                .map(Apply::getDate)
@@ -994,6 +994,7 @@ public class MemberController {
             model.addAttribute("applySearchInput", new ApplySearchInput());
             model.addAttribute("error", model.getAttribute("error"));
             model.addAttribute("applys", applys);
+
 //            年月で重複しないList作成
 //            List<LocalDateTime> dateList = applys.stream()
 //                    .map(Apply::getCreatedDate)

@@ -6,6 +6,7 @@ DROP TABLE IF EXISTS `team` CASCADE;
 DROP TABLE IF EXISTS `feedback` CASCADE;
 DROP TABLE IF EXISTS `assignment` CASCADE;
 DROP TABLE IF EXISTS `setting` CASCADE;
+DROP TABLE IF EXISTS `apply` CASCADE;
 SET FOREIGN_KEY_CHECKS = 1;
 
 CREATE TABLE IF NOT EXISTS `user` (
@@ -69,6 +70,20 @@ CREATE TABLE IF NOT EXISTS `setting` (
     `start_time` time NOT NULL,
     `end_time`  time NOT NULL,
     `employee_code` int NOT NULL
+);
+
+CREATE TABLE IF NOT EXISTS `apply` (
+    `apply_id` int NOT NULL AUTO_INCREMENT PRIMARY KEY,
+    `employee_code` int NOT NULL,
+    `application_type`  int NOT NULL,
+    `attendance_type`  int NOT NULL,
+    `start_date`  date NOT NULL,
+    `start_time`  time NOT NULL,
+    `end_date`  date NOT NULL,
+    `end_time`  time NOT NULL,
+    `reason`  varchar(45) NOT NULL,
+    `approval`  int NOT NULL,
+    `created_date` datetime NOT NULL
 );
 
 alter table assignment add constraint FKdetrh6pu9ojx5htmct8jirhof foreign key (team_id) references team (team_id);

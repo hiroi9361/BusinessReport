@@ -30,6 +30,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import javax.mail.MessagingException;
 import java.time.DayOfWeek;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
@@ -46,7 +47,8 @@ public class MemberController {
     private final AssignmentService assignmentService;
     private final TeamService teamService;
     private final SettingService settingService;
-    private final MailService mailService;
+    private final   MailService mailService;
+    private final   ApplyService applyService;
 
 
 //    @Autowired
@@ -57,7 +59,8 @@ public class MemberController {
                             AssignmentService assignmentService,
                             TeamService teamService,
                             SettingService settingService,
-                            MailService mailService) {
+                            MailService mailService,
+                            ApplyService applyService) {
         this.userService = userService;
         this.taskLogService = taskLogService;
         this.reportService = reportService;
@@ -66,6 +69,7 @@ public class MemberController {
         this.teamService = teamService;
         this.settingService = settingService;
         this.mailService = mailService;
+        this.applyService = applyService;
     }
 
     @GetMapping("/report/create")
@@ -815,8 +819,7 @@ public class MemberController {
             return "redirect:/member/userDetailsList-userEdit";
         }
         redirectAttributes.addFlashAttribute("editCompleteMSG", "情報を更新しました");
-        return "/common/common";
-        //return "redirect:/member/userDetailsList";
+        return "redirect:/member/userDetailsList";
     }
 
     //報告未提出メンバーへ通知メールを送信する
@@ -850,6 +853,166 @@ public class MemberController {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
                     .body(memberName + "のメール送信に失敗しました" + ". Error: " + e.getMessage());
         }
+    }
+
+
+    /////////////////////////////////////////////////////////////////////////
+    @GetMapping("/apply/create")
+    public String displayApplyCreate(
+            Model model
+    ) {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        //バリデーションInteger
+        int employeeCode = Integer.parseInt(authentication.getName());
+
+        ApplyCreateInput applyCreateInput = new ApplyCreateInput();
+        SettingInput settingInput = new SettingInput();
+        //java.timeパッケージから現在の時刻を取得
+        applyCreateInput.setCreatedDate(LocalDateTime.now());
+
+        String title = "申請作成";
+        model.addAttribute("title", title);
+        //規定の終業時間を取得し、セット
+        Setting setting = settingService.getSettingTime(employeeCode);
+        settingInput.setStartTime(setting.getStartTime());
+        settingInput.setEndTime(setting.getEndTime());
+//        settingInput.setEmployment(false);
+        model.addAttribute("settingInput", settingInput);
+
+        // 提出ボタンを押した瞬間の時刻を取得し、createdDateにセット
+        applyCreateInput.setCreatedDate(LocalDateTime.now());
+
+        model.addAttribute("applyCreateInput", applyCreateInput);
+        return "member/apply-create";
+
+    }
+
+    //↓Transactionalはトランザクション処理で一連の流れが失敗した場合ロールバックする
+    @Transactional
+    @PostMapping("/apply/create")
+    public String createApply(ApplyCreateInput applyCreateInput, RedirectAttributes redirectAttributes, SettingInput settingInput, Model model) {
+
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        int employeeCode = Integer.parseInt(authentication.getName());
+
+        Setting setting = settingService.getSettingTime(employeeCode);
+
+        // 提出ボタンを押した瞬間の時刻を取得し、createdDateにセット
+        applyCreateInput.setCreatedDate(LocalDateTime.now());
+
+        //newApplyIdには新たにInsertされたreportのIDが入る
+        int newApplyId = applyService.create(
+                employeeCode,
+                applyCreateInput.getApplicationType(),
+                applyCreateInput.getAttendanceType(),
+                applyCreateInput.getStartDate(),
+                applyCreateInput.getEndDate(),
+                applyCreateInput.getStartTime(),
+                applyCreateInput.getEndTime(),
+                applyCreateInput.getReason(),
+                applyCreateInput.getApproval(),
+                applyCreateInput.getCreatedDate()
+        );
+
+       return "redirect:/member/apply/create-completed";
+    }
+
+    // 申請提出完了画面
+    @GetMapping("/apply/create-completed")
+    public String displayApplyCreateCompleted(
+    ) {
+        return "member/apply-create-completed";
+    }
+
+    // 申請一覧
+    @GetMapping("/apply-search")
+    public String displayApplySearch(
+            Model model
+    ) {
+        String title = "申請一覧";
+        model.addAttribute("title", title);
+
+        model.addAttribute("applySearchInput", new ApplySearchInput());
+        model.addAttribute("error", model.getAttribute("error"));
+
+        //ログイン中のユーザーのemployeeCodeを取得する
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        int employeeCode = Integer.parseInt(authentication.getName());
+        User member = userService.getUserByEmployeeCode(employeeCode);
+        model.addAttribute("member", member);
+        //報告一覧表示---------------------------------
+        List<Apply> applys = applyService.getfindAll(employeeCode);
+
+        //検索機能---------------------------------------
+        //既読or未読
+//        for (Apply apply : applys) {
+//            boolean isFeedbackGiven = feedbackService.count(apply.getId());
+//            apply.setReadStatus(isFeedbackGiven ? "既読" : "未読");
+//        }
+//        model.addAttribute("applys", applys);
+//        //年月で重複しないList作成
+//        List<LocalDate> dateList = applys.stream()
+//                .map(Apply::getDate)
+//                .map(date -> date.withDayOfMonth(1))
+//                .distinct()
+//                .toList();
+//        model.addAttribute("dateList", dateList);
+//        //データ格納用
+        model.addAttribute("applySortInput", new ApplySortInput());
+
+        return "member/apply-search";
+    }
+
+    @PostMapping("/search-apply")
+    public String searchApply(
+            ApplySearchInput applySearchInput,
+            RedirectAttributes redirectAttributes,
+            ApplySortInput applySortInput,
+            Model model
+    ) {
+
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        int employeeCode = Integer.parseInt(authentication.getName());
+
+        String applyId = applyService.searchId(
+                employeeCode,
+                applySearchInput.getCreatedDate()
+        );
+
+        //日付、、
+        if (applySortInput.getSort()) {
+            applySortInput.setEmployeeCode(employeeCode);
+
+            //ソート用
+            List<Apply> applys = applyService.getSortApply(applySortInput);
+            User member = userService.getUserByEmployeeCode(employeeCode);
+//            for (Apply apply : applys) {
+//                boolean isFeedbackGiven = feedbackService.count(apply.getId());
+//                apply.setReadStatus(isFeedbackGiven ? "既読" : "未読");
+//            }
+            model.addAttribute("member", member);
+            model.addAttribute("applySearchInput", new ApplySearchInput());
+            model.addAttribute("error", model.getAttribute("error"));
+            model.addAttribute("applys", applys);
+//            年月で重複しないList作成
+//            List<LocalDateTime> dateList = applys.stream()
+//                    .map(Apply::getCreatedDate)
+//                    .map(date -> date.withDayOfMonth(1))
+//                    .distinct()
+//                    .toList();
+//            model.addAttribute("dateList", dateList);
+            //データ格納用
+            model.addAttribute("applySortInput", new ApplySortInput());
+            return "member/apply-search";
+        }
+
+//        if (applyId == null) {
+//            redirectAttributes.addFlashAttribute("error", "選択された日付に提出されたレポートはありません");
+//            return "redirect:/member/apply-search";
+//        }
+
+        redirectAttributes.addAttribute("applyId", applyId);
+        return "redirect:/member/applys/{applyId}";
     }
 }
 

@@ -41,6 +41,7 @@ CREATE TABLE IF NOT EXISTS `task_log` (
     `progress_rate` tinyint DEFAULT 0,
     `counter` int DEFAULT 0,
     `sorting` int NOT NULL,
+    `employee_code` int NOT NULL,
     FOREIGN KEY (`report_id`) REFERENCES report(`report_id`)
 );
 

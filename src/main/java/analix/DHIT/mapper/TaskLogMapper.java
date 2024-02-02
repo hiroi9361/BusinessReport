@@ -17,9 +17,21 @@ public interface TaskLogMapper {
     @Select("SELECT * FROM task_log WHERE report_id = #{reportId} and progress_rate < 100")
     List<TaskLog> selectIncompleteByReportId(int reportId);
 
-    @Insert("INSERT INTO task_log(report_id, name, progress_rate, counter, sorting) " +
-            "VALUES(#{reportId}, #{name}, #{progressRate}, #{counter}, #{sorting})")
+    @Insert("INSERT INTO task_log(report_id, name, progress_rate, counter, sorting, employee_code) " +
+            "VALUES(#{reportId}, #{name}, #{progressRate}, #{counter}, #{sorting}, #{employeeCode})")
     void insertTaskLog(TaskLog taskLog);
+
+    //直近ではなく、未達成のタスクを引っ張てくる
+    @Select("SELECT t.* " +
+            "FROM task_log AS t " +
+            "JOIN ( " +
+            "SELECT sorting, MAX(counter) AS max_counter " +
+            "FROM task_log " +
+            "WHERE employee_code = #{employeeCode} " +
+            "GROUP BY sorting " +
+            ") AS max_counters " +
+            "ON t.sorting = max_counters.sorting AND t.counter = max_counters.max_counter;")
+    List<TaskLog> selectByEmployeeCode(int employeeCode);
 
     //全部消しメソッド
     @Delete("DELETE FROM task_log WHERE report_id = #{reportId}")
@@ -46,9 +58,9 @@ public interface TaskLogMapper {
     @Select("select t.progress_rate, t.name, r.date " +
             "from task_log as t " +
             "left join report as r on t.report_id = r.report_id " +
-            "where t.sorting = #{sorting} " +
+            "where t.sorting = #{sorting} and t.employee_code = #{employeeCode} " +
             "order by r.date;")
-    List<TaskDetailInput> taskDetail(@Param("sorting") int sorting);
+    List<TaskDetailInput> taskDetail(@Param("sorting") int sorting, @Param("employeeCode") int employeeCode);
 
     //同名タスクの存在チェック
     @Select("select count(*) from task_log as t where t.name = #{name}")

@@ -82,7 +82,7 @@ public class ApplyService {
 //        int count = applyRepository.count(applyId);
 //        return count > 0;
 //    }
-=======
+
     public Apply findById(int applyId) {
         return this.applyRepository.findById(applyId);
     }

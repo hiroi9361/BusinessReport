@@ -17,44 +17,26 @@
     </div>
     <div class="container mt-4">
         <h2 class="text-center mb-4">申請内容詳細</h2>
-    </div>
+        <form th:action="@{'apply/' + ${apply.Id}}" th:object="${ApplySortInput}" method="post">
     <table class="StripeTable mb-4" style="text-align: left;">
-        <tbody>
+        <tbody  style="line-height: 40px;">
             <tr>
                 <td>申請種別</td>
                 <td th:switch="${apply.applicationType}">
-                    <i th:case="'1'">
-                        <i class="text" style="">事前</i>
-                    </i>
-                    <i th:case="'2'">
-                        <i class="text" style="">事後</i>
-                    </i>
+                    <span th:case="'1'" class="text">事前</span>
+                    <span th:case="'2'" class="text">事後</span>
                 </td>
             </tr>
             <tr>
                 <td>勤怠内容</td>
                 <td th:switch="${apply.attendanceType}">
-                    <i th:case="'1'">
-                        <i class="text" style="">遅刻</i>
-                    </i>
-                    <i th:case="'2'">
-                        <i class="text" style="">早退</i>
-                    </i>
-                    <i th:case="'3'">
-                        <i class="text" style="">外出</i>
-                    </i>
-                    <i th:case="'4'">
-                        <i class="text" style="">振替休日</i>
-                    </i>
-                    <i th:case="'5'">
-                        <i class="text" style="">有給休暇</i>
-                    </i>
-                    <i th:case="'6'">
-                        <i class="text" style="">特別休暇</i>
-                    </i>
-                    <i th:case="'7'">
-                        <i class="text" style="">欠勤</i>
-                    </i>
+                    <span th:case="'1'" class="text">遅刻</span>
+                    <span th:case="'2'" class="text">早退</span>
+                    <span th:case="'3'" class="text">外出</span>
+                    <span th:case="'4'" class="text">振替休日</span>
+                    <span th:case="'5'" class="text">有給休暇</span>
+                    <span th:case="'6'" class="text">特別休暇</span>
+                    <span th:case="'7'" class="text">欠勤</span>
                 </td>
             </tr>
             <tr>
@@ -63,33 +45,27 @@
             </tr>
             <tr>
                 <td>理由/備考</td>
-                <td>
-                    <div th:attr="data-content=${apply.reason}" class="d-flex align-items-center" style="white-space: pre-line; word-wrap: break-word; overflow: hidden; text-overflow: ellipsis; text-align: left;">
-                        <span th:text="${#strings.abbreviate(apply.reason, 29)}"></span>
-                    </div>
-                </td>
+                <td><span th:text="${apply.reason}"></span></td>
             </tr>
             <tr>
                 <td>申請日時</td>
-                <td th:text="${apply.createdDate}">
+<!--                <td th:text="${apply.formattedCreatedDate}" ></td>-->
+                <td th:text="${apply.createdDate + ' '}" ></td>
+<!--                <td th:text="${apply.createdDate}" ></td>-->
             </tr>
             <tr>
                 <td>承認状況</td>
                 <td th:switch="${apply.approval}">
-                    <i th:case="'0'">
-                        <i class="text" style="">未承認</i>
-                    </i>
-                    <i th:case="'1'">
-                        <i class="text" style="">承認済み</i>
-                    </i>
-                    <i th:case="'2'">
-                        <i class="text" style="">差戻</i>
-                    </i>
+                    <span th:case="'0'" class="text">未承認</span>
+                    <span th:case="'1'" class="text">承認済み</span>
+                    <span th:case="'2'" class="text">差戻</span>
                 </td>
             </tr>
         </tbody>
     </table>
-
+        </form>
+        <div class="mb-5"></div>
+    </div>
     <div style="text-align: center;">
         <a th:href="@{'/member/apply/' + ${apply.id} + '/delete'}" class="btn btn-danger" onClick="return check()">申請を取り消す</a>
     </div>
@@ -125,6 +101,38 @@
                     padding-right: 40px;
                 }
             }
+    .StripeTable {
+        text-align:center;
+        width:90%;
+        margin-right:auto;
+        margin-left:auto;
+        background-color:#e4f4e5;
+        border-collapse:collapse;
+        border: 1px solid #C0C0C0;
+    }
+
+    .StripeTable tr:nth-child(odd) {
+        background-color:#e4f4e5;
+        padding: 10px;
+    }
+
+    .StripeTable tr:nth-child(even) {
+        background-color:#f5f5f5;
+        padding: 10px;
+    }
+
+    .StripeTable tr td {
+        border: 1px solid #C0C0C0;
+        padding: 10px;
+        height:
+        font-size: 20px;
+    }
+
+    td:nth-child(1) {
+        width: 150px;
+
+        text-align: center; /* 1列目のセルの文字を中心寄りにする */
+    }
 </style>
 <script layout:fragment="script">
 
@@ -139,19 +147,3 @@
 
 </body>
 </html>
-<!--<script>-->
-<!--    function goBack() {-->
-<!--        // 前のページに戻る-->
-<!--        window.history.back();-->
-<!--    }-->
-
-
-<!--    function check() {-->
-<!--        if (window.confirm('このチームを削除しますか？')) {-->
-<!--            return true;-->
-<!--        } else {-->
-<!--            return false;-->
-<!--        }-->
-<!--    }-->
-
-<!--</script>-->

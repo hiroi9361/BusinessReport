@@ -52,6 +52,7 @@ public class Apply {
 
     @Temporal(TemporalType.DATE)
     private LocalDateTime createdDate;
+    private String formattedCreatedDate;
 
     public int getId() {
         return id;
@@ -59,9 +60,7 @@ public class Apply {
     public void setApplyId(int applyId) {
         this.id = applyId;
     }
-    public int getApply_id() {
-        return apply_id;
-    }
+
     public void setApply_id(int apply_id) {
         this.id = apply_id;
     }
@@ -143,6 +142,14 @@ public class Apply {
 
     public void setCreatedDate(LocalDateTime createdDate) {
         this.createdDate = createdDate;
+    }
+
+    public String getFormattedCreatedDate() {
+        return formattedCreatedDate;
+    }
+
+    public void setFormattedCreatedDate(String formattedCreatedDate) {
+        this.formattedCreatedDate = formattedCreatedDate;
     }
 
     public Apply() {

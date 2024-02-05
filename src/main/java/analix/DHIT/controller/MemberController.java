@@ -29,6 +29,7 @@ import org.springframework.web.context.request.ServletRequestAttributes;
 import jakarta.servlet.http.HttpServletRequest;
 
 import javax.mail.MessagingException;
+import java.text.SimpleDateFormat;
 import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -953,19 +954,7 @@ public class MemberController {
         List<Apply> applys = applyService.getfindAll(employeeCode);
 
         //検索機能---------------------------------------
-        //既読or未読
-//        for (Apply apply : applys) {
-//            boolean isFeedbackGiven = feedbackService.count(apply.getId());
-//            apply.setReadStatus(isFeedbackGiven ? "既読" : "未読");
-//        }
-//        model.addAttribute("applys", applys);
-//        //年月で重複しないList作成
-//        List<LocalDate> dateList = applys.stream()
-//                .map(Apply::getDate)
-//                .map(date -> date.withDayOfMonth(1))
-//                .distinct()
-//                .toList();
-//        model.addAttribute("dateList", dateList);
+        model.addAttribute("applys", applys);
 //        //データ格納用
         model.addAttribute("applySortInput", new ApplySortInput());
 
@@ -995,30 +984,15 @@ public class MemberController {
             //ソート用
             List<Apply> applys = applyService.getSortApply(applySortInput);
             User member = userService.getUserByEmployeeCode(employeeCode);
-//            for (Apply apply : applys) {
-//                boolean isFeedbackGiven = feedbackService.count(apply.getId());
-//                apply.setReadStatus(isFeedbackGiven ? "既読" : "未読");
-//            }
+
             model.addAttribute("member", member);
             model.addAttribute("applySearchInput", new ApplySearchInput());
             model.addAttribute("error", model.getAttribute("error"));
             model.addAttribute("applys", applys);
-//            年月で重複しないList作成
-//            List<LocalDateTime> dateList = applys.stream()
-//                    .map(Apply::getCreatedDate)
-//                    .map(date -> date.withDayOfMonth(1))
-//                    .distinct()
-//                    .toList();
-//            model.addAttribute("dateList", dateList);
             //データ格納用
             model.addAttribute("applySortInput", new ApplySortInput());
             return "member/apply-search";
         }
-
-//        if (applyId == null) {
-//            redirectAttributes.addFlashAttribute("error", "選択された日付に提出されたレポートはありません");
-//            return "redirect:/member/apply-search";
-//        }
 
         redirectAttributes.addAttribute("applyId", applyId);
         return "redirect:/member/applys/{applyId}";

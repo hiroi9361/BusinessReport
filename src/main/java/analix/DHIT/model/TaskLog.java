@@ -14,6 +14,7 @@ public class TaskLog {
     private int progressRate;
     private int counter;
     private int sorting;
+    private int employeeCode;
 
     public TaskLog() {
     }
@@ -58,5 +59,12 @@ public class TaskLog {
     }
     public void setSorting(int sorting) {
         this.sorting = sorting;
+    }
+
+    public int getEmployeeCode() {
+        return employeeCode;
+    }
+    public void setEmployeeCode(int employeeCode) {
+        this.employeeCode = employeeCode;
     }
 }

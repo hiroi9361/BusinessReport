@@ -10,13 +10,15 @@ import java.time.LocalTime;
 @Table(name="apply")
 public class Apply {
 
+    @Id
+    @Column(name = "apply_id")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
-    //private int apply_id;
-//    @Id
-//    @GeneratedValue(strategy = GenerationType.IDENTITY)
-//    @Column(name = "apply_id")
-//    private int applyId;
+    private int apply_id;
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "apply_id")
+    private int applyId;
 
     @ManyToOne
     @JoinColumn(name = "employee_code", referencedColumnName = "employee_code")
@@ -59,9 +61,6 @@ public class Apply {
         this.id = applyId;
     }
 
-//    public int getApply_id() {
-//        return applyId;
-//    }
     public void setApply_id(int apply_id) {
         this.id = apply_id;
     }

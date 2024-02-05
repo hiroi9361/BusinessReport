@@ -76,15 +76,12 @@
                         </div>
                     </div>
                 </div>
-                <div class="main-right">
-                    <div th:if="${todaymembers}">
-                        <h5>勤怠申請のメンバー</h5>
-                        <div th:each="mem : ${todaymembers}">
-                            <a th:href="@{'/manager/report-search?employeeCode=' + ${mem.employeeCode}}"><p
-                                    th:text="${mem.name}"></p></a>
-                        </div>
-                    </div>
-                </div>
+<!--                <div class="main-right">-->
+<!--                    <div th:if="${todaymembers}">-->
+<!--                        <h5>勤怠申請のメンバー</h5>-->
+
+<!--                    </div>-->
+<!--                </div>-->
             </div>
         </div>
       </div>
@@ -266,18 +263,17 @@ th, td {
     function sendReportReminder(event, button) {
         const employeeCode = event.target.closest('.user-container').querySelector('.user-link').getAttribute('data-employee-code');
         const modalBody = $('#myModal .modal-body');
-
         modalBody.find('#popupMessage').text('メールの送信中...');
         modalBody.find('.loading-spinner').show();
         modalBody.show();
         $('#myModal').modal('show');
-
         fetch(`/member/sendReportReminder?employeeCode=${employeeCode}`, {
             method: 'GET',
         })
         .then(response => response.json())
         .then(data => {
-            modalBody.find('#popupMessage').text(data.message + 'のメールに通知を送信しました。');
+            modalBody.find('#popupMessage').text(data.message + 'のメールに通知を送信しました.');
+            $('#myModal .modal-footer .btn-primary').show();
         })
         .catch(error => {
             modalBody.find('#popupMessage').text('Failed to send email notification. Error: ' + error.message);
@@ -286,10 +282,10 @@ th, td {
             modalBody.find('.loading-spinner').hide();
             modalBody.show();
         });
-
-        $('#myModal .modal-footer .btn-primary').on('click', function() {
+         $('#myModal .modal-footer .btn-primary').hide();
+         $('#myModal .modal-footer .btn-primary').on('click', function() {
              $('#myModal').modal('hide');
-        });
+         });
     }
 </script>
 </body>

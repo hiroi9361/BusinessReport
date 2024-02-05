@@ -5,6 +5,7 @@ import analix.DHIT.mapper.ApplyMapper;
 import analix.DHIT.input.ApplySortInput;
 import analix.DHIT.model.Apply;
 import analix.DHIT.model.Report;
+import analix.DHIT.model.User;
 import analix.DHIT.repository.ApplyRepository;
 import org.springframework.stereotype.Service;
 
@@ -92,6 +93,9 @@ public class ApplyService {
     private String formatDateTime(LocalDateTime dateTime) {
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy/MM/dd HH:mm");
         return dateTime.format(formatter);
+    }
+
+    public List<Apply> getOtherMembers(int employeeCode) { return this.applyMapper.getOtherMembers(employeeCode);
     }
 
 }

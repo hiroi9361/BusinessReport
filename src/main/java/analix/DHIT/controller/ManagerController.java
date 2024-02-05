@@ -44,6 +44,7 @@ public class ManagerController {
     private final FeedbackService feedbackService;
     private final SettingService settingService;
     private MysqlTeamRepository mysqlTeamRepository;
+    private ApplyService applyService;
 
     public ManagerController(
             UserService userservice,
@@ -52,7 +53,8 @@ public class ManagerController {
             TeamService teamService,
             AssignmentService assignmentService,
             FeedbackService feedbackService,
-            SettingService settingService) {
+            SettingService settingService,
+            ApplyService applyService) {
         this.userService = userservice;
         this.reportService = reportService;
         this.taskLogService = taskLogService;
@@ -60,6 +62,7 @@ public class ManagerController {
         this.assignmentService = assignmentService;
         this.feedbackService = feedbackService;
         this.settingService = settingService;
+        this.applyService = applyService;
     }
 
     @GetMapping("/home/{teamId}")
@@ -1008,5 +1011,67 @@ public class ManagerController {
             }
         }
         return true;
+    }
+
+    // 自分のチームのメンバーの申請一覧
+    @GetMapping("/apply-search")
+    public String displayApplySearch(
+            Model model
+    ) {
+        String title = "申請一覧";
+        model.addAttribute("title", title);
+
+        model.addAttribute("applySearchInput", new ApplySearchInput());
+        model.addAttribute("error", model.getAttribute("error"));
+
+        //ログイン中のユーザーのemployeeCodeを取得する
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        int employeeCode = Integer.parseInt(authentication.getName());
+        User member = userService.getUserByEmployeeCode(employeeCode);
+        model.addAttribute("member", member);
+        //報告一覧表示---------------------------------
+        List<Apply> applys = applyService.getOtherMembers(employeeCode);
+        model.addAttribute("applys", applys);
+        model.addAttribute("applySortInput", new ApplySortInput());
+
+        return "manager/apply-search";
+    }
+
+    @PostMapping("/search-apply")
+    public String searchApply(
+            ApplySearchInput applySearchInput,
+            RedirectAttributes redirectAttributes,
+            ApplySortInput applySortInput,
+            Model model
+    ) {
+
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        int employeeCode = Integer.parseInt(authentication.getName());
+
+        String applyId = applyService.searchId(
+                employeeCode,
+                applySearchInput.getCreatedDate()
+        );
+
+        //日付、、
+        if (applySortInput.getSort()) {
+            applySortInput.setEmployeeCode(employeeCode);
+
+            //ソート用
+            List<Apply> applys = applyService.getSortApply(applySortInput);
+            User member = userService.getUserByEmployeeCode(employeeCode);
+
+            model.addAttribute("member", member);
+            model.addAttribute("applySearchInput", new ApplySearchInput());
+            model.addAttribute("error", model.getAttribute("error"));
+            model.addAttribute("applys", applys);
+
+            //データ格納用
+            model.addAttribute("applySortInput", new ApplySortInput());
+            return "member/apply-search";
+        }
+
+        redirectAttributes.addAttribute("applyId", applyId);
+        return "redirect:/member/applys/{applyId}";
     }
 }

@@ -51,13 +51,13 @@ public interface UserMapper {
     List<User> getUserByCode(@Param("searchWords")int searchWords);
 
 
-    // /////////// 2024/01/10 START 富山 //////////
-    @Select("SELECT a.is_manager " +
-            "FROM user u JOIN assignment a ON u.employee_code = a.employee_code " +
-            "WHERE u.employee_code = #{employeeCode}")
-    Boolean isManager(@Param("employeeCode") int employeeCode);
-
-    // /////////// 2024/01/10 END 富山 //////////
+//    // /////////// 2024/01/10 START 富山 //////////
+//    @Select("SELECT a.is_manager " +
+//            "FROM user u JOIN assignment a ON u.employee_code = a.employee_code " +
+//            "WHERE u.employee_code = #{employeeCode}")
+//    Boolean isManager(@Param("employeeCode") int employeeCode);
+//
+//    // /////////// 2024/01/10 END 富山 //////////
 
     //employee_codeの重複確認
     @Select("select count(*) from user where employee_code = #{employeeCode}")
@@ -80,23 +80,21 @@ public interface UserMapper {
 //    @Select("select * from user where employeeRole = #{role}")
 //    List<User> selectEmployeeRole(@Param("role") String role);
 
-    @Select({
-            "select * from user where 1=1",
-            "<choose>",
-            "<when test='searchInput == \"employeeCode\"'>",
-            "and employee_code = #{employeeCode}",
-            "</when>",
-            "<when test='searchInput == \"name\"'>",
-            "and name = #{name}",
-            "</when>",
-            "<when test='searchInput == \"role\"'>",
-            "and role = #{role}",
-            "</when>",
-            "</choose>"
-    })
-    List<User> searchEmployeeInfo();
+//    @Select({
+//            "select * from user where 1=1",
+//            "<choose>",
+//            "<when test='searchInput == \"employeeCode\"'>",
+//            "and employee_code = #{employeeCode}",
+//            "</when>",
+//            "<when test='searchInput == \"name\"'>",
+//            "and name = #{name}",
+//            "</when>",
+//            "<when test='searchInput == \"role\"'>",
+//            "and role = #{role}",
+//            "</when>",
+//            "</choose>"
+//    })
+//    List<User> searchEmployeeInfo();
 
-
-// /////////// 2023/12/08 END 富山 //////////
 
 }

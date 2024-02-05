@@ -4,6 +4,7 @@ import analix.DHIT.input.ApplySortInput;
 import analix.DHIT.input.ReportSortInput;
 import analix.DHIT.model.Apply;
 import analix.DHIT.model.Report;
+import analix.DHIT.model.User;
 import org.apache.ibatis.annotations.*;
 
 import java.time.LocalDateTime;
@@ -46,4 +47,11 @@ public interface ApplyMapper {
 //            "OR (#{reportSortInput.feedback} IS FALSE AND f.feedback_id IS NULL))"
     )
     List<Apply> sortApply(@Param("applySortInput") ApplySortInput applySortInput);
+
+    @Select("select * from user " +
+            "where employee_code in(SELECT employee_code FROM assignment " +
+            "WHERE team_id IN (SELECT team_id FROM assignment " +
+            "WHERE employee_code = '1' AND is_manager = '1') AND is_manager = '0');")
+    List<Apply> getOtherMembers(int employeeCode);
+
 }

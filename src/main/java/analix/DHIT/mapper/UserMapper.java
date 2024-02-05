@@ -50,6 +50,15 @@ public interface UserMapper {
     @Select("SELECT * FROM user WHERE employee_code LIKE CONCAT(#{searchWords}, '%')")
     List<User> getUserByCode(@Param("searchWords")int searchWords);
 
+
+    // /////////// 2024/01/10 START 富山 //////////
+    @Select("SELECT a.is_manager " +
+            "FROM user u JOIN assignment a ON u.employee_code = a.employee_code " +
+            "WHERE u.employee_code = #{employeeCode}")
+    Boolean isManager(@Param("employeeCode") int employeeCode);
+
+    // /////////// 2024/01/10 END 富山 //////////
+=======
     //employee_codeの重複確認
     @Select("select count(*) from user where employee_code = #{employeeCode}")
     int countByEmployeeCode(int employeeCode);

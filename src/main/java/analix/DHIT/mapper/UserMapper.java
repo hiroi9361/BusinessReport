@@ -58,7 +58,7 @@ public interface UserMapper {
     Boolean isManager(@Param("employeeCode") int employeeCode);
 
     // /////////// 2024/01/10 END 富山 //////////
-=======
+
     //employee_codeの重複確認
     @Select("select count(*) from user where employee_code = #{employeeCode}")
     int countByEmployeeCode(int employeeCode);

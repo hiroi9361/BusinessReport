@@ -137,4 +137,8 @@ public class AssignmentService {
     public List<Assignment> selectByEmployeeCode(int employeeCode){
         return this.assignmentRepository.selectByEmployeeCode(employeeCode);
     }
+
+    public List<Assignment> selectEmployeeCodeByTeamId(int teamId){
+        return this.assignmentRepository.selectEmployeeCodeByTeamId(teamId);
+    }
 }

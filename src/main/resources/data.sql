@@ -116,7 +116,8 @@ INSERT INTO task_log (task_id, report_id, name, progress_rate, counter, sorting,
     (17, 16, "レジの準備", 55, 2, 13, 6),
     (18, 16, "客席エリアのレイアウトを決める", 40, 2, 14, 6),
     (19, 16, "カトラリーの選定・発注", 60, 2, 15, 6),
-    (20, 16, "ティーカップの発注", 90, 2, 16, 6);
+    (20, 16, "ティーカップの発注", 90, 2, 16, 6),
+    (21, 2, "テスト用タスク", 66, 1, 21, 2);
 
 -- apply
 INSERT INTO apply (apply_id, employee_code, application_type, attendance_type, start_date, start_time, end_date, end_time, reason, approval, created_date) VALUES

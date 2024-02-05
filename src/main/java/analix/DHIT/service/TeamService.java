@@ -68,6 +68,10 @@ public class TeamService {
         return this.teamRepository.selectByTeamId(teamId);
     }
 
+    public List<Team>selectTeamByEmployeeCode(int employeeCode){
+        return this.teamRepository.selectTeamByEmployeeCode(employeeCode);
+    }
+
     //csv関係
     public Integer selectTeamIdByName(String name){
         return this.teamRepository.selectTeamIdByName(name);

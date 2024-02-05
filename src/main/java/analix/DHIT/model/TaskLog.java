@@ -15,6 +15,7 @@ public class TaskLog {
     private int counter;
     private int sorting;
     private int employeeCode;
+    private String userName;
 
     public TaskLog() {
     }
@@ -66,5 +67,12 @@ public class TaskLog {
     }
     public void setEmployeeCode(int employeeCode) {
         this.employeeCode = employeeCode;
+    }
+
+    public String getUserName() {
+        return userName;
+    }
+    public void setUserName(String userName) {
+        this.userName = userName;
     }
 }

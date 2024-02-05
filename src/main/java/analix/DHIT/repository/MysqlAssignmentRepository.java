@@ -59,4 +59,9 @@ public class MysqlAssignmentRepository implements AssignmentRepository{
     public List<Assignment> selectByEmployeeCode(int employeeCode) {
         return this.teamMapper.selectByEmployeeCodeIsManager(employeeCode);
     }
+
+    @Override
+    public List<Assignment> selectEmployeeCodeByTeamId(int teamId){
+        return this.teamMapper.selectEmployeeCodeByTeamId(teamId);
+    }
 }

@@ -47,6 +47,11 @@ public class MysqlTeamRepository implements TeamRepository{
         this.teamMapper.deleteById(teamId);
     }
 
+    @Override
+    public List<Team>selectTeamByEmployeeCode(int employeeCode){
+        return this.teamMapper.selectTeamByEmployeeCode(employeeCode);
+    }
+
     //csv関係
     @Override
     public Integer selectTeamIdByName(String name){

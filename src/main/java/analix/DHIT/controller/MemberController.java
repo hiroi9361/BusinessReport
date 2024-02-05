@@ -195,8 +195,12 @@ public class MemberController {
             for (TaskLog taskLog : taskLogs) {
                 if (taskLog != null && taskLog.getName() != null) {
                     List<TaskLog>taskList = this.taskLogService.taskListByName(taskLog.getName());
-                    taskLog.setCounter(taskList.size() + 1);
-                    taskLog.setSorting(taskList.get(0).getSorting());
+                    if (taskList.isEmpty()){
+                        taskLog.setCounter(1);
+                    } else {
+                        taskLog.setCounter(taskList.size() + 1);
+                        taskLog.setSorting(taskList.get(0).getSorting());
+                    }
                     taskLog.setEmployeeCode(employeeCode);
                     if(taskLog.getCounter() == 1){
                         int maxNum = taskLogService.maxTask() + 1;
@@ -596,18 +600,21 @@ public class MemberController {
     }
 
     @GetMapping("/task-list")
-    public String taskList(Model model){
+    public String taskList( Model model){
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         int myEmployeeCode = Integer.parseInt(authentication.getName());
 
         List<TaskLog> taskLogs = new ArrayList<>();
         taskLogs = this.taskLogService.taskList(myEmployeeCode);
-        User member = userService.getUserByEmployeeCode(myEmployeeCode);
+        User memberName = userService.getUserByEmployeeCode(myEmployeeCode);
+        String member = memberName.getName();
         boolean Search = false;
+        boolean teamTask = false;
         model.addAttribute("taskList",taskLogs);
         model.addAttribute("member",member);
         model.addAttribute("TaskSearchInput",new TaskSearchInput());
         model.addAttribute("Search",Search);
+        model.addAttribute("teamTask",teamTask);
         return "member/taskList";
     }
 
@@ -627,23 +634,134 @@ public class MemberController {
         model.addAttribute("taskList",taskLogs);
 //        ここをフィルターの条件でDBから持ってくる処理に変える
         boolean Search = true;
-        User member = userService.getUserByEmployeeCode(myEmployeeCode);
+        boolean teamTask = false;
+        User memberName = userService.getUserByEmployeeCode(myEmployeeCode);
+        String member = memberName.getName();
         model.addAttribute("member",member);
         model.addAttribute("TaskSearchInput",new TaskSearchInput());
         model.addAttribute("Search",Search);
+        model.addAttribute("teamTask",teamTask);
 
         return "member/taskList";
     }
 
-    @GetMapping("/taskDetail/{sorting}")
-    public String displayReportDetail(@PathVariable("sorting") int sorting, Model model) {
+    @GetMapping("/taskMenu")
+    public String getTestPage(Model model) {
+        boolean fastContact = true;
+        boolean secondContact = false;
 
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         int employeeCode = Integer.parseInt(authentication.getName());
+        ////employeeCodeからマネジャーの有無を取得し、
+        boolean isManager = assignmentService.getCountIsManagerByEmployeeCode(employeeCode);
+        ////fastContactで、マネジャーがあれば、チームメンバーのボタンを表示し、
+        ////マネジャーが無ければ、自分のタスクを表示する⇒タスク一覧を押下した段階で、
+        ////member/task-menuを開かずにtask-Listを表示させる
+        if(!isManager){
+
+           List<TaskLog> taskLogs = this.taskLogService.taskList(employeeCode);
+
+            User memberName = userService.getUserByEmployeeCode(employeeCode);
+            String member = memberName.getName();
+            boolean Search = false;
+            boolean teamTask = false;
+            model.addAttribute("taskList",taskLogs);
+            model.addAttribute("member",member);
+            model.addAttribute("TaskSearchInput",new TaskSearchInput());
+            model.addAttribute("Search",Search);
+            model.addAttribute("teamTask",teamTask);
+            return "member/taskList";
+        }
+
+
+        model.addAttribute("fastContact",fastContact);
+        model.addAttribute("secondContact",secondContact);
+        model.addAttribute("isManager",isManager);
+
+        return "member/task-menu";
+    }
+    @PostMapping("/taskSubMenu")
+    public String postTestPage(
+            Model model,
+            @RequestParam(value = "task", required = false) String task,
+            @ModelAttribute("teamUpdateInput") TeamUpdateInput teamUpdateInput
+    ) {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        int employeeCode = Integer.parseInt(authentication.getName());
+        boolean fastContact = false;
+        boolean secondContact = false;
+        boolean finalContact = false;
+        List<TaskLog> taskLogs = new ArrayList<>();
+        List<Team> teams = new ArrayList<>();
+        List<User> users = new ArrayList<>();
+        List<Assignment> assignments = new ArrayList<>();
+
+        if(task != null) {
+            switch (task) {
+                case "1"://自分のタスク
+                    taskLogs = this.taskLogService.taskList(employeeCode);
+
+                    User memberName = userService.getUserByEmployeeCode(employeeCode);
+                    String member = memberName.getName();
+                    boolean Search = false;
+                    boolean teamTask = false;
+                    model.addAttribute("taskList",taskLogs);
+                    model.addAttribute("member",member);
+                    model.addAttribute("TaskSearchInput",new TaskSearchInput());
+                    model.addAttribute("Search",Search);
+                    model.addAttribute("teamTask",teamTask);
+                    return "member/taskList";
+                case "2"://チームメンバー
+                    teams = this.teamService.selectTeamByEmployeeCode(employeeCode);
+                    secondContact = true;
+                    break;
+            }
+        }
+        if (teamUpdateInput.getTeamId() != 0){
+            finalContact = true;
+            assignments = assignmentService.selectEmployeeCodeByTeamId(teamUpdateInput.getTeamId());
+
+            for (Assignment assignment : assignments){
+                List<TaskLog>memberTask = this.taskLogService.taskList(assignment.getEmployeeCode());
+                User user = userService.selectUserById(assignment.getEmployeeCode());
+                for (TaskLog taskLog : memberTask) {
+                    taskLog.setUserName(user.getName());
+                }
+                taskLogs.addAll(memberTask);
+            }
+            //taskLogs = this.taskLogService.taskList(myEmployeeCode);
+            String member = "チームメンバー";
+            boolean Search = false;
+            boolean teamTask = true;
+            model.addAttribute("taskList",taskLogs);
+            model.addAttribute("member",member);
+            model.addAttribute("TaskSearchInput",new TaskSearchInput());
+            model.addAttribute("Search",Search);
+            model.addAttribute("teamTask",teamTask);
+            model.addAttribute("teamTask",teamTask);
+            return "member/taskList";
+        }
+        model.addAttribute("fastContact",fastContact);
+        model.addAttribute("secondContact",secondContact);
+        model.addAttribute("finalContact",finalContact);
+        model.addAttribute("taskLogs", taskLogs);
+        model.addAttribute("teams", teams);
+        model.addAttribute("teamUpdateInput", new TeamUpdateInput());
+        return "member/task-menu";
+    }
+
+    @GetMapping("/taskDetail/{sorting}")
+    public String displayReportDetail(@PathVariable("sorting") int sorting,
+                                      @RequestParam(value = "employeeCode", required = false) String employeeCode,
+                                      Model model) {
+
+//        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+//        int employeeCode = Integer.parseInt(authentication.getName());
 
         List<TaskDetailInput> taskDetailInput = new ArrayList<>();
-        taskDetailInput = this.taskLogService.taskDetail(sorting, employeeCode);
+        taskDetailInput = this.taskLogService.taskDetail(sorting, Integer.parseInt(employeeCode));
         model.addAttribute("taskDetail",taskDetailInput);
+        model.addAttribute("employeeCode",employeeCode);
         return "member/taskDetail";
     }
 

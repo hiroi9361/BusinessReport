@@ -25,6 +25,11 @@ public interface TeamMapper {
     @Delete("DELETE FROM team WHERE team_id = #{teamId}")
     void deleteById(int teamId);
 
+    @Select("SELECT t.* from assignment AS a " +
+            "LEFT JOIN team AS t ON a.team_id = t.team_id " +
+            "WHERE a.employee_code = #{employeeCode} AND a.is_manager = 1")
+    List<Team>selectTeamByEmployeeCode(int employeeCode);
+
     //csv関係
     //一括登録時に取得したチーム名と一致するチームが存在するかどうか
     @Select("select team_id from team where team.name = #{name}")
@@ -69,6 +74,10 @@ public interface TeamMapper {
 
     @Select("SELECT * FROM assignment WHERE employee_code = #{employeeCode} AND is_manager = 1")
     List<Assignment> selectByEmployeeCodeIsManager(int employeeCode);
+
+    @Select("SELECT employee_code FROM assignment " +
+            "WHERE team_id = #{teamId} AND is_manager = 0")
+    List<Assignment> selectEmployeeCodeByTeamId(int teamId);
 
     //test****************************
     @Select("SELECT is_manager FROM assignment WHERE employee_code = #{employeeCode} AND team_id = #{teamId}")

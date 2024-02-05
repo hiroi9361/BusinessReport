@@ -79,6 +79,6 @@ public class ApplyService {
     public Apply findById(int applyId) {
         return this.applyRepository.findById(applyId);
     }
-
+    //
     public void deleteById(int applyId){ this.applyRepository.deleteById(applyId); }
 }

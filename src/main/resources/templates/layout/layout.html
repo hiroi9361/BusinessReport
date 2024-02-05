@@ -31,7 +31,8 @@
     <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light border-bottom box-shadow mb-3 text-white fixed-top"
          style="background-color:#02990E">
         <div class="container-fluid">
-            <a class="navbar-brand" th:href=@{/}><img th:src="@{/img/logo-D-HIT-yoko.png}" class="nav-logo" style="height:50px;"/></a>
+            <a class="navbar-brand" th:href=@{/}><img th:src="@{/img/logo-D-HIT-yoko.png}" class="nav-logo"
+                                                      style="height:50px;"/></a>
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target=".navbar-collapse"
                     aria-controls="navbarSupportedContent"
                     aria-expanded="false" aria-label="Toggle navigation">
@@ -53,11 +54,12 @@
                         <a class="nav-link text-white" th:href="@{/member/report-search}">報告一覧</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link text-white" th:href="@{/member/task-list}">タスク一覧</a>
+                        <a class="nav-link text-white" th:href="@{/member/taskMenu}">タスク一覧</a>
                     </li>
                 </ul>
 
-                <ul class="navbar-nav flex-grow-1" th:if="${#authentication.principal.isManager or #authorization.expression('hasRole(''ADMIN'')')}">
+                <ul class="navbar-nav flex-grow-1"
+                    th:if="${#authentication.principal.isManager or #authorization.expression('hasRole(''ADMIN'')')}">
 
                     <li class="nav-item">
                         <a class="nav-link text-white" th:href="@{/manager/employeeList}">ユーザー管理</a>
@@ -67,21 +69,21 @@
                     </li>
                 </ul>
 
-                    <ul class="navbar-nav text-end ">
-                        <li class="nav-item">
-                            <!--                        <p class="mt-2" th:text="${#authentication.principal.fullName}"></p>-->
-                            <!--                        navバーにある名前をクリックするとPW変更画面に飛ぶ処理↓-->
-                            <a class="nav-link text-white" th:href="@{/member/userDetailsList}"
-                               th:text="${#authentication.principal.fullName}"></a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" style="font-size:1em; color:white;" th:href="@{/logout}"
-                               onclick="event.preventDefault(); document.getElementById('logout-form').submit();">ログアウト</a>
-                            <form id="logout-form" th:action="@{/logout}" method="post" style="display: none;">
-                                <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
-                            </form>
-                        </li>
-                    </ul>
+                <ul class="navbar-nav text-end ">
+                    <li class="nav-item">
+                        <!--                        <p class="mt-2" th:text="${#authentication.principal.fullName}"></p>-->
+                        <!--                        navバーにある名前をクリックするとPW変更画面に飛ぶ処理↓-->
+                        <a class="nav-link text-white" th:href="@{/member/userDetailsList}"
+                           th:text="${#authentication.principal.fullName}"></a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" style="font-size:1em; color:white;" th:href="@{/logout}"
+                           onclick="event.preventDefault(); document.getElementById('logout-form').submit();">ログアウト</a>
+                        <form id="logout-form" th:action="@{/logout}" method="post" style="display: none;">
+                            <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
+                        </form>
+                    </li>
+                </ul>
 
             </div>
         </div>

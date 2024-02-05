@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/web/thymeleaf/layout"
+      layout:decorate="~{layout/layout}">
+<head>
+    <meta charset="UTF-8" th:remove="tag">
+</head>
+<body>
+<div layout:fragment="content">
+    <div class="container mt-4">
+<!--初期表示：自分かチームメンバーかどっちのタスクを表示するか決める↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓-->
+        <div th:if="${fastContact}">
+            <form th:action="@{/member/taskSubMenu}" method="post">
+                <button type="submit" class="btn btn-secondary me-3" name="task" value="1">自分のタスク</button>
+                <button type="submit" class="btn btn-secondary me-3" name="task" value="2">チームメンバーのタスク</button>
+            </form>
+        </div>
+<!--初期表示↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑-->
+
+<!--次回表示：チームメンバーの時、管理下にあるチームをリスト表示する↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓-->
+        <div th:if="${secondContact}">
+            <form th:action="@{/member/taskSubMenu}" th:object="${teamUpdateInput}" method="post">
+                <select name="teamId" class="form-select">
+                    <option th:each="team : ${teams}" th:text="${team.name}"
+                            th:value="${team.teamId}"></option>
+                </select>
+                <button type="submit">Submit</button>
+            </form>
+        </div>
+<!--次回表示↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑-->
+    </div>
+</div>
+</body>
+</html>
+<script></script>

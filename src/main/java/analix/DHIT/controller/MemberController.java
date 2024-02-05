@@ -5,6 +5,7 @@ import analix.DHIT.config.LoginUserDetailsService;
 import analix.DHIT.input.*;
 import analix.DHIT.model.*;
 import analix.DHIT.service.*;
+import org.apache.ibatis.annotations.Param;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.security.core.Authentication;
@@ -28,6 +29,7 @@ import org.springframework.web.context.request.ServletRequestAttributes;
 import jakarta.servlet.http.HttpServletRequest;
 
 import javax.mail.MessagingException;
+import java.text.SimpleDateFormat;
 import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -107,9 +109,13 @@ public class MemberController {
         //(前日のreport内容を引継ぎ入力欄に記入)
         reportCreateInput.setStartTime(report.getStartTime());
         reportCreateInput.setEndTime(report.getEndTime());
-        //report_idを参照してtask_Logの値を取得しset
-        reportCreateInput.setTaskLogs(taskLogService.getIncompleteTaskLogsByReportId(Integer.parseInt(latestReportId)));
 
+    ////削除予定
+        //report_idを参照してtask_Logの値を取得しset
+        //reportCreateInput.setTaskLogs(taskLogService.getIncompleteTaskLogsByReportId(Integer.parseInt(latestReportId)));
+    ////削除予定
+        //未達成のタスクを表示する
+        reportCreateInput.setTaskLogs(taskLogService.selectByEmployeeCode(employeeCode));
 
         model.addAttribute("reportCreateInput", reportCreateInput);
         return "member/report-create";
@@ -192,6 +198,7 @@ public class MemberController {
                     List<TaskLog>taskList = this.taskLogService.taskListByName(taskLog.getName());
                     taskLog.setCounter(taskList.size() + 1);
                     taskLog.setSorting(taskList.get(0).getSorting());
+                    taskLog.setEmployeeCode(employeeCode);
                     if(taskLog.getCounter() == 1){
                         int maxNum = taskLogService.maxTask() + 1;
                         taskLog.setSorting(maxNum);
@@ -632,8 +639,11 @@ public class MemberController {
     @GetMapping("/taskDetail/{sorting}")
     public String displayReportDetail(@PathVariable("sorting") int sorting, Model model) {
 
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        int employeeCode = Integer.parseInt(authentication.getName());
+
         List<TaskDetailInput> taskDetailInput = new ArrayList<>();
-        taskDetailInput = this.taskLogService.taskDetail(sorting);
+        taskDetailInput = this.taskLogService.taskDetail(sorting, employeeCode);
         model.addAttribute("taskDetail",taskDetailInput);
         return "member/taskDetail";
     }
@@ -944,6 +954,7 @@ public class MemberController {
         List<Apply> applys = applyService.getfindAll(employeeCode);
 
         //検索機能---------------------------------------
+
         //既読or未読
 //        for (Apply apply : applys) {
 //            boolean isApprovalGiven = applyService.count(apply.getId());
@@ -957,6 +968,7 @@ public class MemberController {
 //                .distinct()
 //                .toList();
 //        model.addAttribute("dateList", dateList);
+
 //        //データ格納用
         model.addAttribute("applySortInput", new ApplySortInput());
 
@@ -986,14 +998,12 @@ public class MemberController {
             //ソート用
             List<Apply> applys = applyService.getSortApply(applySortInput);
             User member = userService.getUserByEmployeeCode(employeeCode);
-//            for (Apply apply : applys) {
-//                boolean isFeedbackGiven = feedbackService.count(apply.getId());
-//                apply.setReadStatus(isFeedbackGiven ? "既読" : "未読");
-//            }
+
             model.addAttribute("member", member);
             model.addAttribute("applySearchInput", new ApplySearchInput());
             model.addAttribute("error", model.getAttribute("error"));
             model.addAttribute("applys", applys);
+
 
 //            年月で重複しないList作成
 //            List<LocalDateTime> dateList = applys.stream()
@@ -1002,19 +1012,55 @@ public class MemberController {
 //                    .distinct()
 //                    .toList();
 //            model.addAttribute("dateList", dateList);
+
             //データ格納用
             model.addAttribute("applySortInput", new ApplySortInput());
             return "member/apply-search";
         }
 
-//        if (applyId == null) {
-//            redirectAttributes.addFlashAttribute("error", "選択された日付に提出されたレポートはありません");
-//            return "redirect:/member/apply-search";
-//        }
-
         redirectAttributes.addAttribute("applyId", applyId);
         return "redirect:/member/applys/{applyId}";
     }
+
+    @GetMapping("/apply/{applyId}")
+    public String applyDetail(
+            @PathVariable("applyId") int applyId,
+            Model model
+    ) {
+        Apply apply = applyService.findById(applyId);
+        model.addAttribute("apply",apply);
+        return "/member/apply-detail";
+    }
+    @GetMapping("/apply/{applyId}/delete")
+    @Transactional
+    public String deleteApply(
+            @PathVariable("applyId") int applyId,
+            Model model
+    ) {
+        Apply apply = applyService.findById(applyId);
+
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        int employeeCode = Integer.parseInt(authentication.getName());
+
+        if (apply.getEmployeeCode() != employeeCode) {
+            return "redirect:/member/apply-detail";
+        }
+
+        this.applyService.deleteById(applyId);
+
+        User member = userService.getUserByEmployeeCode(employeeCode);
+        model.addAttribute("member", member);
+        List<Apply> applys = applyService.getfindAll(employeeCode);
+        model.addAttribute("applys",applys);
+        model.addAttribute("applySearchInput", new ApplySearchInput());
+        model.addAttribute("error", model.getAttribute("error"));
+        model.addAttribute("applySortInput", new ApplySortInput());
+        String title = "申請一覧";
+        model.addAttribute("title", title);
+
+        return "member/apply-search";
+    }
+
 }
 
 

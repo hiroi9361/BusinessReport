@@ -26,14 +26,19 @@ public interface ApplyMapper {
     @Select("SELECT * FROM apply WHERE employee_code=#{employeeCode}")
     List<Apply> selectAll(int employeeCode);
 
+
+    //申請削除
+    @Delete("DELETE FROM apply WHERE apply_id = #{applyId}")
+    void deleteById(int applyId);
+
+
     @Select("SELECT apply_id FROM report WHERE employee_code = #{employeeCode} and created_date = #{createdDate}")
     String selectIdByEmployeeCodeAndCreatedDate(int employeeCode, LocalDateTime createdDate);
 
     @Select("SELECT * FROM apply as a " +
-//            "LEFT OUTER JOIN feedback as f ON r.report_id=f.report_id " +
             "WHERE " +
-            "(#{applySortInput.createdDate} IS NULL OR DATE_FORMAT(a.createdDate,'%Y-%m')=DATE_FORMAT(#{applySortInput.createdDate},'%Y-%m')) " +
-            "AND " +
+//            "(#{applySortInput.createdDate} IS NULL OR DATE_FORMAT(a.createdDate,'%Y-%m')=DATE_FORMAT(#{applySortInput.createdDate},'%Y-%m')) " +
+//            "AND " +
             "(a.employee_code=#{applySortInput.employeeCode}) "
 //            "AND " +
 //            "((#{applySortInput.feedback} IS NULL) " +

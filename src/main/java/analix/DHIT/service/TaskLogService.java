@@ -69,13 +69,17 @@ public class TaskLogService {
         return taskLogs;
     }
 
-    public List<TaskDetailInput> taskDetail(int sorting) {
-        List<TaskDetailInput> taskDetailInput = this.taskLogRepository.taskDetail(sorting);
+    public List<TaskDetailInput> taskDetail(int sorting, int employeeCode) {
+        List<TaskDetailInput> taskDetailInput = this.taskLogRepository.taskDetail(sorting, employeeCode);
         return taskDetailInput;
     }
 
     public List<TaskLog>taskFilter(TaskSearchInput taskSearchInput) {
         List<TaskLog>taskLogsFilter = this.taskLogRepository.taskFilter(taskSearchInput);
         return taskLogsFilter;
+    }
+
+    public List<TaskLog> selectByEmployeeCode(int employeeCode){
+        return this.taskLogRepository.selectByEmployeeCode(employeeCode);
     }
 }

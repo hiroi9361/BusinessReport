@@ -20,4 +20,8 @@ public interface ApplyRepository {
     List<Apply> sortApply(ApplySortInput applySortInput);
 
 //    int count(int applyId);
+=======
+    //申請削除
+    void deleteById(int applyId);
+
 }

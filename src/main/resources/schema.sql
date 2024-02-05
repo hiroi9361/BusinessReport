@@ -6,11 +6,13 @@ DROP TABLE IF EXISTS `team` CASCADE;
 DROP TABLE IF EXISTS `feedback` CASCADE;
 DROP TABLE IF EXISTS `assignment` CASCADE;
 DROP TABLE IF EXISTS `setting` CASCADE;
+DROP TABLE IF EXISTS `apply` CASCADE;
 SET FOREIGN_KEY_CHECKS = 1;
 
 CREATE TABLE IF NOT EXISTS `user` (
     `employee_code` int NOT NULL PRIMARY KEY,
     `name` varchar(50) NOT NULL,
+    `email` varchar(255) NOT NULL,
     `password` char(64) NOT NULL,
     `role` varchar(255) NOT NULL,
     `icon` mediumblob
@@ -39,6 +41,7 @@ CREATE TABLE IF NOT EXISTS `task_log` (
     `progress_rate` tinyint DEFAULT 0,
     `counter` int DEFAULT 0,
     `sorting` int NOT NULL,
+    `employee_code` int NOT NULL,
     FOREIGN KEY (`report_id`) REFERENCES report(`report_id`)
 );
 
@@ -70,7 +73,22 @@ CREATE TABLE IF NOT EXISTS `setting` (
     `employee_code` int NOT NULL
 );
 
+CREATE TABLE IF NOT EXISTS `apply` (
+    `apply_id` int NOT NULL AUTO_INCREMENT PRIMARY KEY,
+    `employee_code` int NOT NULL,
+    `application_type`  int NOT NULL,
+    `attendance_type`  int NOT NULL,
+    `start_date`  date NOT NULL,
+    `start_time`  time NOT NULL,
+    `end_date`  date NOT NULL,
+    `end_time`  time NOT NULL,
+    `reason`  varchar(45) NOT NULL,
+    `approval`  int NOT NULL,
+    `created_date` datetime NOT NULL
+);
+
 alter table assignment add constraint FKdetrh6pu9ojx5htmct8jirhof foreign key (team_id) references team (team_id);
 alter table assignment add constraint FKrot3v731ri6t8i0aycum0gw5p foreign key (employee_code) references user (employee_code);
 alter table feedback add constraint FK1vm3ocsdcjgqi526qcvwbqin4 foreign key (report_id) references report (report_id);
 alter table report add constraint FKob2bc600lvaudiydtnssb0c17 foreign key (employee_code) references user (employee_code);
+

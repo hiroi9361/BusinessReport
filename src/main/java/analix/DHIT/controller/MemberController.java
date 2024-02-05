@@ -1,20 +1,38 @@
 package analix.DHIT.controller;
 
 
+import analix.DHIT.config.LoginUserDetailsService;
 import analix.DHIT.input.*;
 import analix.DHIT.model.*;
 import analix.DHIT.service.*;
+import org.apache.ibatis.annotations.Param;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+import org.springframework.http.HttpStatus;
 
+import org.springframework.web.context.request.RequestContextHolder;
+import org.springframework.web.context.request.ServletRequestAttributes;
+import jakarta.servlet.http.HttpServletRequest;
+
+import javax.mail.MessagingException;
+import java.text.SimpleDateFormat;
 import java.time.DayOfWeek;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
@@ -31,14 +49,20 @@ public class MemberController {
     private final AssignmentService assignmentService;
     private final TeamService teamService;
     private final SettingService settingService;
+    private final   MailService mailService;
+    private final   ApplyService applyService;
 
+
+//    @Autowired
     public MemberController(UserService userService,
                             TaskLogService taskLogService,
                             ReportService reportService,
                             FeedbackService feedbackService,
                             AssignmentService assignmentService,
                             TeamService teamService,
-                            SettingService settingService) {
+                            SettingService settingService,
+                            MailService mailService,
+                            ApplyService applyService) {
         this.userService = userService;
         this.taskLogService = taskLogService;
         this.reportService = reportService;
@@ -46,11 +70,14 @@ public class MemberController {
         this.assignmentService = assignmentService;
         this.teamService = teamService;
         this.settingService = settingService;
+        this.mailService = mailService;
+        this.applyService = applyService;
     }
 
     @GetMapping("/report/create")
     public String displayReportCreate(
-            Model model
+            Model model,
+            LocalDate targetDate
     ) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         //バリデーションInteger
@@ -61,7 +88,9 @@ public class MemberController {
         SettingInput settingInput = new SettingInput();
         //java.timeパッケージから現在の時刻を取得
         reportCreateInput.setDate(LocalDate.now());
-
+        if (targetDate != null){
+            reportCreateInput.setDate(targetDate);
+        }
         String title = "報告作成";
         model.addAttribute("title", title);
         //規定の終業時間を取得し、セット
@@ -80,9 +109,13 @@ public class MemberController {
         //(前日のreport内容を引継ぎ入力欄に記入)
         reportCreateInput.setStartTime(report.getStartTime());
         reportCreateInput.setEndTime(report.getEndTime());
-        //report_idを参照してtask_Logの値を取得しset
-        reportCreateInput.setTaskLogs(taskLogService.getIncompleteTaskLogsByReportId(Integer.parseInt(latestReportId)));
 
+    ////削除予定
+        //report_idを参照してtask_Logの値を取得しset
+        //reportCreateInput.setTaskLogs(taskLogService.getIncompleteTaskLogsByReportId(Integer.parseInt(latestReportId)));
+    ////削除予定
+        //未達成のタスクを表示する
+        reportCreateInput.setTaskLogs(taskLogService.selectByEmployeeCode(employeeCode));
 
         model.addAttribute("reportCreateInput", reportCreateInput);
         return "member/report-create";
@@ -162,7 +195,10 @@ public class MemberController {
             taskLogs.forEach(x -> x.setReportId(newReportId));
             for (TaskLog taskLog : taskLogs) {
                 if (taskLog != null && taskLog.getName() != null) {
-                    taskLog.setCounter(taskLog.getCounter() + 1);
+                    List<TaskLog>taskList = this.taskLogService.taskListByName(taskLog.getName());
+                    taskLog.setCounter(taskList.size() + 1);
+                    taskLog.setSorting(taskList.get(0).getSorting());
+                    taskLog.setEmployeeCode(employeeCode);
                     if(taskLog.getCounter() == 1){
                         int maxNum = taskLogService.maxTask() + 1;
                         taskLog.setSorting(maxNum);
@@ -490,8 +526,66 @@ public class MemberController {
             List<TaskLog> taskLogs = reportUpdateInput.getTaskLogs();
             taskLogs.forEach(x -> x.setReportId(reportUpdateInput.getReportId()));
             for (TaskLog taskLog : taskLogs) {
+                boolean addMiddle = false;
                 if (taskLog != null && taskLog.getName() != null) {
-                    taskLogService.create(taskLog);
+                    //taskLog.getName()でtask_logDBに検索をかける
+                    boolean existingTask = this.taskLogService.countName(taskLog.getName());
+                    //無い時
+                    if(!existingTask){
+                        taskLog.setCounter(taskLog.getCounter() + 1);
+                        if(taskLog.getCounter() == 1){
+                            int maxNum = taskLogService.maxTask() + 1;
+                            taskLog.setSorting(maxNum);
+                        }
+                    //有る時
+                    } else {
+                        //taskLog.getName()とreportUpdateInput.getDate()を参照して
+                        //時系列的に適切なcounterをセットし、以降のcounterを採番する
+                        List<TaskLog>taskList = this.taskLogService.taskListByName(taskLog.getName());
+                        LocalDate date = reportUpdateInput.getDate();
+                        boolean once = false;
+                        int count = 0;
+                        int sort = 0;
+                        int taskId =0;
+                        for(TaskLog task : taskList){
+                            Report reportDate = reportService.getReportById(task.getReportId());
+                            if (date.isBefore(reportDate.getDate())){
+                                addMiddle = true;
+                                if (!once){
+                                    count = task.getCounter();
+                                    sort = task.getSorting();
+                                    taskLog.setCounter(count);
+                                    taskLog.setSorting(sort);
+                                    count = taskLog.getCounter();
+                                    //DB更新
+                                    taskLogService.create(taskLog);
+                                    count++;
+                                    taskLog.setId(task.getId());
+                                    taskLog.setCounter(count);
+                                    taskLog.setSorting(sort);
+                                    taskLogService.setCounter(taskLog);
+                                    count++;
+                                    once = true;
+                                }else{
+                                    taskLog.setId(task.getId());
+                                    taskLog.setCounter(count);
+                                    taskLog.setSorting(sort);
+                                    count++;
+                                    //DB更新
+                                    taskLogService.setCounter(taskLog);
+                                }
+                            }
+                        }
+                        if (!once){
+                            int taskIndex = taskList.size() - 1;
+                            TaskLog newTask = taskIndex >= 0 ? taskList.get(taskIndex) : null;
+                            taskLog.setCounter(newTask.getCounter()+1);
+                            taskLog.setSorting(newTask.getSorting());
+                        }
+                    }
+                    if (!addMiddle) {
+                        taskLogService.create(taskLog);
+                    }
                 }
             }
         }
@@ -510,9 +604,34 @@ public class MemberController {
         List<TaskLog> taskLogs = new ArrayList<>();
         taskLogs = this.taskLogService.taskList(myEmployeeCode);
         User member = userService.getUserByEmployeeCode(myEmployeeCode);
-
+        boolean Search = false;
         model.addAttribute("taskList",taskLogs);
         model.addAttribute("member",member);
+        model.addAttribute("TaskSearchInput",new TaskSearchInput());
+        model.addAttribute("Search",Search);
+        return "member/taskList";
+    }
+
+    @PostMapping("/task-list")
+    public String taskSearchList(TaskSearchInput taskSearchInput, Model model){
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        int myEmployeeCode = Integer.parseInt(authentication.getName());
+        taskSearchInput.setEmployeeCode(myEmployeeCode);
+//        myEmployeeCodeで取得していたものをフィルター条件で取得する為に
+//        ここをフィルターの条件でDBから持ってくる処理に変える
+        List<TaskLog> taskLogs = new ArrayList<>();
+        if(taskSearchInput.getState().isEmpty() && taskSearchInput.getProgressRateAbove()==0 && taskSearchInput.getProgressRateBelow()==0) {
+            taskLogs = this.taskLogService.taskList(myEmployeeCode);
+        }else{
+            taskLogs = this.taskLogService.taskFilter(taskSearchInput);
+        }
+        model.addAttribute("taskList",taskLogs);
+//        ここをフィルターの条件でDBから持ってくる処理に変える
+        boolean Search = true;
+        User member = userService.getUserByEmployeeCode(myEmployeeCode);
+        model.addAttribute("member",member);
+        model.addAttribute("TaskSearchInput",new TaskSearchInput());
+        model.addAttribute("Search",Search);
 
         return "member/taskList";
     }
@@ -520,8 +639,11 @@ public class MemberController {
     @GetMapping("/taskDetail/{sorting}")
     public String displayReportDetail(@PathVariable("sorting") int sorting, Model model) {
 
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        int employeeCode = Integer.parseInt(authentication.getName());
+
         List<TaskDetailInput> taskDetailInput = new ArrayList<>();
-        taskDetailInput = this.taskLogService.taskDetail(sorting);
+        taskDetailInput = this.taskLogService.taskDetail(sorting, employeeCode);
         model.addAttribute("taskDetail",taskDetailInput);
         return "member/taskDetail";
     }
@@ -535,6 +657,19 @@ public class MemberController {
         if (myast == null) {
             myast = new ArrayList<>();
         }
+
+        LocalDate targetDate;
+        LocalDate firstDayOfLastWeek = LocalDate.now().minusWeeks(1).with(DayOfWeek.MONDAY);
+        DayOfWeek currentDayOfWeek = LocalDate.now().getDayOfWeek();
+
+        if (currentDayOfWeek.equals(DayOfWeek.MONDAY) ||
+                currentDayOfWeek.equals(DayOfWeek.SATURDAY) ||
+                currentDayOfWeek.equals(DayOfWeek.SUNDAY)) {
+            targetDate = firstDayOfLastWeek.plusDays(4);
+        } else {
+            targetDate = LocalDate.now().minusDays(1);
+        }
+        boolean hasSentReport = reportService.existsReport(employeeCode, targetDate);
 
         List<Assignment> allast = assignmentService.getAllAssignment();
 
@@ -654,6 +789,8 @@ public class MemberController {
 
         mav.addObject("todaymembers", todaymem);
         mav.addObject("notsubmit", notsubmem);
+        mav.addObject("targetDate", targetDate);
+        mav.addObject("hasSentReport", hasSentReport);
 
         mav.setViewName("member/user-main");
 
@@ -676,8 +813,7 @@ public class MemberController {
     //ユーザ情報編集情報処理
     @PostMapping("/userDetailsList/complete")
     public String editComplete(@ModelAttribute("userEditInput") UserEditInput userEditInput,
-                               RedirectAttributes redirectAttributes)
-    {
+                               RedirectAttributes redirectAttributes) {
         //↓ログイン中のemployeeCodeをAuthentication(認証情報)から取得
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         int employeeCode = Integer.parseInt(authentication.getName());
@@ -695,4 +831,236 @@ public class MemberController {
         redirectAttributes.addFlashAttribute("editCompleteMSG", "情報を更新しました");
         return "redirect:/member/userDetailsList";
     }
+
+    //報告未提出メンバーへ通知メールを送信する
+    @GetMapping("/sendReportReminder")
+    public ResponseEntity<String> sendReportReminder(@RequestParam("employeeCode") int employeeCode,
+                                                     Model model) {
+
+        HttpServletRequest request = ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes()).getRequest();
+        String baseUrl = request.getRequestURL().toString().replace(request.getRequestURI(), "");
+
+        User member = userService.getUserByEmployeeCode(employeeCode);
+        String memberEmail = member.getEmail();
+        String memberName = member.getName();
+
+        String subject = "【DHITシステム】報告提出の通知";
+        String body = "昨日、報告未提出があります。\n" +
+                "\n" +
+                "下記より報告を行ってください。\n" +
+                baseUrl + "/login\n" +
+                "※当メールは送信専用となっております。";
+
+        try {
+            if (!memberEmail.isEmpty()) {
+                mailService.sendMail(memberEmail, subject, body);
+                return ResponseEntity.ok("{\"message\":\"" + memberName + "\"}");
+            } else {
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                        .body("Member email is empty");
+            }
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(memberName + "のメール送信に失敗しました" + ". Error: " + e.getMessage());
+        }
+    }
+
+
+    /////////////////////////////////////////////////////////////////////////
+    @GetMapping("/apply/create")
+    public String displayApplyCreate(
+            Model model
+    ) {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        //バリデーションInteger
+        int employeeCode = Integer.parseInt(authentication.getName());
+
+        ApplyCreateInput applyCreateInput = new ApplyCreateInput();
+        SettingInput settingInput = new SettingInput();
+        //java.timeパッケージから現在の時刻を取得
+        applyCreateInput.setCreatedDate(LocalDateTime.now());
+
+        String title = "申請作成";
+        model.addAttribute("title", title);
+        //規定の終業時間を取得し、セット
+        Setting setting = settingService.getSettingTime(employeeCode);
+        settingInput.setStartTime(setting.getStartTime());
+        settingInput.setEndTime(setting.getEndTime());
+//        settingInput.setEmployment(false);
+        model.addAttribute("settingInput", settingInput);
+
+        // 提出ボタンを押した瞬間の時刻を取得し、createdDateにセット
+        applyCreateInput.setCreatedDate(LocalDateTime.now());
+
+        model.addAttribute("applyCreateInput", applyCreateInput);
+        return "member/apply-create";
+
+    }
+
+    //↓Transactionalはトランザクション処理で一連の流れが失敗した場合ロールバックする
+    @Transactional
+    @PostMapping("/apply/create")
+    public String createApply(ApplyCreateInput applyCreateInput, RedirectAttributes redirectAttributes, SettingInput settingInput, Model model) {
+
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        int employeeCode = Integer.parseInt(authentication.getName());
+
+        Setting setting = settingService.getSettingTime(employeeCode);
+
+        // 提出ボタンを押した瞬間の時刻を取得し、createdDateにセット
+        applyCreateInput.setCreatedDate(LocalDateTime.now());
+
+        //newApplyIdには新たにInsertされたreportのIDが入る
+        int newApplyId = applyService.create(
+                employeeCode,
+                applyCreateInput.getApplicationType(),
+                applyCreateInput.getAttendanceType(),
+                applyCreateInput.getStartDate(),
+                applyCreateInput.getEndDate(),
+                applyCreateInput.getStartTime(),
+                applyCreateInput.getEndTime(),
+                applyCreateInput.getReason(),
+                applyCreateInput.getApproval(),
+                applyCreateInput.getCreatedDate()
+        );
+
+       return "redirect:/member/apply/create-completed";
+    }
+
+    // 申請提出完了画面
+    @GetMapping("/apply/create-completed")
+    public String displayApplyCreateCompleted(
+    ) {
+        return "member/apply-create-completed";
+    }
+
+    // 申請一覧
+    @GetMapping("/apply-search")
+    public String displayApplySearch(
+            Model model
+    ) {
+        String title = "申請一覧";
+        model.addAttribute("title", title);
+
+        model.addAttribute("applySearchInput", new ApplySearchInput());
+        model.addAttribute("error", model.getAttribute("error"));
+
+        //ログイン中のユーザーのemployeeCodeを取得する
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        int employeeCode = Integer.parseInt(authentication.getName());
+        User member = userService.getUserByEmployeeCode(employeeCode);
+        model.addAttribute("member", member);
+        //報告一覧表示---------------------------------
+        List<Apply> applys = applyService.getfindAll(employeeCode);
+
+        //検索機能---------------------------------------
+
+        //既読or未読
+//        for (Apply apply : applys) {
+//            boolean isApprovalGiven = applyService.count(apply.getId());
+//            apply.setStatus(isApprovalGiven ? "既読" : "未読");
+//        }
+        model.addAttribute("applys", applys);
+//        //年月で重複しないList作成
+//        List<LocalDate> dateList = applys.stream()
+//                .map(Apply::getDate)
+//                .map(date -> date.withDayOfMonth(1))
+//                .distinct()
+//                .toList();
+//        model.addAttribute("dateList", dateList);
+
+//        //データ格納用
+        model.addAttribute("applySortInput", new ApplySortInput());
+
+        return "member/apply-search";
+    }
+
+    @PostMapping("/search-apply")
+    public String searchApply(
+            ApplySearchInput applySearchInput,
+            RedirectAttributes redirectAttributes,
+            ApplySortInput applySortInput,
+            Model model
+    ) {
+
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        int employeeCode = Integer.parseInt(authentication.getName());
+
+        String applyId = applyService.searchId(
+                employeeCode,
+                applySearchInput.getCreatedDate()
+        );
+
+        //日付、、
+        if (applySortInput.getSort()) {
+            applySortInput.setEmployeeCode(employeeCode);
+
+            //ソート用
+            List<Apply> applys = applyService.getSortApply(applySortInput);
+            User member = userService.getUserByEmployeeCode(employeeCode);
+
+            model.addAttribute("member", member);
+            model.addAttribute("applySearchInput", new ApplySearchInput());
+            model.addAttribute("error", model.getAttribute("error"));
+            model.addAttribute("applys", applys);
+
+
+//            年月で重複しないList作成
+//            List<LocalDateTime> dateList = applys.stream()
+//                    .map(Apply::getCreatedDate)
+//                    .map(date -> date.withDayOfMonth(1))
+//                    .distinct()
+//                    .toList();
+//            model.addAttribute("dateList", dateList);
+
+            //データ格納用
+            model.addAttribute("applySortInput", new ApplySortInput());
+            return "member/apply-search";
+        }
+
+        redirectAttributes.addAttribute("applyId", applyId);
+        return "redirect:/member/applys/{applyId}";
+    }
+
+    @GetMapping("/apply/{applyId}")
+    public String applyDetail(
+            @PathVariable("applyId") int applyId,
+            Model model
+    ) {
+        Apply apply = applyService.findById(applyId);
+        model.addAttribute("apply",apply);
+        return "/member/apply-detail";
+    }
+    @GetMapping("/apply/{applyId}/delete")
+    @Transactional
+    public String deleteApply(
+            @PathVariable("applyId") int applyId,
+            Model model
+    ) {
+        Apply apply = applyService.findById(applyId);
+
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        int employeeCode = Integer.parseInt(authentication.getName());
+
+        if (apply.getEmployeeCode() != employeeCode) {
+            return "redirect:/member/apply-detail";
+        }
+
+        this.applyService.deleteById(applyId);
+
+        User member = userService.getUserByEmployeeCode(employeeCode);
+        model.addAttribute("member", member);
+        List<Apply> applys = applyService.getfindAll(employeeCode);
+        model.addAttribute("applys",applys);
+        model.addAttribute("applySearchInput", new ApplySearchInput());
+        model.addAttribute("error", model.getAttribute("error"));
+        model.addAttribute("applySortInput", new ApplySortInput());
+        String title = "申請一覧";
+        model.addAttribute("title", title);
+
+        return "member/apply-search";
+    }
+
 }
+
+

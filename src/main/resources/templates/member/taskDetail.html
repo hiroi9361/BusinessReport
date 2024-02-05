@@ -34,12 +34,14 @@
             <tr th:each="task : ${taskDetail}">
                 <td th:text="${task.progress < 100 ? '未達成' : '達成'}"></td>
                 <td th:text="${task.date}"></td>
-                <td th:text="${task.progress}">%</td>
+                <td th:text="${task.progress + '%'}"></td>
             </tr>
             </tbody>
         </table>
     </div>
-    <div class="mb-5"></div>
+    <div clasS="button-box">
+        <a th:href="@{/member/task-list}">タスク一覧に戻る</a>
+    </div>
 
 </div>
 </div>

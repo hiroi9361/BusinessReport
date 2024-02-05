@@ -16,6 +16,8 @@ public class User implements Serializable {
 
     @Column(name="name", length=50)
     private String name;
+
+    private String email;
     private String password;
     private String role;
     private String icon;
@@ -46,6 +48,15 @@ public class User implements Serializable {
         this.name = name;
     }
 
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
+    }
+
+
     public String getPassword() {
         return password;
     }
@@ -73,5 +84,14 @@ public class User implements Serializable {
     public List<String> roleList() {
         return List.of(getRole());
     }
+
+    private boolean readReport = true;
+    public boolean getReadReport(){
+        return readReport;
+    }
+    public void setReadReport(boolean readReport){
+        this.readReport = readReport;
+    }
+
 }
 

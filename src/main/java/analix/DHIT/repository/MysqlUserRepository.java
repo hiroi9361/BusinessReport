@@ -1,5 +1,6 @@
 package analix.DHIT.repository;
 
+import analix.DHIT.input.UserCreateInput;
 import analix.DHIT.mapper.UserMapper;
 import analix.DHIT.model.User;
 import org.springframework.stereotype.Repository;
@@ -50,5 +51,23 @@ public class MysqlUserRepository implements UserRepository {
 
     }
 
+    //csv関係
+    @Override
+    public int countByEmployeeCode(int employeeCode) {
+        return this.userMapper.countByEmployeeCode(employeeCode);
+    }
+    @Override
+    public int countByEmail(String email){
+        return this.userMapper.countByEmail(email);
+    }
 
+    @Override
+    public User selectUserById(int employeeCode) {
+        return this.userMapper.selectUserById(employeeCode);
+    }
+
+    @Override
+    public void updateEmployee(UserCreateInput userCreateInput){
+        this.userMapper.updateEmployee(userCreateInput);
+    }
 }

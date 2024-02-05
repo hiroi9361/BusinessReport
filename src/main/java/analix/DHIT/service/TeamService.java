@@ -64,4 +64,12 @@ public class TeamService {
         this.teamRepository.deleteById(teamId);
     }
 
+    public Team selectById(int teamId){
+        return this.teamRepository.selectByTeamId(teamId);
+    }
+
+    //csv関係
+    public Integer selectTeamIdByName(String name){
+        return this.teamRepository.selectTeamIdByName(name);
+    }
 }

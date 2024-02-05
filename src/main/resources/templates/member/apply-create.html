@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/web/thymeleaf/layout"
+      layout:decorate="~{layout/layout}">
+<head>
+    <meta charset="UTF-8" th:remove="tag">
+</head>
+<body>
+<div layout:fragment="content">
+    <h1 class="text-center mt-3">申請提出</h1>
+    <div class="container p-3">
+        <div class="card">
+            <div class="card-body">
+                <form class="row g-3 p-3" th:action="@{/member/apply/create}" th:object="${ApplyCreateInput}"
+                      method="post">
+                    <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+                    <div class="form-group">
+                        <label class="text">申請種別：</label>
+                        <input type="radio" th:value="1" th:name="applicationType" th:text="事前申請" required checked>
+                        <input type="radio" th:value="2" th:name="applicationType" th:text="事後申請" required>
+                    </div>
+                    <input type="hidden" value="${settingInput.employment}">
+                    <div class="form-group">
+                        <label class="text">勤怠内容：</label>
+                        <input type="radio" th:value="1" th:name="attendanceType" th:text="遅刻" required checked>
+                        <input type="radio" th:value="2" th:name="attendanceType" th:text="早退" required>
+                        <input type="radio" th:value="3" th:name="attendanceType" th:text="外出" required>
+                        <input type="radio" th:value="4" th:name="attendanceType" th:text="振替休日" required>
+                        <input type="radio" th:value="5" th:name="attendanceType" th:text="有給休暇" required>
+                        <input type="radio" th:value="6" th:name="attendanceType" th:text="特別休暇" required>
+                        <input type="radio" th:value="7" th:name="attendanceType" th:text="欠勤" required>
+                    </div>
+                    <div class="form-group">
+                        <label class="text">※特別休暇：育休・生理休暇・裁判員休暇・慶弔休暇</label>
+                    </div>
+                    <div class="d-flex flex-row align-items-center">
+                        <div class="d-flex">
+                            <div id="date_mb" class="col-md-12 d-flex flex-row align-items-center" style="width:80px;">
+                                <p class="text-center mt-3">対象日時：</p>
+                            </div>
+                        </div>
+                        <div class="d-flex">
+                            <div id="startDate" class="col-md-12 d-flex flex-row align-items-center gap-3 me-2" style="width:200px;">
+                                <p class="text-center mt-3">開始日</p>
+                                <div class="cs-form">
+                                    <input type="date" class="form-control" name="startDate" th:value="${applyCreateInput.startDate}" required
+                                           min="1900-01-01" max="2100-12-31"/>
+                                </div>
+                            </div>
+                            <div id="endDate" class="col-md-12 d-flex flex-row align-items-center gap-3 me-2"
+                                 style="width:200px;">
+                                <p class="text-center mt-3">終了日</p>
+                                <div class="cs-form">
+                                    <input type="date" class="form-control" name="endDate" th:value="${applyCreateInput.endDate}" required
+                                           min="1900-01-01" max="2100-12-31"/>
+                                </div>
+                            </div>
+                            <div id="startTime" class="col-md-12 d-flex flex-row align-items-center gap-3 me-2"
+                                 style="width:200px;">
+                                <p class="text-center mt-3">開始時間</p>
+                                <div class="cs-form">
+                                    <input type="time" class="form-control" name="startTime" th:value="${settingInput.startTime}" required/>
+                                </div>
+                            </div>
+                            <div id="endTime" class="col-md-12 d-flex flex-row align-items-center gap-3 me-2" style="width:200px;">
+                                <p class="text-center mt-3">終了時間</p>
+                                <div class="cs-form">
+                                    <input type="time" class="form-control" name="endTime" th:value="${settingInput.endTime}" th:step="900"
+                                           required/>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="text">理由 / 備考：</label>
+                        <input name="reason" class="form-control" id="reason" rows="3" maxlength="45">
+                    </div>
+                    <div class="col-12">
+                        <button type="submit" class="w-100 btn btn-lg btn-primary">提出</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+        <div>
+            <a th:href="@{/member/apply-search}">申請一覧</a>
+        </div>
+    </div>
+</div>
+</body>
+</html>

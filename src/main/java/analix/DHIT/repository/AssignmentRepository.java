@@ -14,6 +14,8 @@ public interface AssignmentRepository {
 
     List<Assignment> selectByTeam(int teamId);
 
+    List<Assignment> selectByEmployeeCode(int employeeCode);
+
     void save(Assignment assignment);
 
     void update(Assignment assignment);
@@ -25,4 +27,6 @@ public interface AssignmentRepository {
     boolean getIsManager(int employeeCode, int teamId);
 
     int countIsManager(int employeeCode, int reportId);
+
+    int countByEmployeeCode(int employeeCode);
 }

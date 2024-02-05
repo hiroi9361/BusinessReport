@@ -100,6 +100,18 @@ public class AssignmentService {
 
     }
 
+    public void update(
+            int employeeCode,
+            boolean isManager,
+            int teamId
+    ) {
+        Assignment newAssignment = new Assignment();
+        newAssignment.setEmployeeCode(employeeCode);
+        newAssignment.setTeamId(teamId);
+        newAssignment.setIsManager(isManager);
+        this.assignmentRepository.update(newAssignment);
+    }
+
 
     public boolean existsAssignment(int employeeCode, int teamId) {
         int count = teamMapper.countAssignmentByEmployeeCodeAndTeamId(employeeCode, teamId);
@@ -117,4 +129,12 @@ public class AssignmentService {
         return count > 0;
     }
 
+    public boolean getCountIsManagerByEmployeeCode(int employeeCode) {
+        int count = this.assignmentRepository.countByEmployeeCode(employeeCode);
+        return count > 0;
+    }
+
+    public List<Assignment> selectByEmployeeCode(int employeeCode){
+        return this.assignmentRepository.selectByEmployeeCode(employeeCode);
+    }
 }

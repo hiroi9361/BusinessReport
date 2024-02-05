@@ -6,13 +6,24 @@ import jakarta.persistence.*;
 @Table(name="task_log")
 public class TaskLog {
 
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private int taskId;
     private int reportId;
     private String name;
     private int progressRate;
     private int counter;
     private int sorting;
+    private int employeeCode;
 
     public TaskLog() {
+    }
+
+    public int getId() {
+        return taskId;
+    }
+    public void setId(int taskId) {
+        this.taskId = taskId;
     }
 
     public String getName() {
@@ -48,5 +59,12 @@ public class TaskLog {
     }
     public void setSorting(int sorting) {
         this.sorting = sorting;
+    }
+
+    public int getEmployeeCode() {
+        return employeeCode;
+    }
+    public void setEmployeeCode(int employeeCode) {
+        this.employeeCode = employeeCode;
     }
 }

@@ -47,10 +47,8 @@
 
     <div class="container-usercreate">
 
-        <!-- 2023/12/07 富山 START -->
         <!--    <div class="container">-->
         <div class="container mt-3">
-            <!-- 2023/12/07 富山 END -->
 
             <h1>ユーザー一覧</h1>
             <a class="btn btn-success" th:href="@{/manager/create}">ユーザー作成</a>
@@ -63,7 +61,6 @@
             <!-- ユーザー一括登録 -->
             <a class="btn btn-success" th:href="@{/manager/allcreate}">ユーザー一括登録</a>
 
-            <!-- 2023/12/07 富山 START -->
             <!--  検索窓  -->
             <form action="" method="get" th:object="${userSearchInput}">
                 <select id="searchKeyword" name="searchKeyword" th:field="*{searchKeyword}">
@@ -76,8 +73,6 @@
                 <input type="submit" class="btn btn-secondary" value="検索">
             </form>
         </div>
-
-        <!-- 2023/12/07 富山 END -->
 
         <table class="StripeTable">
             <thead>
@@ -118,11 +113,9 @@
             <!--        </table>-->
             <!--    </div>-->
 
-            <!-- 2023/12/13 富山 START -->
-
             <tbody>
             <tr th:each="userList : ${userList}" th:object="${userList}" class="align-middle">
-                <td th:text="${userList.employeeCode}"></td>
+                <td class="employeeCodeID" th:text="${userList.employeeCode}"></td>
                 <td th:text="${userList.name}"></td>
                 <td th:text="${userList.role}"></td>
                 <td>
@@ -144,8 +137,6 @@
                 </td>
             </tr>
             </tbody>
-
-            <!-- 2023/12/13 富山 END -->
         </table>
     </div>
 </div>
@@ -165,6 +156,9 @@
         }
         th, td {
             vertical-align: middle !important;
+        }
+        .employeeCodeID {
+            font-weight: bold;
         }
         @media (max-width: 768px) {
             h1 {
@@ -196,7 +190,10 @@
                 border-bottom: 1px solid #ddd;
                 display: block;
                 font-size: 0.9em;
-                text-align: right;
+                text-align: center;
+                padding-top: 8px;
+                padding-bottom: 8px;
+                padding-right: 8px;
             }
 
             table td  input[type="submit"] {
@@ -216,7 +213,13 @@
             table td:last-child {
                 border-bottom: 0;
             }
-
+            .employeeCodeID {
+                font-weight: bold;
+            }
+            .StripeTable {
+                background-color: transparent;
+                border: none;
+            }
         }
         /* responsive table  */
 </style>

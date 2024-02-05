@@ -49,4 +49,14 @@ public class MysqlAssignmentRepository implements AssignmentRepository{
     public int countIsManager(int employeeCode, int reportId) {
         return this.teamMapper.countIsManager(employeeCode, reportId);
     }
+
+    @Override
+    public int countByEmployeeCode(int employeeCode) {
+        return this.teamMapper.countAssignmentByEmployeeCode(employeeCode);
+    }
+
+    @Override
+    public List<Assignment> selectByEmployeeCode(int employeeCode) {
+        return this.teamMapper.selectByEmployeeCodeIsManager(employeeCode);
+    }
 }

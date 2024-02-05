@@ -25,6 +25,11 @@ public interface TeamMapper {
     @Delete("DELETE FROM team WHERE team_id = #{teamId}")
     void deleteById(int teamId);
 
+    //csv関係
+    //一括登録時に取得したチーム名と一致するチームが存在するかどうか
+    @Select("select team_id from team where team.name = #{name}")
+    Integer selectTeamIdByName(String name);
+
 //    ここからAssignment
 
     @Select("SELECT * FROM assignment")
@@ -44,7 +49,7 @@ public interface TeamMapper {
     @Options(useGeneratedKeys = true, keyColumn = "assignment_id", keyProperty = "assignmentId")
     void insertAssignment(Assignment assignment);
 
-    @Update("UPDATE assignment SET is_manager=#{isManager},team_id=#{teamId} WHERE employee_code=#{employeeCode}")
+    @Update("UPDATE assignment SET is_manager=#{isManager} WHERE employee_code=#{employeeCode} AND team_id=#{teamId}")
     void updateAssignment(Assignment assignment);
 
     @Delete("DELETE FROM assignment WHERE assignment_id = #{assignmentId}")
@@ -58,6 +63,12 @@ public interface TeamMapper {
 
     @Select("SELECT COUNT(*) FROM assignment WHERE employee_code = #{employeeCode} AND team_id = #{teamId}")
     int countAssignmentByEmployeeCodeAndTeamId(int employeeCode, int teamId);
+
+    @Select("SELECT COUNT(*) FROM assignment WHERE employee_code = #{employeeCode} AND is_manager = 1")
+    int countAssignmentByEmployeeCode(int employeeCode);
+
+    @Select("SELECT * FROM assignment WHERE employee_code = #{employeeCode} AND is_manager = 1")
+    List<Assignment> selectByEmployeeCodeIsManager(int employeeCode);
 
     //test****************************
     @Select("SELECT is_manager FROM assignment WHERE employee_code = #{employeeCode} AND team_id = #{teamId}")

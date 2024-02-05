@@ -7,6 +7,7 @@ import java.util.List;
 public interface TeamRepository {
 
     List<Team> selectAllTeam();
+    Team selectByTeamId(int teamId);
     void save(Team team);
 
     void update(Team team);
@@ -15,5 +16,7 @@ public interface TeamRepository {
 
     void deleteById(int teamtId);
 
+    //csv関係
+    Integer selectTeamIdByName(String name);
 
 }

@@ -7,7 +7,13 @@
 </head>
 <body>
 <div layout:fragment="content">
-
+    <div th:if="${not hasSentReport}">
+        <a th:href="@{/member/report/create(targetDate=${targetDate})}">
+            <div class="alert alert-danger">
+                <p th:text="${targetDate}+ 'に報告書の未提出。こちらにクリックして提出して下さい。'"></p>
+            </div>
+        </a>
+    </div>
     <div class="container-main">
       <div class="main-box">
         <div th:if="${mgrteamList}">
@@ -30,12 +36,52 @@
                 <div class="main-right">
                     <div th:if="${notsubmit}">
                         <h5>昨日の報告未提出メンバー</h5>
-                        <div th:each="usr : ${notsubmit}">
-                            <a th:href="@{'/manager/report-search?employeeCode=' + ${usr.employeeCode}}"><p
-                                    th:text="${usr.name}"></p></a>
+                        <div class="container">
+                            <table>
+                                <thead>
+                                <tr>
+                                    <th>メンバー名前</th>
+                                    <th>通知メールを送信する</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                <tr class="user-container" th:each="usr : ${notsubmit}">
+                                    <td>
+                                        <a th:href="@{'/manager/report-search?employeeCode=' + ${usr.employeeCode}}"
+                                           class="user-link"
+                                           th:data-employee-code="${usr.employeeCode}">
+                                            <p class="user-name" th:text="${usr.name}"></p>
+                                        </a>
+                                    </td>
+                                    <td>
+                                        <button class="email-icon" onclick="sendReportReminder(event, this)">&#9993;</button>
+                                    </td>
+                                </tr>
+                                </tbody>
+                            </table>
+
+                            <div id="myModal" class="modal fade">
+                                <div class="modal-dialog">
+                                    <div class="modal-content">
+                                        <div class="modal-body" style="display: none;">
+                                            <p id="popupMessage"></p>
+                                            <div class="loading-spinner" id="loadingSpinner"></div>
+                                        </div>
+                                        <div class="modal-footer">
+                                            <button type="button" class="btn btn-primary" data-dismiss="modal">OK</button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
+<!--                <div class="main-right">-->
+<!--                    <div th:if="${todaymembers}">-->
+<!--                        <h5>勤怠申請のメンバー</h5>-->
+
+<!--                    </div>-->
+<!--                </div>-->
             </div>
         </div>
       </div>
@@ -107,13 +153,142 @@
     font-weight:bold;
   }
 
+.container {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+table {
+    width: 80%;
+    border-collapse: collapse;
+    margin-top: 20px;
+}
+
+th, td {
+    border: 1px solid #ddd;
+    padding: 8px;
+    text-align: center;
+}
+
+.user-name {
+    margin: 0;
+}
+
+.email-icon {
+    background-color: transparent;
+    border: none;
+    cursor: pointer;
+    font-size: 30px;
+    color: teal;
+}
+
+
+.loading-spinner {
+    border: 4px solid rgba(0, 0, 0, 0.3);
+    border-top: 4px solid #02990E;
+    border-radius: 50%;
+    width: 25px;
+    height: 25px;
+    animation: spin 1s linear infinite;
+    margin-left: 10px;
+}
+
+
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+#myModal {
+    color: #000;
+}
+
+.modal-body {
+    padding: 20px;
+    display: flex;
+    align-items: baseline;
+}
+
+.modal-footer {
+    background-color: #f8f9fa;
+    padding-top: 3px;
+    padding-bottom: 2px;
+}
+
+.btn-primary {
+    background-color: #02990E;
+    color: #fff;
+}
+
+#popupMessage {
+    color: #333;
+}
+
+
   a:hover{
     color : black;
   }
+@media (max-width: 768px) {
+table {
+    width: 100%;
+    border-collapse: collapse;
+    table-layout: fixed;
+}
 
+th, td {
+    border: 1px solid #ddd;
+    text-align: center;
+    font-size: 15px;
+    white-space: nowrap;
+    padding: 10px;
+    max-width: 100%;
+    white-space: normal;
+    overflow: visible;
+    text-overflow: unset;
+}
+
+.container-sub {
+        display: flex;
+        flex-direction: column;
+}
+ .main-right {
+        margin-bottom: 2px;
+ }
+}
 </style>
+
+<script layout:fragment="script">
+
+    function sendReportReminder(event, button) {
+        const employeeCode = event.target.closest('.user-container').querySelector('.user-link').getAttribute('data-employee-code');
+        const modalBody = $('#myModal .modal-body');
+        modalBody.find('#popupMessage').text('メールの送信中...');
+        modalBody.find('.loading-spinner').show();
+        modalBody.show();
+        $('#myModal').modal('show');
+        fetch(`/member/sendReportReminder?employeeCode=${employeeCode}`, {
+            method: 'GET',
+        })
+        .then(response => response.json())
+        .then(data => {
+            modalBody.find('#popupMessage').text(data.message + 'のメールに通知を送信しました.');
+            $('#myModal .modal-footer .btn-primary').show();
+        })
+        .catch(error => {
+            modalBody.find('#popupMessage').text('Failed to send email notification. Error: ' + error.message);
+        })
+        .finally(() => {
+            modalBody.find('.loading-spinner').hide();
+            modalBody.show();
+        });
+         $('#myModal .modal-footer .btn-primary').hide();
+         $('#myModal .modal-footer .btn-primary').on('click', function() {
+             $('#myModal').modal('hide');
+         });
+    }
+</script>
 </body>
 </html>
-
 
 

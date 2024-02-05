@@ -1,6 +1,7 @@
 package analix.DHIT.repository;
 
 import analix.DHIT.input.TaskDetailInput;
+import analix.DHIT.input.TaskSearchInput;
 import analix.DHIT.mapper.TaskLogMapper;
 import analix.DHIT.model.Report;
 import analix.DHIT.model.TaskLog;
@@ -32,6 +33,21 @@ public class MysqlTaskLogRepository implements TaskLogRepository {
     }
 
     @Override
+    public int countByName(String name){
+        return this.taskLogMapper.countByName(name);
+    }
+
+    @Override
+    public void setCounter(TaskLog taskLog){
+        this.taskLogMapper.setCounter(taskLog);
+    }
+
+    @Override
+    public List<TaskLog>taskListByName(String name){
+        return this.taskLogMapper.taskListByName(name);
+    }
+
+    @Override
     public void deleteByReportId(int reportId) {
         this.taskLogMapper.deleteByReportId(reportId);
     }
@@ -47,8 +63,18 @@ public class MysqlTaskLogRepository implements TaskLogRepository {
     }
 
     @Override
-    public List<TaskDetailInput> taskDetail(int sorting) {
-        return this.taskLogMapper.taskDetail(sorting);
+    public List<TaskDetailInput> taskDetail(int sorting, int employeeCode) {
+        return this.taskLogMapper.taskDetail(sorting, employeeCode);
+    }
+
+    @Override
+    public List<TaskLog>taskFilter(TaskSearchInput taskSearchInput) {
+        return this.taskLogMapper.taskLogFilter(taskSearchInput);
+    }
+
+    @Override
+    public List<TaskLog> selectByEmployeeCode(int employeeCode){
+        return this.taskLogMapper.selectByEmployeeCode(employeeCode);
     }
 
 }

@@ -23,6 +23,11 @@ public class MysqlTeamRepository implements TeamRepository{
     }
 
     @Override
+    public Team selectByTeamId(int teamId){
+        return this.teamMapper.SelectById(teamId);
+    }
+
+    @Override
     public Team findById(int teamId) {
         return this.teamMapper.SelectById(teamId);
     }
@@ -40,6 +45,12 @@ public class MysqlTeamRepository implements TeamRepository{
     @Override
     public void deleteById(int teamId) {
         this.teamMapper.deleteById(teamId);
+    }
+
+    //csv関係
+    @Override
+    public Integer selectTeamIdByName(String name){
+        return this.teamMapper.selectTeamIdByName(name);
     }
 
 }

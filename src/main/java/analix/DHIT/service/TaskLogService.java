@@ -1,6 +1,7 @@
 package analix.DHIT.service;
 
 import analix.DHIT.input.TaskDetailInput;
+import analix.DHIT.input.TaskSearchInput;
 import analix.DHIT.model.TaskLog;
 import analix.DHIT.repository.TaskLogRepository;
 import org.springframework.scheduling.config.Task;
@@ -40,6 +41,19 @@ public class TaskLogService {
         this.taskLogRepository.save(taskLog);
     }
 
+    public boolean countName(String name){
+        int count = this.taskLogRepository.countByName(name);
+        return count > 0;
+    }
+
+    public void setCounter(TaskLog taskLog){
+        this.taskLogRepository.setCounter(taskLog);
+    }
+
+    public List<TaskLog>taskListByName(String name){
+        return this.taskLogRepository.taskListByName(name);
+    }
+
     //これ task_log 全消しメソッド
     public void deleteByReportId(int reportId){
         this.taskLogRepository.deleteByReportId(reportId);
@@ -55,8 +69,17 @@ public class TaskLogService {
         return taskLogs;
     }
 
-    public List<TaskDetailInput> taskDetail(int sorting) {
-        List<TaskDetailInput> taskDetailInput = this.taskLogRepository.taskDetail(sorting);
+    public List<TaskDetailInput> taskDetail(int sorting, int employeeCode) {
+        List<TaskDetailInput> taskDetailInput = this.taskLogRepository.taskDetail(sorting, employeeCode);
         return taskDetailInput;
+    }
+
+    public List<TaskLog>taskFilter(TaskSearchInput taskSearchInput) {
+        List<TaskLog>taskLogsFilter = this.taskLogRepository.taskFilter(taskSearchInput);
+        return taskLogsFilter;
+    }
+
+    public List<TaskLog> selectByEmployeeCode(int employeeCode){
+        return this.taskLogRepository.selectByEmployeeCode(employeeCode);
     }
 }

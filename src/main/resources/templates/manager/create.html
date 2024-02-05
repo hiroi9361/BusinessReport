@@ -32,8 +32,13 @@
 <!--                <input type="text" id="name" th:field="*{name}" class="form-control" pattern="[A-Za-zぁ-んァ-ン一-龯]+" title="アルファベット、ひらがな、漢字のみが許可されています">-->
                 <input type="text" id="name" th:field="${userCreateInput.name}" class="form-control" pattern="[A-Za-zぁ-んァ-ン一-龯]+" title="アルファベット、ひらがな、漢字のみが許可されています">
             </div>
+                <!--メールアドレス  -->
+             <div class="mb-3">
+                 <label for="email" class="form-label">メールアドレス：<span class="text-danger">※</span></label>
+                 <input type="text" id="email" th:field="${userCreateInput.email}" class="form-control" >
+             </div>
 
-            <!-- パスワード -->
+                <!-- パスワード -->
             <div class="mb-3">
                 <label for="password" class="form-label">パスワード：<span class="text-danger">※</span></label>
 <!--                <input type="password" id="password" th:field="*{password}" class="form-control">-->

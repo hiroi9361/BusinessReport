@@ -7,11 +7,15 @@ import analix.DHIT.logic.IconConvertToBase64;
 import analix.DHIT.logic.EncodePasswordSha256;
 import analix.DHIT.mapper.UserMapper;
 import analix.DHIT.model.Assignment;
+import analix.DHIT.model.TaskLog;
 import analix.DHIT.model.User;
 import analix.DHIT.repository.UserRepository;
 //import com.opencsv.bean.CsvToBean;
 //import com.opencsv.bean.CsvToBeanBuilder;
 //import com.opencsv.bean.HeaderColumnNameMappingStrategy;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.mail.SimpleMailMessage;
+import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -131,6 +135,9 @@ public class UserService {
         if (userEditInput.getName().isEmpty()) {
             userEditInput.setName(user.getName());
         }
+        if (userEditInput.getEmail().isEmpty()){
+            userEditInput.setEmail(user.getEmail());
+        }
         if (userEditInput.getPassword().isEmpty()) {
             userEditInput.setPassword(user.getPassword());
         } else {
@@ -161,9 +168,6 @@ public class UserService {
     public String getUserName(int employeeCode){
         return userRepository.getUserName(employeeCode);
     }
-//    public List<User> selectEmployeeList(){
-//
-//    }
 
     public List<User> getUserByName(String searchWords) {return this.userMapper.getUserByName(searchWords);}
 
@@ -171,36 +175,20 @@ public class UserService {
 
     public List<User> getUserByCode(int searchWords) {return this.userMapper.getUserByCode(searchWords);}
 
-    //for csv upload
-//    public Integer uploadUsers(MultipartFile file) throws IOException {
-//        Set<User> users = parseCSV(file);
-//        userRepository.saveAll(users);
-//            return users.size();
-//    }
-//
-//    private Set<User> parseCSV(MultipartFile file) throws IOException{
-//        try(Reader reader = new BufferedReader(new InputStreamReader(file.getInputStream()))){
-//            HeaderColumnNameMappingStrategy<UserCsvRepresentation> strategy =
-//                    new HeaderColumnNameMappingStrategy<>();
-//            strategy.setType(UserCsvRepresentation.class);
-//            CsvToBean<UserCsvRepresentation> csvToBean=
-//            new CsvToBeanBuilder<UserCsvRepresentation>(reader)
-//                    .withMappingStrategy(strategy)
-//                    .withIgnoreEmptyLine(true)
-//                    .withIgnoreLeadingWhiteSpace(true)
-//                    .build();
-//            return csvToBean.parse()
-//                    .stream()
-//                    .map(csvLine -> User.builder()
-//                            .employeeCode(csvLine.getEmployeeCode())
-//                            .name(csvLine.getName())
-//                            .password(csvLine.getPassword())
-//                            .role(csvLine.getRole())
-//                            .build()
-//                    )
-//                    .collect(Collectors.toSet());
-//        }
-//
-//    }
 
+    //csv関係
+    public boolean DuplicateEmployeeCodeConfirmation(int employeeCode){
+        int count = this.userRepository.countByEmployeeCode(employeeCode);
+        return count > 0;
+    }
+    public boolean DuplicateEmailConfirmation(String email){
+        int count = this.userRepository.countByEmail(email);
+        return count > 0;
+    }
+    public User selectUserById(int employeeCode) {
+        return this.userRepository.selectUserById(employeeCode);
+    }
+    public void updateEmployee(UserCreateInput userCreateInput){
+        this.userRepository.updateEmployee(userCreateInput);
+    }
 }

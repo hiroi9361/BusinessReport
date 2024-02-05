@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/web/thymeleaf/layout"
+      layout:decorate="~{layout/layout}">
+<head>
+    <meta charset="UTF-8" th:remove="tag">
+</head>
+<body>
+<div layout:fragment="content">
+    <div th:if="${error}">
+    <div class="flash flash-danger alert alert-dismissible fade show" role="alert">
+        <span th:text="${error}"></span>
+        <a data-bs-dismiss="alert" aria-label="Close">
+            <i class="fas fa-times"></i>
+        </a>
+    </div>
+    </div>
+    <div class="container mt-4">
+        <h2 class="text-center mb-4" th:text="${member.name} + ' の申請一覧'"></h2>
+        <form th:action="@{/member/search-apply}" th:object="${ApplySortInput}" method="post">
+            <div>
+                <table class="StripeTable mb-4">
+                    <thead>
+                    <tr>
+                        <th>種別</th>
+                        <th>内容</th>
+                        <th>日時</th>
+                        <th>理由/備考</th>
+                        <th>申請日時</th>
+                        <th>承認</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                        <tr th:each="apply : ${applys}">
+                        <td th:switch="${apply.applicationType}">
+
+                            <i th:case="'1'">
+<!--                                <i class="text" style="font-size: 1.5rem;">事前</i>-->
+                                <i class="text">事前</i>
+                            </i>
+                            <i th:case="'2'">
+<!--                                <i class="text" style="font-size: 1.5rem;">事後</i>-->
+                                <i class="text">事後</i>
+                            </i>
+=======
+                            <span th:case="'1'" class="text">事前</span>
+                            <span th:case="'2'" class="text">事後</span>
+
+                        </td>
+                        <td th:switch="${apply.attendanceType}">
+                            <span th:case="'1'" class="text">遅刻</span>
+                            <span th:case="'2'" class="text">早退</span>
+                            <span th:case="'3'" class="text">外出</span>
+                            <span th:case="'4'" class="text">振替休日</span>
+                            <span th:case="'5'" class="text">有給休暇</span>
+                            <span th:case="'6'" class="text">特別休暇</span>
+                            <span th:case="'7'" class="text">欠勤</span>
+                        </td>
+                        <td th:text="${apply.startDate + ' ' + apply.startTime + ' ~ ' + apply.endDate + ' ' + apply.endTime}"></td>
+                        <!-- 理由を29文字まで表示し、残りは非表示にする -->
+                        <td>
+                            <div th:attr="data-content=${apply.reason}" class="d-flex align-items-center" style="white-space: pre-line; word-wrap: break-word; overflow: hidden; text-overflow: ellipsis; text-align: left;">
+                                <span>&nbsp;&nbsp;</span>
+                                <span th:text="${#strings.abbreviate(apply.reason, 29)}"></span>
+                            </div>
+                        </td>
+
+                        <td th:text="${apply.createdDate}"></td>
+
+                        <td th:text="${apply.formattedCreatedDate}"></td>
+
+                        <td th:switch="${apply.approval}">
+                            <span th:case="'0'" class="text">未承認</span>
+                            <span th:case="'1'" class="text">承認済み</span>
+                            <span th:case="'2'" class="text">差戻</span>
+                        </td>
+                        <td style="width:62px;"><a th:href="@{'apply/' + ${apply.Id}}" class="btn btn-outline-secondary">詳細</a></td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+        </form>
+
+        <div class="mb-5"></div>
+
+    </div>
+</div>
+<style layout:fragment="style">
+<!--    .text-kidoku {-->
+<!--                    color: #02990E;-->
+<!--                 }-->
+
+<!--    .text-midoku {-->
+<!--                    color: red;-->
+<!--                 }-->
+
+
+    .gap-2 {
+                justify-content: center;
+                width : 100%;
+            }
+            button.btn-lg {
+                float : left ;
+                text-align: center;
+                white-space: nowrap;
+                padding-left: 90px;
+                padding-right: 90px;
+            }
+            @media (max-width: 768px) {
+                h2.text-center.mb-4 {
+                    font-size: 1.3em;
+                }
+                .gap-2 {
+                    justify-content: center;
+                    width : 100%;
+                }
+                button.btn-lg {
+                    text-align: center;
+                    white-space: nowrap;
+                    padding-left: 40px;
+                    padding-right: 40px;
+                }
+            }
+</style>
+<script layout:fragment="script"></script>
+
+</body>
+</html>
+<!--<script>-->
+<!--    function goBack() {-->
+<!--        // 前のページに戻る-->
+<!--        window.history.back();-->
+<!--    }-->
+
+
+<!--    function check() {-->
+<!--        if (window.confirm('このチームを削除しますか？')) {-->
+<!--            return true;-->
+<!--        } else {-->
+<!--            return false;-->
+<!--        }-->
+<!--    }-->
+
+<!--</script>-->

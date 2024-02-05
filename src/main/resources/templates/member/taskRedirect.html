@@ -20,34 +20,11 @@
 
     <div class="container mt-4">
 
-        <h2 class="text-center mb-4" th:text="${taskDetail[0].name} + ' の詳細'"></h2>
-
-        <table class="StripeTable mb-4">
-            <thead>
-            <tr>
-                <th>状態</th>
-                <th>日付</th>
-                <th>進捗</th>
-            </tr>
-            </thead>
-            <tbody>
-            <tr th:each="task : ${taskDetail}">
-                <td th:text="${task.progress < 100 ? '未達成' : '達成'}"></td>
-                <td th:text="${task.date}"></td>
-                <td th:text="${task.progress + '%'}"></td>
-            </tr>
-            </tbody>
-        </table>
+        <form id="redirectTeam" th:action="@{/member/taskSubMenu}" th:object="${teamUpdateInput}" method="post">
+            <input type="hidden" name="teamId" th:value="${teamId}">
+            <p>タスク一覧にリダイレクトます</p>
+        </form>
     </div>
-    <div class="button-box">
-        <a th:href="@{'/member/taskSubMenu/' + ${teamId}}">タスク一覧に戻る</a>
-    </div>
-
-
-
-
-
-</div>
 </div>
 <style layout:fragment="style">
     .text-kidoku {
@@ -87,10 +64,9 @@
             }
 </style>
 <script layout:fragment="script">
-    function submitForm() {
-    console.log('OK');
-        document.getElementById("myForm").submit();
-    }
+    setTimeout(function() {
+            document.forms["redirectTeam"].submit();
+        }, 1000);
 </script>
 
 </body>

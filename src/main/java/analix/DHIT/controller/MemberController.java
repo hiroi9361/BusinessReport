@@ -681,6 +681,16 @@ public class MemberController {
 
         return "member/task-menu";
     }
+
+    @GetMapping("taskSubMenu/{teamId}")
+    public String postTestPagea(
+            Model model,
+            @PathVariable int teamId
+    ){
+        model.addAttribute("teamId",teamId);
+        model.addAttribute("teamUpdateInput",new TeamUpdateInput());
+        return"member/taskRedirect";
+    }
     @PostMapping("/taskSubMenu")
     public String postTestPage(
             Model model,
@@ -734,11 +744,12 @@ public class MemberController {
             String member = "チームメンバー";
             boolean Search = false;
             boolean teamTask = true;
+            int teamId = teamUpdateInput.getTeamId();
+            model.addAttribute("teamId",teamId);
             model.addAttribute("taskList",taskLogs);
             model.addAttribute("member",member);
             model.addAttribute("TaskSearchInput",new TaskSearchInput());
             model.addAttribute("Search",Search);
-            model.addAttribute("teamTask",teamTask);
             model.addAttribute("teamTask",teamTask);
             return "member/taskList";
         }
@@ -754,6 +765,7 @@ public class MemberController {
     @GetMapping("/taskDetail/{sorting}")
     public String displayReportDetail(@PathVariable("sorting") int sorting,
                                       @RequestParam(value = "employeeCode", required = false) String employeeCode,
+                                      @RequestParam(value = "teamId", required = false) String teamId,
                                       Model model) {
 
 //        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
@@ -762,7 +774,9 @@ public class MemberController {
         List<TaskDetailInput> taskDetailInput = new ArrayList<>();
         taskDetailInput = this.taskLogService.taskDetail(sorting, Integer.parseInt(employeeCode));
         model.addAttribute("taskDetail",taskDetailInput);
+        model.addAttribute("teamId",teamId);
         model.addAttribute("employeeCode",employeeCode);
+
         return "member/taskDetail";
     }
 

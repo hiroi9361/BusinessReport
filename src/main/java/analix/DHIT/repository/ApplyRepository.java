@@ -19,6 +19,9 @@ public interface ApplyRepository {
     //ソート検索結果
     List<Apply> sortApply(ApplySortInput applySortInput);
 
+//    int count(int applyId);
+=======
     //申請削除
     void deleteById(int applyId);
+
 }

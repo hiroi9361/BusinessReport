@@ -77,6 +77,12 @@ public class ApplyService {
         return  applys;
     }
 
+
+//    public boolean count(int applyId){
+//        int count = applyRepository.count(applyId);
+//        return count > 0;
+//    }
+=======
     public Apply findById(int applyId) {
         return this.applyRepository.findById(applyId);
     }
@@ -87,4 +93,5 @@ public class ApplyService {
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy/MM/dd HH:mm");
         return dateTime.format(formatter);
     }
+
 }

@@ -954,7 +954,21 @@ public class MemberController {
         List<Apply> applys = applyService.getfindAll(employeeCode);
 
         //検索機能---------------------------------------
+
+        //既読or未読
+//        for (Apply apply : applys) {
+//            boolean isApprovalGiven = applyService.count(apply.getId());
+//            apply.setStatus(isApprovalGiven ? "既読" : "未読");
+//        }
         model.addAttribute("applys", applys);
+//        //年月で重複しないList作成
+//        List<LocalDate> dateList = applys.stream()
+//                .map(Apply::getDate)
+//                .map(date -> date.withDayOfMonth(1))
+//                .distinct()
+//                .toList();
+//        model.addAttribute("dateList", dateList);
+
 //        //データ格納用
         model.addAttribute("applySortInput", new ApplySortInput());
 
@@ -989,6 +1003,16 @@ public class MemberController {
             model.addAttribute("applySearchInput", new ApplySearchInput());
             model.addAttribute("error", model.getAttribute("error"));
             model.addAttribute("applys", applys);
+
+
+//            年月で重複しないList作成
+//            List<LocalDateTime> dateList = applys.stream()
+//                    .map(Apply::getCreatedDate)
+//                    .map(date -> date.withDayOfMonth(1))
+//                    .distinct()
+//                    .toList();
+//            model.addAttribute("dateList", dateList);
+
             //データ格納用
             model.addAttribute("applySortInput", new ApplySortInput());
             return "member/apply-search";

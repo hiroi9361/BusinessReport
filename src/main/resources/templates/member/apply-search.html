@@ -33,8 +33,19 @@
                     <tbody>
                         <tr th:each="apply : ${applys}">
                         <td th:switch="${apply.applicationType}">
+
+                            <i th:case="'1'">
+<!--                                <i class="text" style="font-size: 1.5rem;">事前</i>-->
+                                <i class="text">事前</i>
+                            </i>
+                            <i th:case="'2'">
+<!--                                <i class="text" style="font-size: 1.5rem;">事後</i>-->
+                                <i class="text">事後</i>
+                            </i>
+=======
                             <span th:case="'1'" class="text">事前</span>
                             <span th:case="'2'" class="text">事後</span>
+
                         </td>
                         <td th:switch="${apply.attendanceType}">
                             <span th:case="'1'" class="text">遅刻</span>
@@ -53,7 +64,11 @@
                                 <span th:text="${#strings.abbreviate(apply.reason, 29)}"></span>
                             </div>
                         </td>
+
+                        <td th:text="${apply.createdDate}"></td>
+
                         <td th:text="${apply.formattedCreatedDate}"></td>
+
                         <td th:switch="${apply.approval}">
                             <span th:case="'0'" class="text">未承認</span>
                             <span th:case="'1'" class="text">承認済み</span>

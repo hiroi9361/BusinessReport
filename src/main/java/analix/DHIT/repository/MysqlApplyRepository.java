@@ -38,9 +38,11 @@ public class MysqlApplyRepository implements ApplyRepository {
         return this.applyMapper.sortApply(applySortInput);
     }
 
+
     @Override
     public void deleteById(int applyId){
         this.applyMapper.deleteById(applyId);
     }
 
 }
+

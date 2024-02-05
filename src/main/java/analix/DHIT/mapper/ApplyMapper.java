@@ -26,9 +26,11 @@ public interface ApplyMapper {
     @Select("SELECT * FROM apply WHERE employee_code=#{employeeCode}")
     List<Apply> selectAll(int employeeCode);
 
+
     //申請削除
     @Delete("DELETE FROM apply WHERE apply_id = #{applyId}")
     void deleteById(int applyId);
+
 
     @Select("SELECT apply_id FROM report WHERE employee_code = #{employeeCode} and created_date = #{createdDate}")
     String selectIdByEmployeeCodeAndCreatedDate(int employeeCode, LocalDateTime createdDate);

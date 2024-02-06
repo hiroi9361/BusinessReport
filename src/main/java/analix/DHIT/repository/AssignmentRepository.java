@@ -18,6 +18,8 @@ public interface AssignmentRepository {
 
     List<Assignment> selectEmployeeCodeByTeamId(int teamId);
 
+    Assignment selectByTeamIdOnce(int teamId);
+
     void save(Assignment assignment);
 
     void update(Assignment assignment);

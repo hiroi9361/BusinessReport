@@ -125,7 +125,7 @@
                             <button type="submit" class="btn btn-outline-secondary">
                                 詳細
                                 <input type="hidden" name="employeeCode" th:value="${task.employeeCode}">
-                                <input type="hidden" name="teamId" th:value="${teamId}">
+                                <input type="hidden" name="teamId" th:value="${teamId != null ? teamId : ''}">
                             </button>
                         </form>
                     </td>

@@ -57,6 +57,10 @@ public class AssignmentService {
         return assignments;
     }
 
+    public Assignment selectByTeamIdOnce(int teamId){
+        return this.assignmentRepository.selectByTeamIdOnce(teamId);
+    }
+
 //    public List<Integer> ManagersByTeam(int teamId){
 //        List<Integer> managers = this.assignmentRepository.managersByTeam(teamId);
 //        if (managers == null){

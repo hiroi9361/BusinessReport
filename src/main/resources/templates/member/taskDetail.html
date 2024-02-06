@@ -38,9 +38,25 @@
             </tr>
             </tbody>
         </table>
+        <form th:action="@{/member/taskHandover}" th:object="${taskHandoverInput}" method="post">
+<!--            <input type="hidden" name="teamId" th:value="${teamId}">-->
+            <input type="hidden" name="teamId" th:value="${teamId != null ? teamId : '0'}">
+            <input type="hidden" name="sorting" th:value="${sorting}">
+            <input type="hidden" name="employeeCode" th:value="${employeeCode}">
+
+
+            <button type="submit">
+                このタスクを引き継ぐ
+            </button>
+        </form>
     </div>
     <div class="button-box">
-        <a th:href="@{'/member/taskSubMenu/' + ${teamId}}">タスク一覧に戻る</a>
+        <div th:if="${teamId == null}">
+            <a th:href="@{/member/taskMenu}">タスク一覧に戻る</a>
+        </div>
+        <div th:unless="${teamId == null}">
+            <a th:href="@{'/member/taskSubMenu/' + ${teamId}}">タスク一覧に戻る</a>
+        </div>
     </div>
 
 

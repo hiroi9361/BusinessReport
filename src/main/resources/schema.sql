@@ -7,6 +7,7 @@ DROP TABLE IF EXISTS `feedback` CASCADE;
 DROP TABLE IF EXISTS `assignment` CASCADE;
 DROP TABLE IF EXISTS `setting` CASCADE;
 DROP TABLE IF EXISTS `apply` CASCADE;
+DROP TABLE IF EXISTS `handover` CASCADE;
 SET FOREIGN_KEY_CHECKS = 1;
 
 CREATE TABLE IF NOT EXISTS `user` (
@@ -30,7 +31,8 @@ CREATE TABLE IF NOT EXISTS `report` (
     `end_time` time NOT NULL,
     `is_lateness` tinyint NOT NULL,
     `lateness_reason` text,
-    `is_left_early` tinyint NOT NULL
+    `is_left_early` tinyint NOT NULL,
+    `delete_key` tinyint NOT NULL DEFAULT false
 --    FOREIGN KEY (`employee_code`) REFERENCES user(`employee_code`)
 );
 
@@ -85,6 +87,16 @@ CREATE TABLE IF NOT EXISTS `apply` (
     `reason`  varchar(45) NOT NULL,
     `approval`  int NOT NULL,
     `created_date` datetime NOT NULL
+);
+
+CREATE TABLE IF NOT EXISTS `handover` (
+    `handover_id` int NOT NULL AUTO_INCREMENT PRIMARY KEY,
+    `task_log_id` int NOT NULL,
+    `sorting` int NOT NULL,
+    `task_before` int NOT NULL,
+    `task_after` int NOT NULL,
+    `delete_key` tinyint NOT NULL,
+    `report_id` int NOT NULL
 );
 
 alter table assignment add constraint FKdetrh6pu9ojx5htmct8jirhof foreign key (team_id) references team (team_id);

@@ -10,9 +10,9 @@
     <div class="container mt-4">
 <!--初期表示：自分かチームメンバーかどっちのタスクを表示するか決める↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓-->
         <div th:if="${fastContact}">
-            <form th:action="@{/member/taskSubMenu}" method="post">
-                <button type="submit" class="btn btn-secondary me-3" name="task" value="1">自分のタスク</button>
-                <button type="submit" class="btn btn-secondary me-3" name="task" value="2">チームメンバーのタスク</button>
+            <form th:action="@{/member/taskSubMenu}" method="post" style="text-align: center;">
+                <button type="submit" class="btn btn-success me-3" name="task" value="1">自分のタスク</button>
+                <button type="submit" class="btn btn-success me-3" name="task" value="2">チームメンバーのタスク</button>
             </form>
         </div>
 <!--初期表示↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑-->
@@ -20,11 +20,14 @@
 <!--次回表示：チームメンバーの時、管理下にあるチームをリスト表示する↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓-->
         <div th:if="${secondContact}">
             <form th:action="@{/member/taskSubMenu}" th:object="${teamUpdateInput}" method="post">
-                <select name="teamId" class="form-select">
+                <label>
+                    チームを選択する
+                </label>
+                <select name="teamId" class="form-select" style="margin-bottom: 15px">
                     <option th:each="team : ${teams}" th:text="${team.name}"
                             th:value="${team.teamId}"></option>
                 </select>
-                <button type="submit">Submit</button>
+                <button type="submit" class="w-100 btn btn-lg btn-success" style="margin-top: 10px; display: flex; margin: auto;">決定</button>
             </form>
         </div>
 <!--次回表示↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑-->

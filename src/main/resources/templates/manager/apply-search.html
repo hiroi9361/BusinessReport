@@ -16,8 +16,8 @@
     </div>
     </div>
     <div class="container mt-4">
-        <h2 class="text-center mb-4" th:text="${member.name} + ' の申請一覧'"></h2>
-        <form th:action="@{/member/search-apply}" th:object="${ApplySortInput}" method="post">
+        <h2 class="text-center mb-4" th:text="メンバーの申請一覧"></h2>
+        <form th:action="@{/manager/search-apply}" th:object="${ApplySortInput}" method="post">
             <div>
                 <table class="StripeTable mb-4">
                     <thead>

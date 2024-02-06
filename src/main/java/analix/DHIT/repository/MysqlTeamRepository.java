@@ -58,4 +58,9 @@ public class MysqlTeamRepository implements TeamRepository{
         return this.teamMapper.selectTeamIdByName(name);
     }
 
+    //タスク引継ぎ
+    @Override
+    public List<Team> selectTeamId(int employeeCode, int sorting, boolean isManager){
+        return this.teamMapper.selectTeamId(employeeCode, sorting, isManager);
+    }
 }

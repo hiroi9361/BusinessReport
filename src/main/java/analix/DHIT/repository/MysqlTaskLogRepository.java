@@ -77,4 +77,9 @@ public class MysqlTaskLogRepository implements TaskLogRepository {
         return this.taskLogMapper.selectByEmployeeCode(employeeCode);
     }
 
+    @Override
+    public List<TaskLog> selectBySorting(int sorting){
+        return this.taskLogMapper.selectBySorting(sorting);
+    }
+
 }

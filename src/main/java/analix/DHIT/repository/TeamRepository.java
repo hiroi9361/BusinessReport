@@ -21,4 +21,7 @@ public interface TeamRepository {
     //csv関係
     Integer selectTeamIdByName(String name);
 
+    //タスク引継ぎ
+    List<Team> selectTeamId(int employeeCode, int sorting, boolean isManager);
+
 }

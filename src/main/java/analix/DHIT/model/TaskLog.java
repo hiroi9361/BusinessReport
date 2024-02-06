@@ -6,6 +6,14 @@ import jakarta.persistence.*;
 @Table(name="task_log")
 public class TaskLog {
 
+    public int getTaskId() {
+        return taskId;
+    }
+
+    public void setTaskId(int taskId) {
+        this.taskId = taskId;
+    }
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int taskId;

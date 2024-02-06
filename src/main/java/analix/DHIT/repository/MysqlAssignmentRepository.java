@@ -22,6 +22,11 @@ public class MysqlAssignmentRepository implements AssignmentRepository{
     public List<Assignment> selectByTeam(int teamId){return this.teamMapper.selectByTeamId(teamId);}
 
     @Override
+    public Assignment selectByTeamIdOnce(int teamId){
+        return this.teamMapper.selectByTeamIdOnce(teamId);
+    }
+
+    @Override
     public void save(Assignment assignment) {
         this.teamMapper.insertAssignment(assignment);
     }

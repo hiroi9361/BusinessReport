@@ -76,4 +76,9 @@ public class TeamService {
     public Integer selectTeamIdByName(String name){
         return this.teamRepository.selectTeamIdByName(name);
     }
+
+    //タスク引継ぎ
+    public List<Team> selectTeamId(int employeeCode, int sorting, boolean isManager){
+        return this.teamRepository.selectTeamId(employeeCode, sorting, isManager);
+    }
 }

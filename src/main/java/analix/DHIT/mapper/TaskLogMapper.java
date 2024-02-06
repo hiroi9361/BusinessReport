@@ -89,7 +89,8 @@ public interface TaskLogMapper {
             "   (r.employee_code = #{taskSearchInput.employeeCode}));")
     List<TaskLog> taskLogFilter(@Param("taskSearchInput") TaskSearchInput taskSearchInput);
 
-
+    @Select("select * from task_log where sorting = #{sorting}")
+    List<TaskLog> selectBySorting(int sorting);
 
 
 

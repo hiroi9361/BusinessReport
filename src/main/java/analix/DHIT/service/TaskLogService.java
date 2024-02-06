@@ -82,4 +82,8 @@ public class TaskLogService {
     public List<TaskLog> selectByEmployeeCode(int employeeCode){
         return this.taskLogRepository.selectByEmployeeCode(employeeCode);
     }
+
+    public List<TaskLog> selectBySorting(int sorting){
+        return this.taskLogRepository.selectBySorting(sorting);
+    }
 }

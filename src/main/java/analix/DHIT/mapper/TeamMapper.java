@@ -1,5 +1,6 @@
 package analix.DHIT.mapper;
 
+import analix.DHIT.input.TaskHandoverCreateInput;
 import analix.DHIT.model.*;
 import org.apache.ibatis.annotations.*;
 
@@ -49,6 +50,9 @@ public interface TeamMapper {
     @Select("SELECT * FROM assignment WHERE team_id = #{teamId}")
     List<Assignment> selectByTeamId(int teamId);
 
+    @Select("SELECT * FROM assignment WHERE team_id = #{teamId}")
+    Assignment selectByTeamIdOnce(int teamId);
+
     @Insert("INSERT INTO assignment(is_manager, team_id, employee_code) " +
             "VALUES(#{isManager}, #{teamId}, #{employeeCode})")
     @Options(useGeneratedKeys = true, keyColumn = "assignment_id", keyProperty = "assignmentId")
@@ -78,6 +82,15 @@ public interface TeamMapper {
     @Select("SELECT employee_code FROM assignment " +
             "WHERE team_id = #{teamId} AND is_manager = 0")
     List<Assignment> selectEmployeeCodeByTeamId(int teamId);
+
+    //タスク引継ぎ回り自分がマネージャーのTeamIdを取得する
+    @Select("SELECT a.team_id FROM task_log AS t " +
+            "LEFT JOIN assignment AS a ON t.employee_code = a.employee_code " +
+            "WHERE a.employee_code = #{employeeCode} " +
+            "AND t.sorting = #{sorting} " +
+            "AND a.is_manager = #{isManager}")
+    List<Team> selectTeamId(int employeeCode, int sorting, boolean isManager);
+
 
     //test****************************
     @Select("SELECT is_manager FROM assignment WHERE employee_code = #{employeeCode} AND team_id = #{teamId}")

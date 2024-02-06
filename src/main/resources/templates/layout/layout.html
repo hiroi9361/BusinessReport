@@ -67,13 +67,8 @@
                         <a class="nav-link text-white" th:href="@{/member/taskMenu}">タスク一覧</a>
                     </li>
                 </ul>
-
                 <ul class="navbar-nav flex-grow-1"
-                    th:if="${#authentication.principal.isManager or #authorization.expression('hasRole(''ADMIN'')')}">
-
-                    <li class="nav-item">
-                        <a class="nav-link text-white" th:href="@{/manager/employeeList}">ユーザー管理</a>
-                    </li>
+                    th:if="${#authentication.principal.isManager}">
                     <li class="nav-item">
                         <a class="nav-link text-white" th:href="@{/manager/teamlist}">チーム管理</a>
                     </li>

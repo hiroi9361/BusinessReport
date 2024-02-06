@@ -122,7 +122,11 @@
                     <td th:text="${task.name}"></td>
                     <td style="width:62px;">
                         <form th:action="@{'taskDetail/' + ${task.sorting}}" method="get">
-                            <button type="submit" class="btn btn-outline-secondary" name="employeeCode" th:value="${task.employeeCode}">詳細</button>
+                            <button type="submit" class="btn btn-outline-secondary">
+                                詳細
+                                <input type="hidden" name="employeeCode" th:value="${task.employeeCode}">
+                                <input type="hidden" name="teamId" th:value="${teamId != null ? teamId : ''}">
+                            </button>
                         </form>
                     </td>
 

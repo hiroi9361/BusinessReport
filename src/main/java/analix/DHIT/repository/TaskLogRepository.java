@@ -30,5 +30,7 @@ public interface TaskLogRepository {
     List<TaskDetailInput> taskDetail(int sorting, int employeeCode);
 
     List<TaskLog>taskFilter(TaskSearchInput taskSearchInput);
+
+    List<TaskLog> selectBySorting(int sorting);
 }
 

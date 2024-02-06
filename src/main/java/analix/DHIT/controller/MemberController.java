@@ -49,8 +49,9 @@ public class MemberController {
     private final AssignmentService assignmentService;
     private final TeamService teamService;
     private final SettingService settingService;
-    private final   MailService mailService;
-    private final   ApplyService applyService;
+    private final MailService mailService;
+    private final ApplyService applyService;
+    private final HandoverService handoverService;
 
 
 //    @Autowired
@@ -62,7 +63,8 @@ public class MemberController {
                             TeamService teamService,
                             SettingService settingService,
                             MailService mailService,
-                            ApplyService applyService) {
+                            ApplyService applyService,
+                            HandoverService handoverService) {
         this.userService = userService;
         this.taskLogService = taskLogService;
         this.reportService = reportService;
@@ -72,6 +74,7 @@ public class MemberController {
         this.settingService = settingService;
         this.mailService = mailService;
         this.applyService = applyService;
+        this.handoverService = handoverService;
     }
 
     @GetMapping("/report/create")
@@ -681,6 +684,16 @@ public class MemberController {
 
         return "member/task-menu";
     }
+
+    @GetMapping("taskSubMenu/{teamId}")
+    public String postTestPagea(
+            Model model,
+            @PathVariable int teamId
+    ){
+        model.addAttribute("teamId",teamId);
+        model.addAttribute("teamUpdateInput",new TeamUpdateInput());
+        return"member/taskRedirect";
+    }
     @PostMapping("/taskSubMenu")
     public String postTestPage(
             Model model,
@@ -702,6 +715,9 @@ public class MemberController {
                 case "1"://自分のタスク
                     taskLogs = this.taskLogService.taskList(employeeCode);
 
+                    //タスク引継ぎの状態によって表示内容を変更するメソッド使用
+                    taskLogs = HandoverAdjustment(taskLogs, employeeCode);
+
                     User memberName = userService.getUserByEmployeeCode(employeeCode);
                     String member = memberName.getName();
                     boolean Search = false;
@@ -711,7 +727,7 @@ public class MemberController {
                     model.addAttribute("TaskSearchInput",new TaskSearchInput());
                     model.addAttribute("Search",Search);
                     model.addAttribute("teamTask",teamTask);
-                    return "member/taskList";
+                    return "member/taskList";//自分のタスク一覧表示
                 case "2"://チームメンバー
                     teams = this.teamService.selectTeamByEmployeeCode(employeeCode);
                     secondContact = true;
@@ -729,18 +745,25 @@ public class MemberController {
                     taskLog.setUserName(user.getName());
                 }
                 taskLogs.addAll(memberTask);
+                boolean isHandover = handoverService.countByAfter(assignment.getEmployeeCode());
+                if (isHandover){
+                    taskLogs = HandoverAdjustment(taskLogs, assignment.getEmployeeCode());
+                }
             }
+
+
             //taskLogs = this.taskLogService.taskList(myEmployeeCode);
             String member = "チームメンバー";
             boolean Search = false;
             boolean teamTask = true;
+            int teamId = teamUpdateInput.getTeamId();
+            model.addAttribute("teamId",teamId);
             model.addAttribute("taskList",taskLogs);
             model.addAttribute("member",member);
             model.addAttribute("TaskSearchInput",new TaskSearchInput());
             model.addAttribute("Search",Search);
             model.addAttribute("teamTask",teamTask);
-            model.addAttribute("teamTask",teamTask);
-            return "member/taskList";
+            return "member/taskList";//チーム経由の一覧表示
         }
         model.addAttribute("fastContact",fastContact);
         model.addAttribute("secondContact",secondContact);
@@ -751,18 +774,89 @@ public class MemberController {
         return "member/task-menu";
     }
 
+    @PostMapping("/taskHandover")
+    public String taskHandOver(Model model,
+                               @ModelAttribute("taskHandoverInput") TaskHandoverInput taskHandoverInput){
+//
+        List<User>members = new ArrayList<>();
+        if (taskHandoverInput.getTeamId() != 0){
+            List<Assignment>assignments = assignmentService.getAssignmentByTeam(taskHandoverInput.getTeamId());
+            for (Assignment assignment : assignments){
+                User user = userService.getUserByEmployeeCode(assignment.getEmployeeCode());
+                members.add(user);
+            }
+        }else{
+            //自分がマネージャーのTeamIdを取得する
+            Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+            int employeeCode = Integer.parseInt(authentication.getName());
+            int sorting = taskHandoverInput.getSorting();
+            boolean isManager = true;
+            List<Team>teams = teamService.selectTeamId(employeeCode, sorting, isManager);
+            List<Assignment>assignments = new ArrayList<>();
+            List<Assignment>assignmentAll = new ArrayList<>();
+            for (Team team : teams){
+                assignments = assignmentService.getAssignmentByTeam(team.getTeamId());
+                for (Assignment assignment : assignments){
+                    assignmentAll.add(assignment);
+                }
+            }
+            for (Assignment assignment : assignmentAll){
+                User user = userService.getUserByEmployeeCode(assignment.getEmployeeCode());
+                members.add(user);
+            }
+        }
+
+        ReportCreateInput reportCreateInput = new ReportCreateInput();
+        List<TaskLog> taskLog = taskLogService.selectBySorting(taskHandoverInput.getSorting());
+        reportCreateInput.setTaskLogs(taskLog);
+        model.addAttribute("members",members);
+        model.addAttribute("employeeCode",taskHandoverInput.getEmployeeCode());
+        model.addAttribute("reportCreateInput",reportCreateInput);
+        //要らない説model.addAttribute("teamId",teamId);
+        model.addAttribute("taskHandoverInput",new TaskHandoverInput());
+        return "member/task-handover";
+    }
+
+    @PostMapping("/taskHandoverCreate")
+    public String taskHandOverCreate(Model model,
+                               @ModelAttribute("taskHandoverInput") TaskHandoverInput taskHandoverInput){
+        int myEmployeeCode = taskHandoverInput.getEmployeeCode();
+        int yourEmployeeCode = taskHandoverInput.getEmployeeCodePartner();
+        TaskHandoverCreateInput taskHandoverCreateInput = new TaskHandoverCreateInput();
+
+        //引継ぎ情報を記録
+
+        taskHandoverCreateInput.setTaskBefore(yourEmployeeCode);
+        taskHandoverCreateInput.setTaskAfter(myEmployeeCode);
+        for (int i = 0; i < taskHandoverInput.getTaskLogs().size(); i++){
+            taskHandoverCreateInput.setTaskLogId(taskHandoverInput.getTaskLogs().get(i).getTaskId());
+            taskHandoverCreateInput.setDeleteKey(true);
+            taskHandoverCreateInput.setReportId(taskHandoverInput.getTaskLogs().get(i).getReportId());
+            taskHandoverCreateInput.setSorting(taskHandoverInput.getTaskLogs().get(i).getSorting());
+            handoverService.save(taskHandoverCreateInput);
+        }
+
+        //該当のレポートの「delete_key」をtrueにする
+        for (int i = 0; i < taskHandoverInput.getTaskLogs().size(); i++){
+            handoverService.updateByDeleteKey(true, taskHandoverInput.getTaskLogs().get(i).getReportId());
+        }
+
+        return "member/task-handover-completed";
+    }
+
     @GetMapping("/taskDetail/{sorting}")
     public String displayReportDetail(@PathVariable("sorting") int sorting,
                                       @RequestParam(value = "employeeCode", required = false) String employeeCode,
+                                      @RequestParam(value = "teamId", required = false) String teamId,
                                       Model model) {
-
-//        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-//        int employeeCode = Integer.parseInt(authentication.getName());
-
         List<TaskDetailInput> taskDetailInput = new ArrayList<>();
         taskDetailInput = this.taskLogService.taskDetail(sorting, Integer.parseInt(employeeCode));
         model.addAttribute("taskDetail",taskDetailInput);
+        model.addAttribute("taskHandoverInput",new TaskHandoverInput());
+        model.addAttribute("teamId",teamId);
         model.addAttribute("employeeCode",employeeCode);
+        model.addAttribute("sorting",sorting);
+
         return "member/taskDetail";
     }
 
@@ -1179,6 +1273,33 @@ public class MemberController {
         return "member/apply-search";
     }
 
+    //タスク引継ぎ
+    public List<TaskLog> HandoverAdjustment(List<TaskLog>taskLogs, int employeeCode){
+        //引継ぎにより、addする
+        //引き継がれたタスクを確認する
+        //task_logにhandoverをtask_idで結合する。handoverのafterでemployeeCodeが一致するtask_logを取得する
+        List<TaskLog>tasksHandoverAdd = handoverService.selectTaskByAfter(employeeCode);
+        User user = userService.selectUserById(employeeCode);
+        for (TaskLog taskLog : tasksHandoverAdd){
+            taskLog.setUserName(user.getName());
+        }
+        if (!tasksHandoverAdd.isEmpty()) {
+            taskLogs.addAll(tasksHandoverAdd);
+        }
+
+        //引継ぎにより、removeする
+        //引き継がれたタスクを確認する
+        //task_logにhandoverをtask_idで結合する。handoverのbeforeでemployeeCodeが一致するtask_logを取得する
+        List<TaskLog>tasksHandoverRemove = handoverService.selectTaskByBefore(employeeCode);
+        if (!tasksHandoverRemove.isEmpty()) {
+            List<TaskLog> updatedTaskLogs = new ArrayList<>(taskLogs);
+            for (TaskLog taskLog : tasksHandoverRemove) {
+                updatedTaskLogs.removeIf(log -> log.getTaskId() == taskLog.getTaskId());
+            }
+            taskLogs = updatedTaskLogs;
+        }
+        return taskLogs;
+    }
 }
 
 

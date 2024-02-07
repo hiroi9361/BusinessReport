@@ -17,7 +17,7 @@
     </div>
 
     <div class="container mt-4">
-        <form th:action="@{/member/taskHandoverCreate}" th:object="${taskHandoverInput}" method="post">
+        <form th:action="@{/member/taskHandoverCreate}" th:object="${taskHandoverInput}" method="post" style="text-align:center;">
             <select name="employeeCode" class="form-select">
                 <option th:each="member : ${members}" th:value="${member.employeeCode}"
                         th:text="${member.name}"></option>
@@ -37,7 +37,7 @@
 
 
 
-            <button type="submit">
+            <button type="submit" class="btn btn-success" style="margin-top: 10px;">
                 このメンバーにタスクを移行する
             </button>
         </form>

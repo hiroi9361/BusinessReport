@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html xmlns:th="https://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+	<head>
+		<meta charset="UTF-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0">
+		<title>ログイン</title>
+		
+		<!-- Bootstrap CSS -->
+		<link href="//maxcdn.bootstrapcdn.com/bootstrap/4.1.1/css/bootstrap.min.css" rel="stylesheet">
+		
+		<!-- Custom Style -->
+		<link href="/css/style.css" rel="stylesheet">
+		
+	</head>
+	<body>
+		<div class="nagoyameshi-wrapper">
+			
+			<div th:replace="~{fragment :: header}"></div>
+		
+			<main>
+				<div class="login-reg-panel">
+					<h2>Have an account?</h2>
+					<p>Lorem ipsum dolor sit amet</p>
+					<label id="label-register" for="log-reg-show">ログイン</label>
+					<input type="radio" name="active-log-panel" id="log-login-show" checked="checked">
+				</div>
+				
+				<div th:if="${param.error}" class="alert alert-danger">
+					メールアドレスまたはパスワードが正しくありません。
+				</div>
+			
+				<form>
+					<div class="white-panel">
+						<div class="login-show">
+							<h2>アカウント</h2>
+							<input type="text" name="loginemail"  placeholder="Email">
+							<input type="password" name="loginpassword" placeholder="password">
+							<input type="submit" value="ログイン">
+							<a th:href="@{/signup mb-3}">パスワードを忘れた場合</a>
+						</div>
+				
+						<div class="register-show">
+							<h2>登録</h2>
+							<input type="text" name="signupemail"  placeholder="Email">
+							<input type="password" name="signuppassword" placeholder="password">
+							<input type="password" name="confirmPassword"  placeholder="Confirm Password">
+							<input type="submit" value="登録">
+						</div>
+					</div>
+				</form>
+			</main>
+			
+			<div th:replace="~{fragment :: footer}"></div>
+		</div>
+		
+		<div th:replace="~{fragment :: script}"></div>
+	</body>
+</html>
